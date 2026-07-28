@@ -71,6 +71,13 @@ Hunt for opportunities to refactor skills to use leading words. A triad spelled 
 
 You win twice over: fewer tokens, _and_ a sharper hook for the agent to hang its thinking on. Assume every skill is carrying restatements that leading words retire — go find them.
 
+## Laravel Boost projects
+
+On a project using [Laravel Boost](https://laravel.com/docs/boost), the agent files are **generated**: Boost regenerates `CLAUDE.md`, `AGENTS.md`, and each agent's published skill copies from `.ai/` on every `boost:install` / `boost:update`. Two rules follow:
+
+- **The editable source of a skill is `.ai/skills/<name>/SKILL.md`.** Edit it there, then run `php artisan boost:update` to republish to every configured agent. An edit to a published copy (e.g. under `.claude/skills/`) is silently overwritten on the next update.
+- **Agent instructions belong in `.ai/guidelines/`** (`.md` or `.blade.php` files) — never written into `CLAUDE.md` / `AGENTS.md` directly. Boost folds every guideline into the generated files; a direct edit is lost the same way.
+
 ## Failure modes
 
 Use these to diagnose issues the user may be having with the skill.

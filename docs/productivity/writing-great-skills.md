@@ -40,6 +40,10 @@ The rest of the reference is the toolkit for spending those loads well:
 - **Pruning** — single source of truth, relevance, and the no-op test applied sentence by sentence, against **sediment** and **sprawl**.
 - **Failure modes** — **premature completion**, **duplication**, **sediment**, **sprawl**, **no-op** — to diagnose a skill that isn't behaving.
 
+## On Laravel Boost projects
+
+When the repo uses [Laravel Boost](https://laravel.com/docs/boost), the reference carries one extra rule: the editable source of a skill is `.ai/skills/<name>/SKILL.md`, republished with `php artisan boost:update` — the generated agent files (`CLAUDE.md`, `AGENTS.md`, the per-agent skill copies) are never edited directly, and agent instructions go in `.ai/guidelines/`.
+
 ## Where it fits
 
 This is a reach-for-it-anytime standalone reference — the meta-skill you consult while building the rest of the set, not a step in a chain. Its natural neighbour is any router you maintain, because a router is the direct cure for the cognitive load that user-invoked skills pile up; when you're unsure which skill or flow fits a task, [ask-witify](../engineering/ask-witify.md) routes you over the whole set.

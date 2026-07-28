@@ -1,21 +1,47 @@
-# Skills For Real Engineers
+# Witify Skills
 
 [![skills.sh](https://skills.sh/b/witify/skills)](https://skills.sh/witify/skills)
 
-Witify's agent skills for doing real engineering - not vibe coding.
+Witify's agent skills for doing real engineering.
 
 Developing real applications is hard. Approaches like GSD, BMAD, and Spec-Kit try to help by owning the process. But while doing so, they take away your control and make bugs in the process hard to resolve.
 
 These skills are designed to be small, easy to adapt, and composable. They work with any model. They're based on decades of engineering experience. Hack around with them. Make them your own. Enjoy.
 
-## Installation (30-second setup)
+## Installation
 
-Two ways in, two philosophies. **The [Claude Code plugin](https://code.claude.com/docs/en/plugins)** installs the whole set as a managed, read-only bundle that updates when we ship — you subscribe rather than fork. **[skills.sh](https://skills.sh/witify/skills)** copies editable skill files into your project, so you can hack on them and make them your own. Pick one — installing both leaves you with every skill twice.
+Two steps: install the skills, then set them up to talk to your issue tracker.
 
-### 1. Get the skills
+### 1. Install the skills
+
+Pick the first option that matches your setup — and only one:
 
 <details>
-<summary><strong>Claude Code</strong></summary>
+<summary><strong><a href="https://laravel.com/docs/boost">Laravel Boost</a></strong> — your project uses Boost; it owns skill distribution</summary>
+
+Boost fetches the skills from GitHub into `.ai/skills/` — the source of truth — and syncs them to every configured agent:
+
+```bash
+php artisan boost:add-skill --all witify/skills
+```
+
+Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions later, re-run the command with `--force`. After editing a skill locally, republish with `php artisan boost:update` — never edit the published copies or `CLAUDE.md` / `AGENTS.md`; Boost regenerates them.
+
+</details>
+
+<details>
+<summary><strong><a href="https://skills.sh/witify/skills">skills.sh</a></strong> — editable skill files in your project, for Codex, Claude Code, and other agents</summary>
+
+```bash
+npx skills@latest add witify/skills
+```
+
+Pick the skills you want (**make sure `setup-witify-skills` is one of them**) and which agents to install them on. Update when you want with `npx skills update`.
+
+</details>
+
+<details>
+<summary><strong><a href="https://code.claude.com/docs/en/plugins">Claude Code plugin</a></strong> — a managed, read-only bundle that updates when we ship</summary>
 
 From inside a session, add the marketplace once, then install:
 
@@ -24,45 +50,11 @@ From inside a session, add the marketplace once, then install:
 /plugin install witify-skills@witify
 ```
 
-Updates arrive automatically as new versions ship.
-
 </details>
 
-<details>
-<summary><strong>Codex, and other agents</strong></summary>
+### 2. Set up the issue tracker
 
-```bash
-npx skills@latest add witify/skills
-```
-
-Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take — make sure `setup-witify-skills` is one of them.**
-
-A native Codex plugin is on the roadmap — see [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md).
-
-</details>
-
-<details>
-<summary><strong>For tinkerers</strong></summary>
-
-Use the same installer, on any agent — including Claude Code:
-
-```bash
-npx skills@latest add witify/skills
-```
-
-It writes the skills into your repo as ordinary files you own and can edit. Nothing updates behind your back; pull the latest changes when you want them with `npx skills update`.
-
-</details>
-
-### 2. Run `/setup-witify-skills`
-
-In your agent, run it once per repo. It will:
-
-- Ask you which issue tracker you want to use (GitHub, Linear, or local files)
-- Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
-- Ask you where you want to save any docs we create
-
-### 3. Bam - you're ready to go.
+The engineering skills read and write issues. Run `/setup-witify-skills` once per repo to wire them up — it asks where your issues live (GitHub, Linear, or local files), which triage labels you use, and where to save the docs it creates.
 
 ## Why These Skills Exist
 
