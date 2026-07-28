@@ -54,7 +54,7 @@ From inside a session, add the marketplace once, then install:
 
 ### 2. Set up the issue tracker
 
-The engineering skills read and write issues. Run `/setup-witify-skills` once per repo to wire them up — it asks where your issues live (GitHub, Linear, or local files), which triage labels you use, and where to save the docs it creates.
+The engineering skills read and write issues. Run `/setup-witify-skills` once per repo to wire them up — it asks where your issues live (Linear, ClickUp, or local files), which triage labels you use, and where to save the docs it creates.
 
 ## Why These Skills Exist
 

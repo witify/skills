@@ -26,7 +26,7 @@ Reach for it **once per repo, before the first use of any other engineering skil
 
 It leads each with a recommended answer you can accept in a word, and skips whatever it can already infer — so most runs are a couple of quick confirmations:
 
-- **Issue tracker** — where work is tracked, so `triage`/`to-spec`/`to-tickets` know whether to call `gh`, `glab`, write markdown under `.scratch/`, or follow a workflow you describe. GitHub, GitLab, local markdown, or other. (It proposes the one that matches your `git remote`.)
+- **Issue tracker** — where work is tracked, so `triage`/`to-spec`/`to-tickets` know whether to call the Linear MCP tools, the ClickUp MCP tools, or write markdown under `.scratch/`. Linear or ClickUp, with local markdown as the backup; for Linear it also records the team/project, for ClickUp the space/list.
 - **Triage labels** — asked only if the `triage` skill is installed, and then just: keep the default labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`)? Say no only if your tracker already uses other names, so `triage` applies real ones instead of creating duplicates.
 - **Domain docs** — assumed single-context (one `CONTEXT.md` + `docs/adr/` at the root), which fits almost every repo; it only raises a multi-context map when it spots monorepo signals.
 
@@ -35,7 +35,7 @@ The output is a set of files under `docs/agents/` — `issue-tracker.md`, `domai
 ## It's working if
 
 - `issue-tracker.md` and `domain.md` land under `docs/agents/` (plus `triage-labels.md` when `triage` is installed), and an `## Agent skills` section appears in your `CLAUDE.md` or `AGENTS.md` — via `.ai/guidelines/` on a Boost repo, never a direct edit.
-- The tracker it proposes matches your real `git remote`, and the labels match strings that already exist in your repo.
+- The tracker config names the real place you work — the right Linear team/project or ClickUp space/list — and the labels match strings that already exist in your tracker.
 - Afterwards, `triage` and `to-tickets` act on the right place with the right labels instead of asking or guessing.
 
 ## Where it fits

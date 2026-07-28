@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Scaffold the per-repo configuration that the engineering skills assume:
 
-- **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
+- **Issue tracker** — where issues live (Linear or ClickUp; local markdown as the backup)
 - **Triage labels** — the strings used for the five canonical triage roles
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
 
@@ -20,7 +20,6 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
-- `git remote -v` and `.git/config` — is this a GitHub repo? Which one?
 - `composer.json` — does it require `laravel/boost`? A `.ai/guidelines/` or `.ai/skills/` directory is the same signal. Boost changes where step 4 writes (Boost owns `CLAUDE.md`/`AGENTS.md`).
 - `AGENTS.md` and `CLAUDE.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
@@ -38,16 +37,15 @@ Lead each section with the recommended answer so the user can accept it in a wor
 
 **Section A — Issue tracker.**
 
-> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, and `to-spec` read from and write to it — they need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo.
+> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, and `to-spec` read from and write to it — they need to know whether to call the Linear MCP tools, the ClickUp MCP tools, or write a markdown file under `.scratch/`. Pick the place you actually track work for this repo.
 
-Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that. If a `git remote` points at GitLab (`gitlab.com` or a self-hosted host), propose GitLab. Otherwise (or if the user prefers), offer:
+We track work in **Linear** or **ClickUp** — ask which one holds this repo's issues:
 
-- **GitHub** — issues live in the repo's GitHub Issues (uses the `gh` CLI)
-- **GitLab** — issues live in the repo's GitLab Issues (uses the [`glab`](https://gitlab.com/gitlab-org/cli) CLI)
-- **Local markdown** — issues live as files under `.scratch/<feature>/` in this repo (good for solo projects or repos without a remote)
-- **Other** (Jira, Linear, etc.) — ask the user to describe the workflow in one paragraph; the skill will record it as freeform prose
+- **Linear** — uses the Linear MCP server. Also ask which team (and project, if any) this repo's issues live in.
+- **ClickUp** — uses the ClickUp MCP server. Also ask which space and list this repo's issues live in.
+- **Local markdown** — the backup when the repo isn't tracked in either: issues live as files under `.scratch/<feature>/` in this repo.
 
-Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off** — leave it off and don't raise it; a user who wants external PRs in the triage queue can flip the flag in the file later.
+Record the choice in `docs/agents/issue-tracker.md`, filling the template's workspace placeholders with the team/project (Linear) or space/list (ClickUp) the user names.
 
 **Section B — Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you) — an uninstalled skill needs no labels.
 
@@ -105,13 +103,11 @@ Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.
 
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
-- [issue-tracker-github.md](./issue-tracker-github.md) — GitHub issue tracker
-- [issue-tracker-gitlab.md](./issue-tracker-gitlab.md) — GitLab issue tracker
+- [issue-tracker-linear.md](./issue-tracker-linear.md) — Linear issue tracker
+- [issue-tracker-clickup.md](./issue-tracker-clickup.md) — ClickUp issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md) — label mapping (only if `triage` is installed)
 - [domain.md](./domain.md) — domain doc consumer rules + layout
-
-For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done
 
