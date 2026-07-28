@@ -7,8 +7,10 @@
 # next tick — no loop restart). It is fully self-contained: it runs its own
 # preflight, queries the frontier, and implements the single best ticket.
 #
-# Pulls ready Linear tickets (team witify / project statim) and implements them
-# via `claude -p`. Bash owns every side effect (Linear transitions, git
+# Pulls ready Linear tickets for the auto-detected target (GitHub owner/name →
+# Linear team/project — see the Config section; override via AFK_* env vars)
+# and implements them via `claude -p`. Bash owns every side effect (Linear
+# transitions, git
 # worktrees, push, PRs, comments); Claude only reads the ticket + its parents
 # and runs /implement, committing to the branch.
 #
@@ -55,14 +57,17 @@ set -uo pipefail
 # ----------------------------------------------------------------------------
 # Config (override via environment)
 # ----------------------------------------------------------------------------
-# Run against a DIFFERENT team/project/repo without editing this file — just set
-# the env vars. Team/project are matched case-insensitively by name. Examples:
+# The target is AUTO-DETECTED from the repo you launch from: `gh repo view`
+# yields owner/name (e.g. witify/tsa) and the default branch — owner becomes the
+# Linear team, name the Linear project (both matched case-insensitively by
+# name), and the default branch the PR base. Every value can still be
+# overridden via environment for repos whose names don't line up:
 #
-#   # Another Linear project in the same team:
-#   AFK_PROJECT="billing" ./afk-loop.sh
+#   # A Linear project named differently from the repo:
+#   AFK_PROJECT="storefront" ./afk-loop.sh
 #
-#   # A different team + project, whose repo's default branch is `main`:
-#   AFK_TEAM="acme" AFK_PROJECT="storefront" AFK_BASE_BRANCH="main" ./afk-loop.sh
+#   # PRs against a non-default base branch:
+#   AFK_BASE_BRANCH="develop" ./afk-loop.sh
 #
 #   # Run the FULL suite (parallelized) per ticket instead of filtered tests:
 #   AFK_TEST_SCOPE="all" ./afk-loop.sh
@@ -71,9 +76,11 @@ set -uo pipefail
 # gh, and logs are all resolved relative to that repo, not this one.
 # LINEAR_API_KEY must be exported (it authorizes all Linear reads/writes):
 #   export LINEAR_API_KEY="lin_api_xxx"
-TEAM="${AFK_TEAM:-witify}"
-PROJECT="${AFK_PROJECT:-statim}"
-BASE_BRANCH="${AFK_BASE_BRANCH:-dev}"
+REPO_NWO="$(gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null || true)"
+REPO_DEFAULT_BRANCH="$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || true)"
+TEAM="${AFK_TEAM:-${REPO_NWO%%/*}}"
+PROJECT="${AFK_PROJECT:-${REPO_NWO##*/}}"
+BASE_BRANCH="${AFK_BASE_BRANCH:-$REPO_DEFAULT_BRANCH}"
 TICKET_TIMEOUT="${AFK_TICKET_TIMEOUT:-3600}" # kill a hung implement after 60 min
 IMPL_MODEL="${AFK_IMPL_MODEL:-opus}"         # heavy model for /implement
 IMPL_EFFORT="${AFK_IMPL_EFFORT:-}"           # effort/reasoning level: low|medium|high|xhigh|max (empty = session default)
@@ -82,6 +89,15 @@ TEST_SCOPE="${AFK_TEST_SCOPE:-relevant}"     # 'relevant' (filtered, fast) | 'al
 # exists; address the review) — everything else is the fresh-build flow.
 START_STATES='["Backlog","Todo","Change Requested"]'
 CHANGE_REQUESTED_STATE="Change Requested"   # the state name that triggers rework
+
+# --print-config: emit the resolved target as shell assignments and exit.
+# afk-loop.sh evals this to display + confirm the target BEFORE starting the
+# daemon, then exports the confirmed values so every tick is pinned to them.
+if [ "${1:-}" = "--print-config" ]; then
+  printf "AFK_REPO='%s'\nAFK_TEAM='%s'\nAFK_PROJECT='%s'\nAFK_BASE_BRANCH='%s'\nAFK_IMPL_MODEL='%s'\nAFK_TEST_SCOPE='%s'\n" \
+    "$REPO_NWO" "$TEAM" "$PROJECT" "$BASE_BRANCH" "$IMPL_MODEL" "$TEST_SCOPE"
+  exit 0
+fi
 
 LINEAR_API="https://api.linear.app/graphql"
 LINEAR_API_KEY="${LINEAR_API_KEY:-}"
@@ -813,17 +829,19 @@ preflight() {
   done
   [ -n "$LINEAR_API_KEY" ] || { log "FATAL: LINEAR_API_KEY is not set. Create one at linear.app/settings/account/security and export it."; exit 1; }
   gh auth status >/dev/null 2>&1 || { log "FATAL: gh is not authenticated (run: gh auth login)."; exit 1; }
+  if [ -z "$TEAM" ] || [ -z "$PROJECT" ] || [ -z "$BASE_BRANCH" ]; then
+    log "FATAL: could not auto-detect the target (repo='$REPO_NWO', team='$TEAM', project='$PROJECT', base='$BASE_BRANCH'). Run from a repo with a GitHub remote, or set AFK_TEAM/AFK_PROJECT/AFK_BASE_BRANCH."
+    exit 1
+  fi
   git -C "$MAIN_REPO" fetch origin "$BASE_BRANCH" >/dev/null 2>&1 \
     && git -C "$MAIN_REPO" show-ref --verify --quiet "refs/remotes/origin/$BASE_BRANCH" \
     || { log "FATAL: remote base branch 'origin/$BASE_BRANCH' not found (or fetch failed)."; exit 1; }
   mysql_exec "SELECT 1;" >/dev/null 2>&1 || { log "FATAL: cannot connect to MySQL with .env creds."; exit 1; }
   [ -z "$TIMEOUT_BIN" ] && log "WARN: no 'timeout'/'gtimeout' found — implement runs without a hard timeout. Install with: brew install coreutils"
 
-  # Resolve the GitHub repo (owner/name) for gh api / graphql calls (rework flow).
-  local nwo
-  nwo="$(gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null)"
-  [ -n "$nwo" ] || { log "FATAL: could not resolve GitHub repo (gh repo view). Is this a GitHub remote?"; exit 1; }
-  REPO_OWNER="${nwo%%/*}"; REPO_NAME="${nwo##*/}"
+  # GitHub repo (owner/name) for gh api / graphql calls, from the top-of-file
+  # auto-detection (which also guarantees it's non-empty by this point).
+  REPO_OWNER="${REPO_NWO%%/*}"; REPO_NAME="${REPO_NWO##*/}"
 
   # Verify Linear auth.
   local viewer

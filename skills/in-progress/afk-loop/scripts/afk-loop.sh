@@ -22,8 +22,12 @@
 #   2  transient   -> back off AFK_BACKOFF, then re-tick
 #   1  fatal       -> log and exit (misconfig; spinning won't help)
 #
-# Config: all AFK_* env vars are read by afk-tick.sh (team/project/base/model/
-# test scope/timeout). The loop itself only reads AFK_POLL_INTERVAL + AFK_BACKOFF.
+# Config: the TARGET (Linear team/project, PR base branch) is auto-detected from
+# the repo you launch from (GitHub owner/name + default branch via `gh repo
+# view`), shown, and CONFIRMED before the loop starts — interactively at a TTY,
+# or via AFK_YES=1 for unattended launches (nohup). AFK_* env vars override any
+# detected value; the full list lives in afk-tick.sh. The loop itself only reads
+# AFK_POLL_INTERVAL + AFK_BACKOFF.
 # Run from the ROOT of the target project's git repo, with LINEAR_API_KEY exported.
 #
 set -uo pipefail
@@ -45,6 +49,33 @@ ts()  { date +%Y-%m-%d\ %H:%M:%S; }
 log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$DAEMON_LOG" >&2; }
 
 [ -x "$TICK" ] || { log "FATAL: afk-tick.sh not found or not executable at $TICK"; exit 1; }
+
+# Resolve the target from THIS repo (the tick auto-detects GitHub owner/name →
+# Linear team/project and the default branch → PR base) and CONFIRM it before
+# daemonizing. The confirmed values are then exported so every tick runs against
+# the same target even if the repo's GitHub metadata changes mid-run.
+TARGET_CONFIG="$("$TICK" --print-config)" || { log "FATAL: could not resolve the target config."; exit 1; }
+eval "$TARGET_CONFIG"
+if [ -z "${AFK_TEAM:-}" ] || [ -z "${AFK_PROJECT:-}" ] || [ -z "${AFK_BASE_BRANCH:-}" ]; then
+  log "FATAL: could not auto-detect the target (repo='${AFK_REPO:-}'). Run from a repo with a GitHub remote, or set AFK_TEAM/AFK_PROJECT/AFK_BASE_BRANCH."
+  exit 1
+fi
+export AFK_TEAM AFK_PROJECT AFK_BASE_BRANCH
+log "Target: ${AFK_REPO:-?} — Linear team '$AFK_TEAM', project '$AFK_PROJECT', PRs -> '$AFK_BASE_BRANCH' (model ${AFK_IMPL_MODEL:-?}, tests ${AFK_TEST_SCOPE:-?})"
+
+if [ -n "${AFK_YES:-}" ]; then
+  log "afk-loop: target pre-confirmed via AFK_YES=1."
+elif [ -t 0 ]; then
+  printf 'Start the AFK loop against this target? [y/N] ' >&2
+  read -r _confirm
+  case "$_confirm" in
+    y|Y|yes|YES) ;;
+    *) log "afk-loop: target not confirmed — exiting."; exit 1 ;;
+  esac
+else
+  log "FATAL: no TTY to confirm the target. Run once in a terminal to check it, then relaunch with AFK_YES=1 (inspect first via: $TICK --print-config)."
+  exit 1
+fi
 
 # Hard stop: SIGUSR1 (from `afk-stop --now`) or a foreground INT/TERM. Kill the
 # running tick's whole process group so claude + children die, let tick's own

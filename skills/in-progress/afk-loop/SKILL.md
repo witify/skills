@@ -21,18 +21,20 @@ All in [scripts/](scripts/), designed to run **from the root of the target proje
 
 ## Start
 
+The target is **auto-detected from the repo you launch from**: `gh repo view` yields owner/name (e.g. `witify/tsa`) and the default branch — owner becomes the Linear team, repo name the Linear project (both matched case-insensitively), default branch the PR base. The supervisor shows the resolved target and **requires confirmation before starting**: a `[y/N]` prompt at a TTY, or `AFK_YES=1` for unattended launches (it refuses to start unconfirmed without a TTY).
+
 1. Confirm the target repo (ask if ambiguous — it is **not** this skills repo). All commands below run from its root.
-2. Preflight what the tick will check, so failures surface before the daemon launches: `claude`, `gh` (authenticated), `jq`, `git`, `mysql`, `php`, `curl` on PATH; `LINEAR_API_KEY` exported; the remote base branch exists. `gtimeout` (coreutils) is recommended — without it, a hung implement never times out.
-3. Ask which config overrides apply, then launch. Defaults: team `witify`, project `statim`, base branch `dev` — override via env vars, never by editing the scripts:
+2. Show the user what the loop would target before anything runs: `scripts/afk-tick.sh --print-config`. If the Linear project or base branch doesn't line up with the repo's name/default branch, set the matching `AFK_*` override — never edit the scripts.
+3. Preflight what the tick will check, so failures surface before the daemon launches: `claude`, `gh` (authenticated), `jq`, `git`, `mysql`, `php`, `curl` on PATH; `LINEAR_API_KEY` exported; the remote base branch exists. `gtimeout` (coreutils) is recommended — without it, a hung implement never times out.
+4. Launch — foreground in the user's terminal answers the confirm prompt itself (Ctrl-C behaves like `stop --now`); background launches confirm via `AFK_YES=1` **only after** the user approved the printed target:
 
 ```sh
 cd /path/to/target-repo
 export LINEAR_API_KEY="lin_api_…"
-AFK_PROJECT="billing" AFK_BASE_BRANCH="main" \
-  nohup /path/to/skills/skills/in-progress/afk-loop/scripts/afk-loop.sh >/dev/null 2>&1 &
+AFK_YES=1 nohup /path/to/skills/skills/in-progress/afk-loop/scripts/afk-loop.sh >/dev/null 2>&1 &
 ```
 
-Foreground (in the user's own terminal) also works; Ctrl-C then behaves like `stop --now`. The full knob list — `AFK_TEAM`, `AFK_PROJECT`, `AFK_BASE_BRANCH`, `AFK_POLL_INTERVAL`, `AFK_BACKOFF`, `AFK_TICKET_TIMEOUT`, `AFK_IMPL_MODEL`, `AFK_IMPL_EFFORT`, `AFK_TEST_SCOPE` — is documented at the top of [afk-tick.sh](scripts/afk-tick.sh).
+The full knob list — `AFK_TEAM`, `AFK_PROJECT`, `AFK_BASE_BRANCH`, `AFK_POLL_INTERVAL`, `AFK_BACKOFF`, `AFK_TICKET_TIMEOUT`, `AFK_IMPL_MODEL`, `AFK_IMPL_EFFORT`, `AFK_TEST_SCOPE` — is documented at the top of [afk-tick.sh](scripts/afk-tick.sh).
 
 ## Inspect
 
