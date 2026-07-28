@@ -1,8 +1,8 @@
 ---
-"mattpocock-skills": patch
+"witify-skills": patch
 ---
 
-Make `/ask-matt` clued-up about `/wayfinder` — the heaviest, most cognitively demanding flow.
+Make `/ask-witify` clued-up about `/wayfinder` — the heaviest, most cognitively demanding flow.
 
 The router now sharpens the two routing mistakes people most often make with wayfinder:
 
