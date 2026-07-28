@@ -54,6 +54,9 @@
 #
 set -uo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$SCRIPT_DIR/afk-ui.sh"   # ts/log — colored on a TTY, plain in daemon.log
+
 # ----------------------------------------------------------------------------
 # Config (override via environment)
 # ----------------------------------------------------------------------------
@@ -133,11 +136,8 @@ CUR_UUID="" CUR_ID="" CUR_BRANCH="" CUR_WORKTREE="" CUR_DB="" CUR_CLAIMED=0 CUR_
 mkdir -p "$LOG_DIR" "$WORKTREES_DIR"
 
 # ----------------------------------------------------------------------------
-# Logging helpers
+# Helpers (ts/log come from afk-ui.sh)
 # ----------------------------------------------------------------------------
-ts()  { date +%Y-%m-%d\ %H:%M:%S; }
-log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$DAEMON_LOG" >&2; }
-
 mysql_exec() {
   MYSQL_PWD="$DB_PASS" mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -N -e "$1"
 }

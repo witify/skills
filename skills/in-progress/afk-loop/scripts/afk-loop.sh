@@ -34,6 +34,7 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TICK="$SCRIPT_DIR/afk-tick.sh"
+. "$SCRIPT_DIR/afk-ui.sh"   # ts/log/ui_* — colored on a TTY, plain in daemon.log
 
 POLL_INTERVAL="${AFK_POLL_INTERVAL:-300}"   # sleep when the frontier is empty
 BACKOFF="${AFK_BACKOFF:-45}"                # sleep after a transient error
@@ -44,9 +45,6 @@ DAEMON_LOG="$LOG_DIR/daemon.log"
 STOP_FILE="$LOG_DIR/STOP"
 PID_FILE="$LOG_DIR/afk-loop.pid"
 mkdir -p "$LOG_DIR"
-
-ts()  { date +%Y-%m-%d\ %H:%M:%S; }
-log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$DAEMON_LOG" >&2; }
 
 [ -x "$TICK" ] || { log "FATAL: afk-tick.sh not found or not executable at $TICK"; exit 1; }
 
@@ -61,17 +59,22 @@ if [ -z "${AFK_TEAM:-}" ] || [ -z "${AFK_PROJECT:-}" ] || [ -z "${AFK_BASE_BRANC
   exit 1
 fi
 export AFK_TEAM AFK_PROJECT AFK_BASE_BRANCH
-log "Target: ${AFK_REPO:-?} — Linear team '$AFK_TEAM', project '$AFK_PROJECT', PRs -> '$AFK_BASE_BRANCH' (model ${AFK_IMPL_MODEL:-?}, tests ${AFK_TEST_SCOPE:-?})"
+
+ui_rule
+ui_title "AFK loop — target"
+ui_kv "Repo"        "${AFK_REPO:-?}"
+ui_kv "Linear team" "$AFK_TEAM"
+ui_kv "Project"     "$AFK_PROJECT"
+ui_kv "PR base"     "$AFK_BASE_BRANCH"
+ui_kv "Model"       "${AFK_IMPL_MODEL:-?}"
+ui_kv "Tests"       "${AFK_TEST_SCOPE:-?}"
+ui_rule
 
 if [ -n "${AFK_YES:-}" ]; then
   log "afk-loop: target pre-confirmed via AFK_YES=1."
 elif [ -t 0 ]; then
-  printf 'Start the AFK loop against this target? [y/N] ' >&2
-  read -r _confirm
-  case "$_confirm" in
-    y|Y|yes|YES) ;;
-    *) log "afk-loop: target not confirmed — exiting."; exit 1 ;;
-  esac
+  ui_confirm "Start the AFK loop against this target?" \
+    || { log "afk-loop: target not confirmed — exiting."; exit 1; }
 else
   log "FATAL: no TTY to confirm the target. Run once in a terminal to check it, then relaunch with AFK_YES=1 (inspect first via: $TICK --print-config)."
   exit 1

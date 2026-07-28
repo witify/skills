@@ -19,6 +19,8 @@ All in [scripts/](scripts/), designed to run **from the root of the target proje
 - [afk-tick.sh](scripts/afk-tick.sh) — the worker. Processes exactly one ticket: preflight, pick the best frontier ticket, claim it in Linear, build it in a worktree with a per-ticket MySQL test DB, then push + PR + move To Review on success or label `agent-failed` (keeping the worktree for debugging) on failure. `Change Requested` tickets enter a rework flow that addresses the open PR-review feedback instead of building from scratch.
 - [afk-stop.sh](scripts/afk-stop.sh) — graceful stop (finish the current ticket, then exit) or `--now` (kill the running tick; that ticket is reset to `ready-for-agent` with no half-done trace).
 
+([afk-ui.sh](scripts/afk-ui.sh) is a shared output helper the three source — not run directly.)
+
 ## Start
 
 The target is **auto-detected from the repo you launch from**: `gh repo view` yields owner/name (e.g. `witify/tsa`) and the default branch — owner becomes the Linear team, repo name the Linear project (both matched case-insensitively), default branch the PR base. The supervisor shows the resolved target and **requires confirmation before starting**: a `[y/N]` prompt at a TTY, or `AFK_YES=1` for unattended launches (it refuses to start unconfirmed without a TTY).
@@ -46,6 +48,8 @@ Everything logs under `<target-repo>/.afk-logs/`:
 - `afk-loop.pid` — present iff the supervisor is running.
 
 For "status": check the PID file is alive, then summarize the tail of `daemon.log` — which ticket is in flight, or how long the frontier has been empty.
+
+Terminal output is colorized (levels, ticket headers, dimmed detail lines) only when stderr is a TTY; `daemon.log` always gets plain text, so it stays greppable. Set `NO_COLOR=1` to force plain terminal output.
 
 ## Stop
 
