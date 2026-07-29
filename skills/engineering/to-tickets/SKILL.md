@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket locally, or native blocking links on a real tracker.
+description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket locally, or native blocking links on a real tracker — and record whether the set ships as one PR or one PR per ticket.
 disable-model-invocation: true
 ---
 
@@ -55,16 +55,36 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Publish the tickets to the configured tracker
+### 5. Ask how the work ships — split PRs or one PR
+
+**Always ask this, unless the user already said which they want.** Never assume a default and never infer one from the size of the breakdown.
+
+- **Split PRs** — each ticket is worked on its own branch and reviewed as its own PR. Independently grabbable, reviewed in small pieces, but the reviewer sees the feature arrive in fragments.
+- **Single PR** — every ticket is worked in order on one shared branch and reviewed as one PR. One review of the whole feature, but nothing lands until all of it is done, and a failure part-way leaves a partial PR.
+
+The breakdown itself does not change either way — the same tickets, the same blocking edges. Only how they get branched and reviewed changes.
+
+### 6. Publish the tickets to the configured tracker
 
 Publish the approved tickets. **How** depends on the tracker `/setup-witify-skills` configured — the tickets are the same either way, only the shape of the blocking edges changes:
 
 - **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
-- **A real issue tracker (Linear, ClickUp)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+- **A real issue tracker (Linear, ClickUp)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
-Do NOT close or modify any parent issue.
+#### Recording the PR mode
+
+The answer from step 5 rides on the **parent** issue, as a label — `single-pr` or `split-pr`. It is what tells an AFK agent whether to run the set as one epic branch or one branch per ticket, so it must be set explicitly even when it matches the agent's default.
+
+- **Split PRs** → each ticket carries the `ready-for-agent` triage label itself (unless instructed otherwise) — the tickets are agent-grabbable by construction. The parent, if one exists, carries `split-pr`.
+- **Single PR** → the **parent** carries `single-pr` *and* `ready-for-agent`; the sub-issues carry neither. The parent is what gets grabbed, and its sub-issues are worked in blocking order on one branch. Labeling a sub-issue `ready-for-agent` here would make it grabbable on its own and defeat the mode.
+
+Single PR needs a parent to hang the label on. If the source was an existing issue, use it. If there is no parent, create one for the feature — title and one-paragraph summary of what the whole set delivers — and publish the tickets as its sub-issues.
+
+Beyond adding the PR-mode label (and, on a parent you created, `ready-for-agent`), do NOT close or otherwise modify any parent issue.
+
+On **local files** there is no tracker to label: record the mode as a `**PR mode:**` line in each ticket file instead.
 
 <local-ticket-template>
 
@@ -73,6 +93,8 @@ Do NOT close or modify any parent issue.
 **What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
 
 **Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
+
+**PR mode:** `single-pr` (all tickets on one branch, one PR) or `split-pr` (one branch and PR per ticket).
 
 **Status:** ready-for-agent
 

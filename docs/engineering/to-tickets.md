@@ -24,7 +24,7 @@ Reach for it once you have an agreed plan or a written spec and you want it spli
 
 ## Prerequisites
 
-`to-tickets` publishes into your issue tracker, so [setup-witify-skills](./setup-witify-skills.md) must have configured the tracker and its triage label vocabulary for this repo first. On a real tracker it applies the ready-for-agent label as it publishes.
+`to-tickets` publishes into your issue tracker, so [setup-witify-skills](./setup-witify-skills.md) must have configured the tracker and its triage label vocabulary for this repo first. On a real tracker it applies the ready-for-agent label as it publishes, plus one of the `single-pr` / `split-pr` labels on the parent — both must exist on the tracker.
 
 ## One artifact, two readings
 
@@ -40,6 +40,15 @@ The edges live in the ticket regardless of medium; the medium only decides wheth
 The whole skill turns on one distinction. A **horizontal** slice ships one layer of the change — all the schema, or all the API — and nothing works until every layer lands. A **vertical** slice, the tracer bullet, ships one narrow path through *every* layer at once, so it can be demoed the moment it's done.
 
 Before slicing, `to-tickets` looks for prefactoring — "make the change easy, then make the easy change" — and orders that work first. It then quizzes you on the breakdown (granularity, blocking edges, what to merge or split) before publishing anything, and publishes blockers first so each ticket's "Blocked by" can reference a real ticket.
+
+## One PR or many — it always asks
+
+Slicing decides what the tickets *are*; it says nothing about how they reach review. So before it publishes, `to-tickets` asks — and it always asks, unless you already said which you want:
+
+- **Split PRs** — each ticket gets its own branch and its own PR. Independently grabbable, reviewed in small pieces, at the cost of the reviewer seeing the feature arrive in fragments.
+- **Single PR** — every ticket is worked in blocking order on one shared branch and reviewed once, as the whole feature. Nothing lands until all of it is done, and a failure part-way leaves a partial PR.
+
+The answer rides on the **parent** issue as a `single-pr` or `split-pr` label — that's what an AFK agent reads to decide whether to run the set as one epic branch or one branch per ticket. Because single-PR mode needs a parent to hang the label on, `to-tickets` creates one for the feature when there isn't one already and files the tickets as its sub-issues. In that mode the parent is what carries `ready-for-agent` and gets grabbed; in split mode each ticket carries it and stands alone. On local files, where there are no labels, the mode is written into each ticket file instead.
 
 ## The wide-refactor exception
 
