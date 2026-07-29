@@ -1,0 +1,5 @@
+interface:
+  display_name: "Fix Review"
+  short_description: "Fix a PR's open review comments"
+policy:
+  allow_implicit_invocation: false
