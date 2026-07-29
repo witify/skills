@@ -1,5 +1,0 @@
-interface:
-  display_name: "AFK Loop"
-  short_description: "Run the unattended Linear-ticket implementation daemon"
-policy:
-  allow_implicit_invocation: false
