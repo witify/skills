@@ -10,7 +10,7 @@ These skills are designed to be small, easy to adapt, and composable. They work 
 
 ## Installation
 
-Two steps: install the skills, then set them up to talk to your issue tracker.
+Three steps: install the skills, set them up to talk to your issue tracker, then connect the tracker's MCP server.
 
 ### 1. Install the skills
 
@@ -55,6 +55,29 @@ From inside a session, add the marketplace once, then install:
 ### 2. Set up the issue tracker
 
 The engineering skills read and write issues. Run `/setup-witify-skills` once per repo to wire them up — it asks where your issues live (Linear, ClickUp, or local files), which triage labels you use, and where to save the docs it creates.
+
+### 3. Add the tracker's MCP server
+
+If you picked Linear or ClickUp, the agent talks to it over MCP. Add the official hosted server, then authenticate (OAuth in the browser on first connection).
+
+**Claude Code**
+
+```bash
+claude mcp add --transport http linear-server https://mcp.linear.app/mcp  # Linear
+claude mcp add --transport http clickup https://mcp.clickup.com/mcp      # ClickUp
+
+# Then run `/mcp` inside a Claude session to sign in.
+```
+
+**Codex**
+
+```bash
+codex mcp add linear --url https://mcp.linear.app/mcp    # Linear
+codex mcp add clickup --url https://mcp.clickup.com/mcp  # ClickUp
+codex mcp login <name>
+```
+
+Remote MCP servers require `experimental_use_rmcp_client = true` under `[features]` in `~/.codex/config.toml`.
 
 ## Why These Skills Exist
 
