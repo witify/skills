@@ -12,7 +12,7 @@ npx skills update frontend-development
 
 ## What it does
 
-`frontend-development` holds the patterns the agent applies while building Vue 3 + Tailwind interfaces: reading props after an emit with `nextTick`, sub-form components that emit cloned copies instead of mutating props, form resets from a `DEFAULT_FORM` constant, surfacing validation errors no field displays, and responsive layout.
+`frontend-development` holds the patterns the agent applies while building Vue 3 + Tailwind interfaces: reading props after an emit with `nextTick`, sub-form components that emit cloned copies instead of mutating props, form resets from a `DEFAULT_FORM` constant, surfacing validation errors no field displays, responsive layout, and conventions like reaching for `BaseTooltip` rather than the native `title` attribute.
 
 It is patterns, not a process — there is nothing to run and no steps to follow; the agent applies whichever rules touch the code it is writing.
 

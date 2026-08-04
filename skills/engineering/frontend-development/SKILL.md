@@ -10,8 +10,31 @@ Patterns for building Vue 3 + Tailwind interfaces. This skill is all reference �
 ## Conventions
 
 - Type props and emits explicitly.
-- Reuse before creating: check the project's UI kit and existing stores before writing a new component or store, and prefer the kit's components (button, field, badge…) over raw HTML elements.
+- Reuse before creating: check the project's UI kit and existing stores before writing a new component or store, and prefer the kit's components (button, field, badge…) over raw HTML elements. When the project depends on `sprintify-ui`, run `/sprintify-ui` for the component catalog and props rather than guessing an API.
 - Every user-facing string is a translation key, present in every locale file the project ships. Check whether a key already exists before adding one.
+
+### Never use the `title` attribute
+
+`title` is invisible on touch devices, cannot be styled, and appears only after a browser-controlled delay. Use the kit's tooltip instead — never the attribute:
+
+```vue
+<!-- WRONG — native tooltip -->
+<BaseButton :title="$t('users.edit')" icon="pencil" />
+
+<!-- CORRECT — the component already takes a tooltip -->
+<BaseButton :tooltip="$t('users.edit')" icon="pencil" />
+```
+
+Reach for `BaseTooltip` only when the element has no tooltip prop of its own. It renders a `div`, which breaks inline flow and flex alignment — pass `as="span"` when wrapping inline content:
+
+```vue
+<p>
+    {{ $t("invoices.total") }}
+    <BaseTooltip :text="$t('invoices.total_hint')" as="span">
+        <BaseIcon icon="lucide:info" />
+    </BaseTooltip>
+</p>
+```
 
 ## Reactivity
 
