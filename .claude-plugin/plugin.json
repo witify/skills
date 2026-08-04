@@ -35,6 +35,7 @@
     "./skills/engineering/domain-modeling",
     "./skills/engineering/codebase-design",
     "./skills/engineering/frontend-development",
+    "./skills/engineering/sprintify-ui",
     "./skills/engineering/code-review",
     "./skills/engineering/fix-review",
     "./skills/engineering/resolving-merge-conflicts",

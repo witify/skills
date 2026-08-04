@@ -60,6 +60,7 @@ Model-invoked references that run *beneath* the other skills — each the single
 - **`/domain-modeling`** — sharpen the project's *domain* language: challenge a fuzzy term, resolve an overloaded word ("account" doing three jobs), record a hard-to-reverse decision as an ADR. It's the active discipline `/grill-with-docs` drives to keep `CONTEXT.md` a clean glossary.
 - **`/codebase-design`** — the deep-module vocabulary (module, interface, depth, seam, adapter, leverage, locality) for designing a module's *shape*: a lot of behaviour behind a small interface at a clean seam. `/tdd` and `/improve-codebase-architecture` both speak it.
 - **`/frontend-development`** — Vue 3 + Tailwind patterns for building UI: reactivity after emits, sub-forms that emit copies, orphan validation errors, and responsive layouts. Fires on its own whenever `/implement`, `/tdd`, or `/prototype` touches Vue components or frontend forms.
+- **`/sprintify-ui`** — the component catalog for projects built on the `sprintify-ui` library: every `Base*` component, its props, events and slots. Pairs with `/frontend-development`, which holds the **rules**, where this holds the **API** — reach here when the question is what a component accepts, there when it's which component to use. Dead weight in a project that doesn't depend on the package.
 
 ## Crossing sessions
 
