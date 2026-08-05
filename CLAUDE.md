@@ -6,6 +6,8 @@ Skills are organized into bucket folders under `skills/`:
 
 Every skill in `engineering/` or `productivity/` (the **promoted** buckets) must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`'s `skills` array (the Claude Code plugin ships exactly the promoted set). Skills in `in-progress/` must not appear in either.
 
+Most skills are vendored from the upstream [mattpocock/skills](https://github.com/mattpocock/skills) repo, some with deliberate local adaptations. To pull upstream updates, run the repo-local `/upstream-sync` skill ([.claude/skills/upstream-sync/SKILL.md](./.claude/skills/upstream-sync/SKILL.md)); its `STATE.md` records the last-synced upstream commit and the adaptation ledger — never overwrite a ledger-listed file with upstream's copy blindly.
+
 The repo is also its own single-plugin Claude Code marketplace: `.claude-plugin/marketplace.json` lists the one `witify-skills` plugin. When bumping the release version, keep `.claude-plugin/plugin.json`'s `version` in sync with `package.json`'s — Claude uses the plugin `version` to decide when installed users see an update. Run `claude plugin validate . --strict` after touching either manifest. Why a Claude plugin but not (yet) a Codex one lives in [.agents/adr/0002-ship-as-a-claude-code-plugin.md](./.agents/adr/0002-ship-as-a-claude-code-plugin.md).
 
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
