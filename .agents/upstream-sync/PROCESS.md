@@ -1,12 +1,6 @@
----
-name: upstream-sync
-description: Sync this repo's skills with the upstream mattpocock/skills repo — pull upstream changes since the recorded sync point, preserve local adaptations, do the promotion bookkeeping, and advance the sync point.
-disable-model-invocation: true
-metadata:
-  internal: true
----
-
 # Upstream sync
+
+Maintainer process — follow it when asked to sync, pull, or update from upstream. Deliberately **not** a skill: a `SKILL.md` anywhere in this repo gets picked up by skill installers (see `CLAUDE.md`).
 
 This repo vendors and adapts skills from [mattpocock/skills](https://github.com/mattpocock/skills). Sync is **ledger-driven**: [`STATE.md`](STATE.md) records the **sync point** (the last upstream commit already merged) and the **adaptation ledger** (the files we deliberately diverge on, and how). Every file that came from upstream and is *not* in the ledger is a verbatim copy — upstream's new version replaces it without inspection.
 

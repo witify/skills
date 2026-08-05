@@ -1,6 +1,6 @@
 # Upstream sync state
 
-Data for [`upstream-sync`](SKILL.md). Updated at the end of every sync — the SKILL.md process never changes here, only the facts.
+Data for [`upstream-sync`](PROCESS.md). Updated at the end of every sync — the PROCESS.md process never changes here, only the facts.
 
 ## Sync point
 
