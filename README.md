@@ -19,13 +19,14 @@ Pick the first option that matches your setup — and only one:
 <details>
 <summary><strong><a href="https://laravel.com/docs/boost">Laravel Boost</a></strong> — your project uses Boost; it owns skill distribution</summary>
 
-Boost fetches the skills from GitHub into `.ai/skills/` — the source of truth — and syncs them to every configured agent:
+Boost fetches the skills from GitHub into `.ai/skills/` — the source of truth — and syncs them to every configured agent. Install each bucket with its scoped path (a bare `witify/skills` would also pull in this repo's internal dev tooling and unfinished drafts):
 
 ```bash
-php artisan boost:add-skill --all witify/skills
+php artisan boost:add-skill --all witify/skills/skills/engineering
+php artisan boost:add-skill --all witify/skills/skills/productivity
 ```
 
-Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions later, re-run the command with `--force`. After editing a skill locally, republish with `php artisan boost:update` — never edit the published copies or `CLAUDE.md` / `AGENTS.md`; Boost regenerates them.
+Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions later, re-run the commands with `--force`. After editing a skill locally, republish with `php artisan boost:update` — never edit the published copies or `CLAUDE.md` / `AGENTS.md`; Boost regenerates them.
 
 </details>
 

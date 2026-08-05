@@ -2,6 +2,8 @@
 name: upstream-sync
 description: Sync this repo's skills with the upstream mattpocock/skills repo — pull upstream changes since the recorded sync point, preserve local adaptations, do the promotion bookkeeping, and advance the sync point.
 disable-model-invocation: true
+metadata:
+  internal: true
 ---
 
 # Upstream sync
