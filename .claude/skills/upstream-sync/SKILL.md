@@ -47,4 +47,4 @@ Update [`STATE.md`](STATE.md): new sync-point SHA and date, plus every ledger ch
 
 ### 6. Report
 
-Summarise what landed, what was merged around which adaptations, and the decisions left to the maintainer (promotions, deletions). Commit only when asked; a release afterwards is its own flow — `GITHUB_TOKEN=$(gh auth token) npx changeset version` (needs the changeset's commit already pushed), sync `plugin.json`'s version to `package.json`'s, validate, commit, push.
+Summarise what landed, what was merged around which adaptations, and the decisions left to the maintainer (promotions, deletions). Commit only when asked; a release afterwards follows the changeset flow documented in the repo's `CLAUDE.md`.
