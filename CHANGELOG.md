@@ -1,5 +1,13 @@
 # witify-skills
 
+## 1.6.1
+
+### Patch Changes
+
+- [`92ab244`](https://github.com/witify/skills/commit/92ab24495936418be62f1c82fc49484b6f49f906) Thanks [@francoislevesque](https://github.com/francoislevesque)! - Stop the repo-internal `upstream-sync` dev skill from being installed by skill installers. The README's Laravel Boost instructions now use bucket-scoped paths (`witify/skills/skills/engineering` and `witify/skills/skills/productivity`) — Boost's `boost:add-skill` matches every `SKILL.md` in a repo with no exclusion mechanism, so the previous bare `witify/skills` form also installed `.claude/skills/upstream-sync` and unfinished `in-progress/` drafts. For skills.sh, `upstream-sync` is now marked `metadata.internal: true`, which hides it from discovery.
+
+- [`c3bd146`](https://github.com/witify/skills/commit/c3bd1460c1f8490e9c0d5e3c2af21fd703a7dad9) Thanks [@francoislevesque](https://github.com/francoislevesque)! - README: replace the "Why These Skills Exist" essay with a "Making Changes & Releasing" section documenting the changeset-driven release flow.
+
 ## 1.6.0
 
 ### Minor Changes
