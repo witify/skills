@@ -1,0 +1,3 @@
+interface:
+  display_name: "Audits"
+  short_description: "Model audit trails with the Audit module"

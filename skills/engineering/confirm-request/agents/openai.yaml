@@ -1,0 +1,3 @@
+interface:
+  display_name: "Confirm Request"
+  short_description: "Confirmation dialogs before sensitive endpoints"

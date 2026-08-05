@@ -1,0 +1,3 @@
+interface:
+  display_name: "Notification Development"
+  short_description: "Herald notifications — channels, content, previews"

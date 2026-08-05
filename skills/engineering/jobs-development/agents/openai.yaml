@@ -1,0 +1,3 @@
+interface:
+  display_name: "Jobs Development"
+  short_description: "Laravel queue jobs on Redis + Horizon"

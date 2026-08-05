@@ -1,0 +1,3 @@
+interface:
+  display_name: "Translations"
+  short_description: "Translation keys, placement, and i18n conventions"

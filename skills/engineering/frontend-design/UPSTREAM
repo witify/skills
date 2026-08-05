@@ -1,0 +1,5 @@
+repo: anthropics/claude-plugins-official
+path: plugins/frontend-design/skills/frontend-design
+files: SKILL.md LICENSE.txt
+commit: 60f5e338b2aa4a757b115a3bbea635d6727ea530
+synced: 2026-08-05

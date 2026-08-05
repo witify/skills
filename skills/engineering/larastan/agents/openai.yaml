@@ -1,0 +1,3 @@
+interface:
+  display_name: "Larastan"
+  short_description: "PHPStan/Larastan types and generics"

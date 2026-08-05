@@ -60,7 +60,23 @@ Model-invoked references that run *beneath* the other skills — each the single
 - **`/domain-modeling`** — sharpen the project's *domain* language: challenge a fuzzy term, resolve an overloaded word ("account" doing three jobs), record a hard-to-reverse decision as an ADR. It's the active discipline `/grill-with-docs` drives to keep `CONTEXT.md` a clean glossary.
 - **`/codebase-design`** — the deep-module vocabulary (module, interface, depth, seam, adapter, leverage, locality) for designing a module's *shape*: a lot of behaviour behind a small interface at a clean seam. `/tdd` and `/improve-codebase-architecture` both speak it.
 - **`/frontend-development`** — Vue 3 + Tailwind patterns for building UI: reactivity after emits, sub-forms that emit copies, orphan validation errors, and responsive layouts. Fires on its own whenever `/implement`, `/tdd`, or `/prototype` touches Vue components or frontend forms.
+- **`/frontend-design`** — visual direction when building or reshaping UI: palette, typography, layout choices that don't read as templated defaults. Where `/frontend-development` holds the **correctness patterns** for Vue code, this holds the **aesthetics** — reach here when a screen works but looks generic. Fires alongside `/prototype` when the question is what a UI should look like.
 - **`/sprintify-ui`** — the component catalog for projects built on the `sprintify-ui` library: every `Base*` component, its props, events and slots. Pairs with `/frontend-development`, which holds the **rules**, where this holds the **API** — reach here when the question is what a component accepts, there when it's which component to use. Dead weight in a project that doesn't depend on the package.
+
+### The sprintify baseline
+
+References for projects forked from **sprintify**, the Laravel starter every project begins as. Each one **checks the base code before applying itself** — a project forked from an older sprintify may lack the feature, in which case the skill falls back to core principles or skips and says so. They all defer to a project's own `.ai/skills/` copy when one exists (current forks ship these via Laravel Boost; the plugin copies serve the older ones). Dead weight outside a sprintify-derived Laravel project.
+
+When one of them skips itself because the fork predates the feature, the upgrade path is **`/sprintify-sync`** (user-invoked): it pulls the latest `dev` in the `../sprintify` reference clone, diffs the feature area, and syncs the base code — backend, frontend, and tests — into the project without breaking changes, so the skipped skill fully applies.
+
+- **`/authorization`** — policies, nested controllers, `canDo()`, and one-`<Gate>`-per-element on the frontend. The core rule: **authorization follows the route** — nested routes gate through the parent policy, standalone through the child's.
+- **`/audits`** — model audit trails through the Audit module's staging API (`withAuditComment` → `save()`), readable labels, and the timeline display layer.
+- **`/confirm-request`** — server-enforced "are you sure?" / password re-check dialogs before sensitive endpoints via `confirmRequest()`, with automatic frontend replay.
+- **`/jobs-development`** — queued jobs on Redis + Horizon: idempotence, uniqueness, timeouts, and queue selection read from the project's own Horizon config.
+- **`/notification-development`** — Herald notifications: explicit mail/database channels, builder content, previews, and per-channel user settings.
+- **`/translations`** — where a translation key lives (PHP vs shared JSON), flat JSON keys where enforced, `response.php` for user-facing messages, `{arg}` interpolation in shared files.
+- **`/larastan`** — PHPStan/Larastan generics for models, relations, builders, factories and collections, fixed at the project's configured level.
+- **`/create-guideline`** — write a concise coding rule into `.ai/guidelines/` and sync it with Laravel Boost.
 
 ## Crossing sessions
 

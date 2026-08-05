@@ -1,0 +1,3 @@
+interface:
+  display_name: "Authorization"
+  short_description: "Policies, gates, and permission patterns"

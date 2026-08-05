@@ -1,0 +1,5 @@
+interface:
+  display_name: "Sprintify Sync"
+  short_description: "Sync latest sprintify base code into the project"
+policy:
+  allow_implicit_invocation: false
