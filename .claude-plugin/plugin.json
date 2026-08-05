@@ -40,6 +40,7 @@
     "./skills/engineering/code-review",
     "./skills/engineering/fix-review",
     "./skills/engineering/resolving-merge-conflicts",
+    "./skills/engineering/wizard",
     "./skills/engineering/audits",
     "./skills/engineering/authorization",
     "./skills/engineering/confirm-request",
@@ -53,6 +54,7 @@
     "./skills/productivity/grilling",
     "./skills/productivity/handoff",
     "./skills/productivity/teach",
-    "./skills/productivity/writing-great-skills"
+    "./skills/productivity/to-questionnaire",
+    "./skills/productivity/writing-for-agents"
   ]
 }

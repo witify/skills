@@ -18,7 +18,7 @@ npx skills update create-guideline
 
 Type `/create-guideline`, or the agent reaches for it when you ask to "add a rule for…" or mention `.ai/guidelines/`.
 
-Reach for it when the rule is project-local and belongs in that repo's own agent context. For a reusable skill in *this* repo instead, use [writing-great-skills](../productivity/writing-great-skills.md).
+Reach for it when the rule is project-local and belongs in that repo's own agent context. For a reusable skill in *this* repo instead, use [writing-for-agents](../productivity/writing-for-agents.md).
 
 ## Prerequisites
 

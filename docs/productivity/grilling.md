@@ -12,9 +12,9 @@ npx skills update grilling
 
 ## What it does
 
-`grilling` is the relentless interview that stress-tests a plan or design before you build it. It walks down the decision tree branch by branch, resolving the dependencies between decisions one at a time until you and the agent share the same understanding.
+`grilling` is the relentless interview that stress-tests a plan or design before you build it. It maps the plan as a **design tree** — every decision branches into the decisions that hang off it — and works that tree in **rounds** until you and the agent share the same understanding.
 
-It asks **one question at a time** and waits for your answer before the next — never a bulk list, which is bewildering. Each question comes with the agent's own recommended answer, and any question the codebase can settle it explores instead of asking you. It won't start enacting the plan until you confirm the shared understanding has been reached.
+Each round asks the whole **frontier** — every question whose prerequisites are already settled — numbered, each with the agent's own recommended answer. Your answers reshape the tree and unblock the next round; a question that depends on one still open waits for a later round. Any question the codebase can settle it explores instead of asking you, and it won't start enacting the plan until you confirm the shared understanding has been reached.
 
 ## When to reach for it
 
@@ -24,7 +24,7 @@ Reach for it when a plan or design still has soft spots and you want them surfac
 
 ## The decision tree
 
-The mental model is a **decision tree**: every plan branches into decisions, and decisions depend on each other. `grilling` descends that tree one node at a time, so an early answer can reshape which questions come next. That is why the questions arrive singly and in dependency order — a firehose of parallel questions loses the structure that makes the interview converge on a shared understanding.
+The mental model is a **design tree**: every plan branches into decisions, and decisions depend on each other. `grilling` works the tree by its **frontier** — the set of questions askable *now* without guessing at answers not yet heard. Everything on the frontier arrives together in one round; everything downstream waits its turn. That keeps the dependency structure intact — an early answer still reshapes what comes next — without the drip-feed of strictly one question at a time. The session is done when the frontier is empty: every branch visited, nothing silently assumed.
 
 ## Pulled out on purpose
 
