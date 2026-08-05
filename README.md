@@ -101,6 +101,10 @@ Remote MCP servers require `experimental_use_rmcp_client = true` under `[feature
 
 If several changesets are pending, the highest bump wins — one `minor` among five `patch`es makes it a minor release — and they all share the one release's changelog entry. Never run `changeset version` locally on `main`; it races the PR and leaves it stale.
 
+## Syncing with Upstream
+
+Most skills here are vendored from [mattpocock/skills](https://github.com/mattpocock/skills), some with deliberate local adaptations. To pull upstream updates, ask your agent to follow [.agents/upstream-sync/PROCESS.md](./.agents/upstream-sync/PROCESS.md) (e.g. "sync with upstream") — it's a plain maintainer doc rather than a slash command, on purpose: skill installers pick up any `SKILL.md` in the repo, and this process is internal. Its sibling [STATE.md](./.agents/upstream-sync/STATE.md) records the last-synced upstream commit and the adaptation ledger — the files that deliberately diverge and must never be blindly overwritten. A sync lands like any other change: with a changeset, released through the flow above.
+
 ## Reference
 
 These split on one axis — who can invoke them. **User-invoked** skills are reachable only when you type them (e.g. `/grill-me`); their job is to orchestrate. **Model-invoked** skills can be invoked by you _or_ reached for automatically by the agent when the task fits; they hold the reusable discipline. A user-invoked skill may invoke model-invoked skills, but never another user-invoked one.
