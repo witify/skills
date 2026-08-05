@@ -1,5 +1,15 @@
 # witify-skills
 
+## 1.6.0
+
+### Minor Changes
+
+- [`4c80813`](https://github.com/witify/skills/commit/4c8081311a044fbb6ffccd97e08dde81b8d84ea8) Thanks [@francoislevesque](https://github.com/francoislevesque)! - Formalize repo maintenance flows:
+
+  - New repo-local **`/upstream-sync`** skill (`.claude/skills/upstream-sync/`) that pulls updates from the upstream mattpocock/skills repo. Its `STATE.md` records the sync point (last-synced upstream commit), the name/bucket mappings, and the adaptation ledger of deliberate local divergences — ledger files are hand-merged, everything else is copied verbatim.
+  - Repo-local skills are exposed to Codex through a `.agents/skills` symlink to `.claude/skills`.
+  - `CLAUDE.md` now documents the changeset-per-change convention and the release flow (`CHANGELOG.md` is generated, never hand-edited).
+
 ## 1.5.0
 
 ### Minor Changes
