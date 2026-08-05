@@ -16,6 +16,8 @@ npx skills update frontend-development
 
 It is patterns, not a process — there is nothing to run and no steps to follow; the agent applies whichever rules touch the code it is writing.
 
+The skill carries a second, scoped layer for **sprintify-derived projects**: shared backend data through `window.Laravel`, the server-side settings store instead of `localStorage`, `resource_data` for navigation, `BaseInputPercent`, `tabulation` table classes, and `getColorConfig` for dynamic colors. The agent verifies each feature exists before relying on it, so the layer stays inert on non-sprintify codebases.
+
 ## When to reach for it
 
 Type `/frontend-development`, or the agent reaches for it automatically when the work touches Vue components, frontend forms, or interactive UI.

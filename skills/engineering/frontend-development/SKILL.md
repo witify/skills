@@ -1,6 +1,6 @@
 ---
 name: frontend-development
-description: Vue 3 + Tailwind frontend patterns — reactivity after emits, sub-form communication, form resets, orphan validation errors, responsiveness. Use when building or modifying Vue components, frontend forms, interactive UI, or making a screen fit a phone.
+description: Vue 3 + Tailwind frontend patterns — reactivity after emits, sub-form communication, form resets, orphan validation errors, responsiveness — plus sprintify app conventions (shared backend data, settings store, resource_data, tabulation tables). Use when building or modifying Vue components, frontend forms, interactive UI, or making a screen fit a phone.
 ---
 
 # Frontend Development
@@ -174,4 +174,120 @@ Tailwind scans source files for complete class names at build time, so an interp
 
 <!-- CORRECT — inline style binding -->
 <span :style="{ backgroundColor: colorFor(row.color) }" />
+```
+
+## Sprintify-derived projects
+
+Everything above applies to any Vue 3 + Tailwind codebase. The patterns below depend on sprintify's base code — apply them on sprintify-derived projects, and verify the feature exists (a grep, not an audit) before relying on it; older forks may lack pieces. If the project ships its own `.ai/skills/frontend-development/`, defer to that copy.
+
+### Conventions
+
+- **Route helpers**: `$laravelRoute()` in `<template>`, `window.route()` in `<script>`. Never `window.route()` in templates.
+- **Auto-imports**: `unplugin-auto-import` makes `computed`, `useI18n`, and `useHead` available without importing them — don't add manual imports.
+- **`BaseButton` over raw `<button>`**, always. Never combine `<button>` + `<BaseIcon>` — use `BaseButton` with its `icon` prop.
+
+### Shared backend data (`window.Laravel`)
+
+Never hardcode arrays or option lists in Vue that already exist as constants on backend models. Share them via `ShareDataToClient` and consume through `window.Laravel`:
+
+1. Add the constant to the model's `getSharedData()` method (Sushi models register in `ShareDataToClient` the same way).
+2. Add the property to the model's type in `resources/js/window.d.ts`.
+3. Read it in Vue: `window.Laravel.models.<model>.<key>`.
+
+```php
+// Model
+public static function getSharedData(): array
+{
+    return [
+        'icon' => static::getResourceIcon(),
+        'colors' => static::COLORS,
+    ];
+}
+```
+
+```ts
+// Vue
+const colors = window.Laravel.models.tag.colors;
+```
+
+### User preferences: settings store, not localStorage
+
+Never persist user preferences (panel open/closed state, view modes) in `localStorage`. Use `useSettingsStore()` — it persists server-side so settings sync across devices:
+
+```ts
+const settingsStore = useSettingsStore();
+
+// Read a setting (with optional default)
+const panelOpen = ref(settingsStore.get("my_feature_panel_open", true) !== false);
+
+// Write a setting (async, persisted server-side)
+watch(panelOpen, (v) => settingsStore.set("my_feature_panel_open", v));
+```
+
+### Eager loading via `include`
+
+QueryBuilders define `allowedIncludes()` via Spatie Query Builder. Pass `include` as a query param to load relations on demand instead of always loading them — each consumer requests only what it needs:
+
+```vue
+:url="$laravelRoute('api.admin.items.index', { include: ['latestManufacturableBom'] })"
+```
+
+### Navigation via `resource_data`
+
+When a model implements `IsResource` on the backend, its API response includes a `resource_data` object with navigation/display metadata. Use it instead of building URLs or titles manually:
+
+```ts
+// WRONG — hardcoded path
+rowTo: (row: CollectionItem) => "boms/" + row.id,
+
+// CORRECT — use resource_data
+rowTo: (row: CollectionItem) => row.resource_data.admin_to,
+```
+
+### Percentage / coefficient inputs
+
+For values stored as decimals where 1 = 100% (e.g. `speed_coefficient`, `profit_margin`), use `BaseInputPercent` instead of `BaseInput type="number"` — it handles the decimal-to-percentage conversion (model value 1 displays as 100%):
+
+```vue
+<BaseInputPercent v-model="form.speed_coefficient" :min="0" :max="200" class="w-full" />
+```
+
+### Tables: `tabulation` classes
+
+The `sprintify-ui` table plugin styles plain `<table>` elements. Use `tabulation` for base styling (collapsed borders, bottom border, rounded corners, slate header background, bold headers), plus modifiers:
+
+| Class           | Padding          | Font size |
+| --------------- | ---------------- | --------- |
+| `tabulation-xs` | `0.25rem 0.5rem` | `xs`      |
+| `tabulation-sm` | `0.25rem 0.5rem` | `sm`      |
+| `tabulation-md` | `0.5rem 0.75rem` | `sm`      |
+| (default)       | `0.75rem 0.5rem` | inherited |
+| `tabulation-lg` | `0.75rem 1rem`   | `base`    |
+| `tabulation-xl` | `1rem 1.25rem`   | `lg`      |
+
+| Class                | Effect                                                         |
+| -------------------- | -------------------------------------------------------------- |
+| `tabulation-flush`   | Removes left padding on first cell, right padding on last cell |
+| `tabulation-nowrap`  | `white-space: nowrap` on all `th` and `td`                     |
+| `tabulation-striped` | Alternating slate-100 row background                           |
+| `tabulation-grid`    | Full border on every cell (not just bottom)                    |
+
+The plugin also provides `tr:`, `th:`, and `td:` Tailwind variants that target descendant cells — apply them on the `<table>` (or a wrapper) to style all cells uniformly:
+
+```html
+<table class="tabulation tabulation-sm tabulation-nowrap td:text-right th:font-semibold">
+    ...
+</table>
+```
+
+### Dynamic colors: `getColorConfig`
+
+The static-class-names rule above still applies; on sprintify projects the escape hatch is `getColorConfig(color)` from `sprintify-ui`, which returns `backgroundColor`, `textColor`, `borderColor`, and `color` values for inline `:style` bindings — or a component that resolves the color internally (`BaseBadge` with `:color`):
+
+```ts
+import { getColorConfig } from "sprintify-ui";
+
+const style = computed(() => ({
+    backgroundColor: getColorConfig(props.color).backgroundColor,
+}));
 ```
