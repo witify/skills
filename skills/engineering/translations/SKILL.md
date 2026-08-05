@@ -9,7 +9,7 @@ description: Translation file conventions, key placement (PHP vs JSON), cleanup 
 
 - If the project ships its own `.ai/skills/translations/`, defer to that copy.
 - The **file placement** table and the **`response.php` rules** apply to every sprintify-derived project.
-- The **flat-JSON rules** apply only where the project enforces them: look for a `check-flat-lang` lint script or `flatJson: true` in the vue-i18n setup. On older forks without either, follow the existing key style of the file you're editing (often nested or free-form) and don't retrofit flatness.
+- The **flat-JSON rules** apply only where the project enforces them: look for `check-flat-lang` in the `lint` script of `package.json`. On older forks without it, follow the existing key style of the file you're editing (often nested or free-form) and don't retrofit flatness.
 
 ## When to Activate
 
@@ -35,7 +35,7 @@ description: Translation file conventions, key placement (PHP vs JSON), cleanup 
 
 ## JSON Translation Files Must Be Flat (where enforced)
 
-On current sprintify, JSON lang files (central and module) must use **flat top-level keys only** — no nested objects. Laravel's JSON translator only resolves flat top-level keys, and `vue-i18n` is configured with `flatJson: true` so dotted lookups (`$t('admin.users.title')`) resolve against literal flat keys (`"admin.users.title": "..."`).
+On current sprintify, JSON lang files (central and module) must use **flat top-level keys only** — no nested objects. Laravel's JSON translator only resolves flat top-level keys, and vue-i18n resolves dotted lookups (`$t('admin.users.title')`) against the literal flat keys (`"admin.users.title": "..."`).
 
 ```json
 // WRONG — Laravel's __() silently fails on nested objects
@@ -53,7 +53,7 @@ The `check-flat-lang.js` lint (run by `npm run lint`) enforces three invariants:
 
 When adding a key that logically belongs to a module, put it in that module's `lang/{locale}.json` under `modules.{slug}.*` rather than the central file.
 
-On older forks without the lint or `flatJson`, match the existing style of the file instead — mixing flat and nested keys in one file is worse than either convention.
+On older forks without the lint, match the existing style of the file instead — mixing flat and nested keys in one file is worse than either convention.
 
 ## Which PHP File to Use
 

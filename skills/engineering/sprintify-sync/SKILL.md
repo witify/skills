@@ -21,7 +21,7 @@ Anchor paths per area — starting points, **never** an exhaustive list:
 | Area | Sprintify anchors |
 | --- | --- |
 | notification-development | `modules/Notification/`, `modules/NotificationPreview/` (incl. `Herald/`) |
-| audits | `modules/Audit/`, `src/Support/Audit/`, audit display components under `resources/js/` |
+| audits | `modules/Audit/` (Traits, Snapshots, Actions, Tests, `vue/`), audit display components under `resources/js/` — older forks split the base classes into `src/Support/Audit/`, since merged into `modules/Audit/`; treat a project-side `src/Support/Audit/` as a legacy location whose contents migrate into the module |
 | authorization | `src/Support/Controller/`, `src/Support/Resource/`, `resources/js/components/Gate*.vue`, `resources/js/stores/permissions.ts` |
 | confirm-request | `src/Support/Http/Confirmation/`, the `resources/js/services/http` replay interceptor, the `modules/Account` confirm endpoint |
 | jobs-development | base job support classes under `src/Support/`, `config/horizon.php` conventions |

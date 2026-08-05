@@ -64,5 +64,5 @@ $this->confirmRequest(
 Search the project for existing `confirmRequest()` call sites; typical ones:
 
 - Simple confirmation: `modules/Account/Controllers/AccountTfaEmailController.php`.
-- Using the returned password: `modules/Account/Controllers/AccountUserLoginController.php` (`logoutOtherSessions`).
+- Using the returned password: `modules/Account/Controllers/AccountUserLoginController.php` (`logoutAllOtherSessions`).
 - Test patterns (two-phase, wrong password, forged headers): `modules/Account/Tests/AccountTfaControllerTest.php`.

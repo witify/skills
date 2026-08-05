@@ -210,9 +210,9 @@ public static function getSharedData(): array
 const colors = window.Laravel.models.tag.colors;
 ```
 
-### User preferences: settings store, not localStorage
+### User preferences: server-side settings, not localStorage
 
-Never persist user preferences (panel open/closed state, view modes) in `localStorage`. Use `useSettingsStore()` — it persists server-side so settings sync across devices:
+Never persist user preferences (panel open/closed state, view modes, saved filters) in `localStorage` — they're stuck in one browser and lost on a clear. Use `useSettingsStore()` (`resources/js/stores/settings.ts`): its `get`/`set` persist server-side on the user's `settings` JSON column through the `api.account.settings.*` endpoints, so preferences sync across devices. Define each key once in the store's `USER_SETTINGS_KEYS` const instead of scattering magic strings:
 
 ```ts
 const settingsStore = useSettingsStore();
@@ -223,6 +223,8 @@ const panelOpen = ref(settingsStore.get("my_feature_panel_open", true) !== false
 // Write a setting (async, persisted server-side)
 watch(panelOpen, (v) => settingsStore.set("my_feature_panel_open", v));
 ```
+
+On an older fork without the store (no `stores/settings.ts`), port it from the sprintify base — the store plus its account settings controller, routes, and the `settings` array cast on `User` — rather than reaching for `localStorage`.
 
 ### Eager loading via `include`
 

@@ -260,7 +260,7 @@ Wraps the element it describes. Nothing in this library uses the native `title` 
 
 ### BaseDialog
 
-Confirmation dialog — typically opened programmatically via `useDialog()`.
+Confirmation dialog — typically opened programmatically via the `useDialogsStore()` Pinia store.
 
 **Required props:** `color` ("info" | "success" | "danger" | "warning")
 
