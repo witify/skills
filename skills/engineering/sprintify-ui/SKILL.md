@@ -194,6 +194,29 @@ Full-featured data table with server-side or client-side data.
 
 **Exposed:** `focus()`, `blur()`, `select()`
 
+### BaseSelect
+
+Native select dropdown.
+
+**Key props:** `modelValue` (string | number | null), `placeholder`, `size`, `required`, `disabled`, `hasError`, `options`/`labelKey`/`valueKey`, `visibleFocus`
+
+**Built-in empty option:** BaseSelect always renders its own first option with value `""`, labeled by `placeholder` (default "Select an option"). When `required` is set, that option is disabled and hidden; otherwise it is selectable and clears the model (`""` on the wire, which Laravel's `ConvertEmptyStringsToNull` turns into `null` before validation).
+
+**Never add `<option :value="null">` in the slot.** Vue removes the `value` attribute when the bound value is `null`, and a native `<option>` without a `value` attribute falls back to its **text content** as its value — the form silently submits the option's label (e.g. `"Not applicable"`) and backend validation fails with "The selected field is invalid". Label the built-in empty option via `placeholder` instead:
+
+```vue
+<!-- WRONG — submits the literal string "Not applicable" -->
+<BaseSelect v-model="form.wood_property_id">
+  <option :value="null">{{ $t("not_applicable") }}</option>
+  <option v-for="option in options" :key="option.id" :value="option.id">...</option>
+</BaseSelect>
+
+<!-- CORRECT — built-in empty option, clears the model -->
+<BaseSelect v-model="form.wood_property_id" :placeholder="$t('not_applicable')">
+  <option v-for="option in options" :key="option.id" :value="option.id">...</option>
+</BaseSelect>
+```
+
 ### BaseAutocomplete
 
 **Required props:** `options` (RawOption[]), `labelKey`, `valueKey`
