@@ -16,7 +16,7 @@ The issue tracker and triage label vocabulary should have been provided to you â
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage. That label makes the spec itself the unit of work an AFK agent grabs and implements whole; when the plan is to slice it first, follow up with `/to-tickets`. If the user chooses Split PR mode, `/to-tickets` moves the label down onto the tickets it publishes under the spec.
 
 <spec-template>
 

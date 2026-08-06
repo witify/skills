@@ -24,7 +24,7 @@ Reach for it once a change has been talked through and the domain language is se
 
 ## Prerequisites
 
-`to-spec` publishes into your issue tracker, so [setup-witify-skills](./setup-witify-skills.md) must have configured the tracker and triage labels for this repo first. It applies the `ready-for-agent` label itself — no separate triage pass needed.
+`to-spec` publishes into your issue tracker, so [setup-witify-skills](./setup-witify-skills.md) must have configured the tracker and triage labels for this repo first. It applies the `ready-for-agent` label itself — no separate triage pass needed. That label makes the spec the unit an AFK agent grabs and implements whole; if a later [to-tickets](./to-tickets.md) pass uses Split PR mode, it moves the label down onto the tickets it publishes.
 
 ## What the spec includes
 

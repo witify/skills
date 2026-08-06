@@ -82,7 +82,11 @@ The answer from step 5 rides on the **parent** issue, as a label — `single-pr`
 
 Single PR needs a parent to hang the label on. If the source was an existing issue, use it. If there is no parent, create one for the feature — title and one-paragraph summary of what the whole set delivers — and publish the tickets as its sub-issues.
 
-Beyond adding the PR-mode label (and, on a parent you created, `ready-for-agent`), do NOT close or otherwise modify any parent issue.
+In Split PR mode, when the source issue (typically a spec) already carries `ready-for-agent`, **move the label down**: on an issue without sub-issues that label marks the whole spec as one grabbable unit of work, which is exactly what the split tickets replace. That label move is the only change to make to a pre-existing source issue — never close or otherwise modify it.
+
+#### Writing for the AFK agent
+
+An AFK implement session receives exactly two descriptions as text: the ticket's own and its direct parent's. It has no tracker access — a link in a description resolves to nothing, and any issue beyond that pair (the source spec included) is invisible. So put the cross-cutting decisions a ticket set shares — naming conventions, patterns to follow, known traps — in the direct parent's description, and make each ticket self-contained for everything else. In Single PR mode, the parent's title becomes the PR title; name it like one.
 
 On **local files** there is no tracker to label: record the mode as a `**PR mode:**` line in each ticket file instead.
 
