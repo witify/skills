@@ -1,5 +1,26 @@
 # witify-skills
 
+## 1.7.0
+
+### Minor Changes
+
+- [`62f02b5`](https://github.com/witify/skills/commit/62f02b50ebc2fdf421b36bb0002ed0d9f95e39f7) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `to-tickets` and `to-spec` now capture the AFK-agent publishing rules learned from a real run against firstmate:
+
+  - **Label move**: when a source spec carries `ready-for-agent`, splitting it into independently grabbable tickets moves the label down onto those tickets — a childless spec with that label is itself grabbable as one giant unit of work.
+  - **Writing for the AFK agent**: an implement session sees only its ticket's description plus its direct parent's, with no tracker access — cross-cutting decisions go in the parent description, every ticket stays self-contained, and a single-PR parent's title doubles as the PR title.
+
+  `to-spec` now states that the `ready-for-agent` label it applies makes the spec the unit an AFK agent implements whole, and points at `/to-tickets` as the pass that moves the label down when Split PR mode is chosen.
+
+- [`2efbfe4`](https://github.com/witify/skills/commit/2efbfe42b05eb32ed2aaaa9d522dc5386543fcf0) Thanks [@francoislevesque](https://github.com/francoislevesque)! - New `migration/` bucket for one-way moves that run once per project, starting with **migrate-deploy-branches**: it takes a project's frontend build off the server, adding a GitHub Actions workflow that builds the assets and force-pushes source + build to `deploy` / `deploy-dev`, then walks you through repointing Forge at those branches and stripping npm out of the deploy script. It enumerates the artifacts to commit by building rather than guessing (a PWA's `sw.js` is the one that gets missed), and swaps the deploy script's `git pull` for a fetch-and-reset, without which a force-pushed deploy branch breaks every deploy.
+
+### Patch Changes
+
+- [`229f189`](https://github.com/witify/skills/commit/229f1894b7f3494e269ebb6410258c138762ef0b) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `sprintify-ui` now documents BaseSelect's built-in empty option and the `<option :value="null">` trap: Vue strips the `value` attribute for null bindings, so the option's text content becomes its submitted value and backend validation rejects it. The fix is labeling the built-in empty option via the `placeholder` prop.
+
+- [`546e3f7`](https://github.com/witify/skills/commit/546e3f79f60a5ed1635e092b75aa081d5e4c3e44) Thanks [@github-actions[bot]](https://github.com/github-actions%5Bbot%5D)! - Sync vendored skills from their upstream repos.
+
+- [`729a506`](https://github.com/witify/skills/commit/729a5065b81c36da0fd78afd5f5734235c7926ce) Thanks [@github-actions[bot]](https://github.com/github-actions%5Bbot%5D)! - Sync vendored skills from their upstream repos.
+
 ## 1.6.2
 
 ### Patch Changes
