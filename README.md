@@ -24,6 +24,7 @@ Boost fetches the skills from GitHub into `.ai/skills/` — the source of truth 
 ```bash
 php artisan boost:add-skill --all witify/skills/skills/engineering
 php artisan boost:add-skill --all witify/skills/skills/productivity
+php artisan boost:add-skill --all witify/skills/skills/migration
 ```
 
 Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions later, re-run the commands with `--force`. After editing a skill locally, republish with `php artisan boost:update` — never edit the published copies or `CLAUDE.md` / `AGENTS.md`; Boost regenerates them.
@@ -149,6 +150,14 @@ Skills for daily code work.
 - **[larastan](./skills/engineering/larastan/SKILL.md)** — PHPStan/Larastan patterns for Laravel: relationship generics, custom builders, factories, collections, and fixing type-level errors at the project's configured level.
 - **[notification-development](./skills/engineering/notification-development/SKILL.md)** — Create and manage Herald notifications: explicit channels, builder content, previews, and user settings. Skipped when the project predates Herald.
 - **[translations](./skills/engineering/translations/SKILL.md)** — Translation conventions for sprintify-derived projects: key placement (PHP vs JSON), flat JSON files where enforced, cleanup rules, and interpolation syntax.
+
+### Migration
+
+One-way moves from one setup to another. Each runs once per project, then stops being relevant.
+
+**Model-invoked**
+
+- **[migrate-deploy-branches](./skills/migration/migrate-deploy-branches/SKILL.md)** — Move a project to deploy branches: a GitHub Actions workflow builds the frontend assets and force-pushes source + build to `deploy` / `deploy-dev`, and Forge deploys those instead of building on the server.
 
 ### Productivity
 

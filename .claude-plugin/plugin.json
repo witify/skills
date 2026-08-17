@@ -50,6 +50,7 @@
     "./skills/engineering/notification-development",
     "./skills/engineering/sprintify-sync",
     "./skills/engineering/translations",
+    "./skills/migration/migrate-deploy-branches",
     "./skills/productivity/grill-me",
     "./skills/productivity/grilling",
     "./skills/productivity/handoff",

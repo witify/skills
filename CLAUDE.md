@@ -2,11 +2,12 @@ Skills are organized into bucket folders under `skills/`:
 
 - `engineering/` — daily code work
 - `productivity/` — daily non-code workflow tools
+- `migration/` — one-way moves from one setup to another, run once per project
 - `in-progress/` — drafts not yet ready to ship
 
-Every skill in `engineering/` or `productivity/` (the **promoted** buckets) must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`'s `skills` array (the Claude Code plugin ships exactly the promoted set). Skills in `in-progress/` must not appear in either.
+Every skill in `engineering/`, `productivity/`, or `migration/` (the **promoted** buckets) must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`'s `skills` array (the Claude Code plugin ships exactly the promoted set). Skills in `in-progress/` must not appear in either.
 
-Skill installers (Laravel Boost's `boost:add-skill`, skills.sh) scan the GitHub repo for **every** file named `SKILL.md`, wherever it lives. Two rules follow: maintainer-only processes live as plain markdown under `.agents/` and are never named `SKILL.md`; and the README's Boost instructions use the bucket-scoped paths (`witify/skills/skills/engineering`, `witify/skills/skills/productivity`) so the `in-progress/` drafts stay out — never document a bare `witify/skills` install.
+Skill installers (Laravel Boost's `boost:add-skill`, skills.sh) scan the GitHub repo for **every** file named `SKILL.md`, wherever it lives. Two rules follow: maintainer-only processes live as plain markdown under `.agents/` and are never named `SKILL.md`; and the README's Boost instructions use the bucket-scoped paths (`witify/skills/skills/engineering`, `witify/skills/skills/productivity`, `witify/skills/skills/migration`) so the `in-progress/` drafts stay out — never document a bare `witify/skills` install.
 
 Most skills are vendored from the upstream [mattpocock/skills](https://github.com/mattpocock/skills) repo, some with deliberate local adaptations. To pull upstream updates, follow the process in [.agents/upstream-sync/PROCESS.md](./.agents/upstream-sync/PROCESS.md); its `STATE.md` records the last-synced upstream commit and the adaptation ledger — never overwrite a ledger-listed file with upstream's copy blindly.
 
@@ -18,7 +19,7 @@ Each skill entry in the top-level `README.md` must link the skill name to its `S
 
 Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`. The promoted buckets' `README.md`s and the top-level `README.md` group entries into **User-invoked** and **Model-invoked**; non-promoted bucket `README.md`s use a flat list.
 
-Skills in `engineering/` and `productivity/` also have a human-facing docs page at `docs/<bucket>/<skill-name>.md` (the docs tree mirrors those two bucket folders under `skills/`). When you add, rename, or change the behaviour of a skill in `engineering/` or `productivity/`, create or re-sync its docs page following [.agents/writing-docs.md](./.agents/writing-docs.md). Skills in the non-promoted bucket (`in-progress/`) get **no** docs page.
+Skills in the promoted buckets also have a human-facing docs page at `docs/<bucket>/<skill-name>.md` (the docs tree mirrors those bucket folders under `skills/`). When you add, rename, or change the behaviour of a promoted skill, create or re-sync its docs page following [.agents/writing-docs.md](./.agents/writing-docs.md). Skills in the non-promoted bucket (`in-progress/`) get **no** docs page.
 
 Every `SKILL.md` is either user-invoked (`disable-model-invocation: true` plus `policy.allow_implicit_invocation: false` in `agents/openai.yaml`, reachable only by the human) or model-invoked (model- or user-reachable). See [.agents/invocation.md](./.agents/invocation.md).
 

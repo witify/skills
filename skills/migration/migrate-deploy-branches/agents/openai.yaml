@@ -1,0 +1,3 @@
+interface:
+  display_name: "Migrate to Deploy Branches"
+  short_description: "Build assets in CI and deploy from a built branch"
