@@ -1,5 +1,7 @@
 # Ship the skill set as a native Claude Code plugin; defer a native Codex plugin
 
+> **Status update (2026-08-18):** the Codex deferral is lifted by [ADR 0003](./0003-ship-a-native-codex-plugin.md) — Codex now accepts a `skills` path array, and a native Codex plugin ships from this repo. The Claude-plugin decision below still stands.
+
 These skills have always been installable via [skills.sh](https://skills.sh/witify/skills) (`npx skills add witify/skills`), which copies editable skill files into a user's project across Claude Code, Codex, and other Agent-Skills-standard harnesses. A recurring request is a **plug-and-play** distribution: subscribe to the set as a read-only, always-current bundle you don't edit, rather than a fork you own. That is exactly what native plugin systems provide.
 
 We ship a native **Claude Code plugin** and, for now, **defer** a native **Codex plugin**. The split is forced by how each ecosystem's plugin manifest selects skills, against this repo's bucketed layout.

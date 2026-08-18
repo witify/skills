@@ -14,25 +14,45 @@ Three steps: install the skills, set them up to talk to your issue tracker, then
 
 ### 1. Install the skills
 
-Pick the first option that matches your setup — and only one:
+**Default: the [Claude Code plugin](https://code.claude.com/docs/en/plugins).** One install covers all your projects, and updates ship automatically when we release — no per-project copies to keep in sync. From inside a session, add the marketplace once, then install:
 
-<details>
-<summary><strong><a href="https://laravel.com/docs/boost">Laravel Boost</a></strong> — your project uses Boost; it owns skill distribution</summary>
-
-Boost fetches the skills from GitHub into `.ai/skills/` — the source of truth — and syncs them to every configured agent. Install each bucket with its scoped path (a bare `witify/skills` would also pull in this repo's internal dev tooling and unfinished drafts):
-
-```bash
-php artisan boost:add-skill --all witify/skills/skills/engineering
-php artisan boost:add-skill --all witify/skills/skills/productivity
-php artisan boost:add-skill --all witify/skills/skills/migration
+```
+/plugin marketplace add witify/skills
+/plugin install witify-skills@witify
 ```
 
-Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions later, re-run the commands with `--force`. After editing a skill locally, republish with `php artisan boost:update` — never edit the published copies or `CLAUDE.md` / `AGENTS.md`; Boost regenerates them.
+To make it the default for a whole team, commit this to a project's `.claude/settings.json` — everyone who trusts the project gets the marketplace registered automatically, and `autoUpdate` keeps the plugin current as we release (see [team marketplaces](https://code.claude.com/docs/en/discover-plugins#configure-team-marketplaces)):
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "witify": {
+      "source": { "source": "github", "repo": "witify/skills" },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "witify-skills@witify": true
+  }
+}
+```
+
+<details>
+<summary><strong><a href="https://developers.openai.com/codex/plugins">Codex plugin</a></strong> — the same managed bundle, for OpenAI Codex (≥ 0.147)</summary>
+
+```bash
+codex plugin marketplace add witify/skills
+codex plugin add witify-skills@witify
+```
+
+Updates arrive when we release; pull them with `codex plugin marketplace upgrade`.
 
 </details>
 
+The two alternatives below copy skill files **into a project**. Reach for one only when neither plugin covers you: agents other than Claude Code and Codex (Cursor, …), or a project that deliberately forks a skill to adapt it. A copied skill goes stale until you re-sync it — the plugins never do.
+
 <details>
-<summary><strong><a href="https://skills.sh/witify/skills">skills.sh</a></strong> — editable skill files in your project, for Codex, Claude Code, and other agents</summary>
+<summary><strong><a href="https://skills.sh/witify/skills">skills.sh</a></strong> — editable skill files in your project, for Codex and other agents</summary>
 
 ```bash
 npx skills@latest add witify/skills
@@ -43,14 +63,17 @@ Pick the skills you want (**make sure `setup-witify-skills` is one of them**) an
 </details>
 
 <details>
-<summary><strong><a href="https://code.claude.com/docs/en/plugins">Claude Code plugin</a></strong> — a managed, read-only bundle that updates when we ship</summary>
+<summary><strong><a href="https://laravel.com/docs/boost">Laravel Boost</a></strong> — your project uses Boost and needs the skills in-repo</summary>
 
-From inside a session, add the marketplace once, then install:
+Boost fetches the skills from GitHub into `.ai/skills/` — the source of truth — and syncs them to every configured agent. Install each bucket with its scoped path (a bare `witify/skills` would also pull in this repo's internal dev tooling and unfinished drafts):
 
+```bash
+php artisan boost:add-skill --all witify/skills/skills/engineering
+php artisan boost:add-skill --all witify/skills/skills/productivity
+php artisan boost:add-skill --all witify/skills/skills/migration
 ```
-/plugin marketplace add witify/skills
-/plugin install witify-skills@witify
-```
+
+Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions later, re-run the commands with `--force`. After editing a skill locally, republish with `php artisan boost:update` — never edit the published copies or `CLAUDE.md` / `AGENTS.md`; Boost regenerates them.
 
 </details>
 
