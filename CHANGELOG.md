@@ -1,5 +1,11 @@
 # witify-skills
 
+## 1.10.1
+
+### Patch Changes
+
+- [`0fa6c5d`](https://github.com/witify/skills/commit/0fa6c5d6a17bf7cfa94fd6c670e211df1a5b3685) Thanks [@francoislevesque](https://github.com/francoislevesque)! - The README now presents the Claude Code and Codex plugins as joint defaults — one marketplace, install on every harness you use — instead of leading with Claude Code and tucking Codex behind a fold.
+
 ## 1.10.0
 
 ### Minor Changes
