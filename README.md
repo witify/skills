@@ -14,14 +14,23 @@ Three steps: install the skills, set them up to talk to your issue tracker, then
 
 ### 1. Install the skills
 
-**Default: the [Claude Code plugin](https://code.claude.com/docs/en/plugins).** One install covers all your projects, and updates ship automatically when we release — no per-project copies to keep in sync. From inside a session, add the marketplace once, then install:
+**Default: the native plugins, on both harnesses.** The repo is one plugin marketplace serving Claude Code *and* Codex — a managed, read-only bundle on each. One install covers all your projects, and updates ship automatically when we release — no per-project copies to keep in sync. Install on every harness you use:
+
+**[Claude Code plugin](https://code.claude.com/docs/en/plugins)** — from inside a session:
 
 ```
 /plugin marketplace add witify/skills
 /plugin install witify-skills@witify
 ```
 
-To make it the default for a whole team, commit this to a project's `.claude/settings.json` — everyone who trusts the project gets the marketplace registered automatically, and `autoUpdate` keeps the plugin current as we release (see [team marketplaces](https://code.claude.com/docs/en/discover-plugins#configure-team-marketplaces)):
+**[Codex plugin](https://developers.openai.com/codex/plugins)** (Codex ≥ 0.147) — pull later releases with `codex plugin marketplace upgrade`:
+
+```bash
+codex plugin marketplace add witify/skills
+codex plugin add witify-skills@witify
+```
+
+To make Claude Code automatic for a whole team, commit this to a project's `.claude/settings.json` — everyone who trusts the project gets the marketplace registered automatically, and `autoUpdate` keeps the plugin current as we release (see [team marketplaces](https://code.claude.com/docs/en/discover-plugins#configure-team-marketplaces)):
 
 ```json
 {
@@ -36,18 +45,6 @@ To make it the default for a whole team, commit this to a project's `.claude/set
   }
 }
 ```
-
-<details>
-<summary><strong><a href="https://developers.openai.com/codex/plugins">Codex plugin</a></strong> — the same managed bundle, for OpenAI Codex (≥ 0.147)</summary>
-
-```bash
-codex plugin marketplace add witify/skills
-codex plugin add witify-skills@witify
-```
-
-Updates arrive when we release; pull them with `codex plugin marketplace upgrade`.
-
-</details>
 
 The two alternatives below copy skill files **into a project**. Reach for one only when neither plugin covers you: agents other than Claude Code and Codex (Cursor, …), or a project that deliberately forks a skill to adapt it. A copied skill goes stale until you re-sync it — the plugins never do.
 
