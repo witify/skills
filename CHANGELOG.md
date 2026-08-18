@@ -1,5 +1,15 @@
 # witify-skills
 
+## 1.10.0
+
+### Minor Changes
+
+- [`ea58195`](https://github.com/witify/skills/commit/ea5819583db675ae14312e3d7f9e08b792be7230) Thanks [@francoislevesque](https://github.com/francoislevesque)! - The skill set now also ships as a native Codex plugin. Codex ≥ 0.147 accepts `skills` as an array of paths, so `.codex-plugin/plugin.json` lists exactly the three promoted buckets — install with `codex plugin marketplace add witify/skills` then `codex plugin add witify-skills@witify`. The release flow keeps its version in sync alongside the Claude manifest.
+
+### Patch Changes
+
+- [`ea58195`](https://github.com/witify/skills/commit/ea5819583db675ae14312e3d7f9e08b792be7230) Thanks [@francoislevesque](https://github.com/francoislevesque)! - The Claude Code plugin is now the documented default install path. The README leads with the plugin (one install, auto-updating on release) and repositions skills.sh and Laravel Boost as in-project fallbacks for non-Claude harnesses or projects that deliberately fork a skill.
+
 ## 1.9.0
 
 ### Minor Changes
