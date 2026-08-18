@@ -3,25 +3,16 @@
 
 Copy this whole `template/` folder to a scratch directory, fill in the CONFIG
 block, replace the CONTENT section, then run `python3 build_docx.py`.
-Requires: python-docx, pymupdf, and a Chrome-family browser for the cover
-render — found automatically on PATH, in macOS app locations, or in a
-Playwright install (set CHROME_PATH to force one). Aptos renders exactly when
-it is installed or Microsoft Word is; otherwise the cover falls back to
-Helvetica/Arial.
+Requires: python-docx, pymupdf, and a Chrome-family browser (found
+automatically; set CHROME_PATH to force one). Aptos renders exactly when it
+is installed or Word is; otherwise the cover falls back to Helvetica.
 """
 import glob
 import os
 import shutil
 import subprocess
 
-try:
-    import pymupdf
-except ImportError:
-    try:
-        import fitz as pymupdf  # pymupdf < 1.24
-    except ImportError:
-        raise SystemExit("pymupdf is required (rasterizes the cover): pip install pymupdf")
-
+import pymupdf
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml import OxmlElement
@@ -48,37 +39,22 @@ COVER_PNG = os.path.join(HERE, "cover.png")
 
 # ============================================================= cover render
 def find_browser():
-    """Locate a Chrome-family browser across macOS, Linux, and agent sandboxes."""
     candidates = [os.environ.get("CHROME_PATH", "")]
-    for name in ("google-chrome", "google-chrome-stable", "chromium",
-                 "chromium-browser", "chrome", "brave-browser",
-                 "microsoft-edge", "msedge"):
-        candidates.append(shutil.which(name) or "")
-    candidates += [
-        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-        "/Applications/Chromium.app/Contents/MacOS/Chromium",
-        "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-        "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
-    ]
+    candidates += [shutil.which(name) or "" for name in
+                   ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser")]
+    candidates.append("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
     pw_root = os.environ.get("PLAYWRIGHT_BROWSERS_PATH",
                              os.path.expanduser("~/.cache/ms-playwright"))
     candidates += sorted(glob.glob(os.path.join(pw_root, "chromium-*", "chrome-linux", "chrome")))
-    candidates += sorted(glob.glob(os.path.join(
-        pw_root, "chromium-*", "chrome-mac*", "Chromium.app", "Contents", "MacOS", "Chromium")))
     for candidate in candidates:
         if candidate and os.path.isfile(candidate) and os.access(candidate, os.X_OK):
             return candidate
-    raise SystemExit(
-        "No Chrome-family browser found (required to render the cover page).\n"
-        "Install one — `npx -y playwright install chromium` works in most\n"
-        "sandboxes, or apt/brew install chromium — or set CHROME_PATH to an\n"
-        "existing browser binary, then re-run."
-    )
+    raise SystemExit("No Chrome-family browser found: install chromium "
+                     "(e.g. `npx -y playwright install chromium`) or set CHROME_PATH.")
 
 
 def render_cover():
-    # Print-to-PDF, not a screenshot: screenshot viewports vary by platform
-    # and Chrome version (window chrome, scrollbars) and crop the page.
+    # Print-to-PDF, not a screenshot: screenshot viewports vary by platform and crop the page.
     browser = find_browser()
     with open(os.path.join(HERE, "cover.html")) as f:
         html = f.read()
@@ -88,16 +64,13 @@ def render_cover():
     rendered = os.path.join(HERE, "cover.rendered.html")
     with open(rendered, "w") as f:
         f.write(html)
-    if os.path.exists(COVER_PDF):
-        os.remove(COVER_PDF)
     cmd = [browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
            "--allow-file-access-from-files",
            f"--print-to-pdf={COVER_PDF}", f"file://{rendered}"]
     result = subprocess.run(cmd, capture_output=True)
-    if result.returncode != 0:
-        # Container/root environments refuse Chrome's sandbox.
+    if result.returncode != 0:  # containers running as root refuse Chrome's sandbox
         result = subprocess.run(cmd + ["--no-sandbox"], capture_output=True)
-    if result.returncode != 0 or not os.path.isfile(COVER_PDF):
+    if result.returncode != 0:
         raise SystemExit(f"Cover render failed ({browser}):\n"
                          + result.stderr.decode(errors="replace")[-2000:])
     # 192 dpi = 2x the 96-dpi CSS canvas, so the PNG is 1700x2200.
