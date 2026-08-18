@@ -16,4 +16,5 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 Model- or user-reachable (rich trigger phrasing so the model can reach for them).
 
 - **[grilling](./grilling/SKILL.md)** — Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved.
+- **[loom](./loom/SKILL.md)** — Analyze a Loom video in detail: transcript with speakers, chapters, and actual frames inspected via ffmpeg. Fires whenever a loom.com link shows up in a task, grill, or conversation and its content matters.
 - **[writing-for-agents](./writing-for-agents/SKILL.md)** — Reference for writing any document an agent consumes — skills, `AGENTS.md` / `CLAUDE.md`, docs reached by pointers — with the levers that make each one predictable.

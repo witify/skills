@@ -1,0 +1,3 @@
+interface:
+  display_name: "Loom"
+  short_description: "Analyze a Loom video: transcript, chapters, and ffmpeg frames"
