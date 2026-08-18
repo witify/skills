@@ -1,5 +1,11 @@
 # witify-skills
 
+## 1.11.0
+
+### Minor Changes
+
+- [`6296cf9`](https://github.com/witify/skills/commit/6296cf968d2b7f6b5d5c604a983b74bc4d398d75) Thanks [@claude](https://github.com/claude)! - `witify-docx` now runs anywhere Python does. The cover page is drawn and rasterized by `pymupdf` (which also renders the SVG logo assets) instead of being screenshotted by headless Chrome, so the browser dependency and every hardcoded macOS path are gone; the only requirements are `python-docx` and `pymupdf`. The default output lands in the working directory rather than `~/Desktop`, and the verification step resolves `soffice` from PATH before falling back to the macOS LibreOffice app path.
+
 ## 1.10.1
 
 ### Patch Changes
