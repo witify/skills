@@ -10,9 +10,9 @@ Generate a polished .docx from the proven template in `template/`: full-page dar
 ## Process
 
 1. Copy the whole `template/` folder into the scratchpad (`cp -r <skill_dir>/template <scratchpad>/<doc-name>`). Never edit the skill's own copy.
-2. Fill the `CONFIG` block in `build_docx.py`: cover title (`<br>` for line breaks), subtitle, meta line, output path.
+2. Fill the `CONFIG` block in `build_docx.py`: cover title (`\n` for line breaks), subtitle, meta line, output path.
 3. Replace the `CONTENT` section with the document's real content. The template's example demonstrates every helper: `doc.add_heading` (levels 1–2), `doc.add_paragraph`, `bullet()`, `styled_table()` (cells accept `(main, gray sub-line)` tuples), `code_block()`, and `add_run` with `B` / `N` / `CODE_INLINE` for mixed-style runs. Number Heading 1 titles manually ("1. …", "2. …").
-4. Run `python3 build_docx.py` (deps: `pip install python-docx pymupdf`). The cover renders with any Chrome-family browser, found automatically (`CHROME_PATH` overrides); if none is found, the error says how to install one — do it and re-run. Aptos loads from the system or Word's fonts, else Helvetica.
+4. Run `python3 build_docx.py` (deps: `pip install python-docx pymupdf`). The cover is drawn and rasterized by pymupdf — no browser needed. Aptos renders when Word's bundled fonts are present, else Helvetica.
 5. Verify every page visually before declaring done (needs LibreOffice with its Writer module):
    ```bash
    SOFFICE=$(command -v soffice || echo "/Applications/LibreOffice.app/Contents/MacOS/soffice")

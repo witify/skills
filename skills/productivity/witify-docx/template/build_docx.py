@@ -3,14 +3,11 @@
 
 Copy this whole `template/` folder to a scratch directory, fill in the CONFIG
 block, replace the CONTENT section, then run `python3 build_docx.py`.
-Requires: python-docx, pymupdf, and a Chrome-family browser (found
-automatically; set CHROME_PATH to force one). Aptos renders exactly when it
-is installed or Word is; otherwise the cover falls back to Helvetica.
+Requires: python-docx and pymupdf. The cover is drawn straight to PDF by
+pymupdf and rasterized — no browser involved. Aptos renders exactly when
+Word's bundled fonts are present; otherwise the cover falls back to Helvetica.
 """
-import glob
 import os
-import shutil
-import subprocess
 
 import pymupdf
 from docx import Document
@@ -20,13 +17,12 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 # ============================================================= CONFIG
-TITLE_HTML = "Server<br>Requirements"          # cover title ("<br>" for line breaks)
+TITLE = "Server\nRequirements"                 # cover title ("\n" for line breaks)
 SUBTITLE = "Laravel Application Hosting on Azure"
 META_LINE = "Draft for discussion · August 2026"
 OUT = os.path.join(os.getcwd(), "Witify Document.docx")
 
 # ============================================================= brand
-RED_HEX = "FF4746"
 CODE_BG_HEX = "F3F4F2"
 FONT = "Aptos"
 MONO = "Consolas"
@@ -34,47 +30,45 @@ MONO = "Consolas"
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "assets")
 ICON_HEADER = os.path.join(ASSETS, "witify-icon-black50.png")
-COVER_PDF = os.path.join(HERE, "cover.pdf")
 COVER_PNG = os.path.join(HERE, "cover.png")
+APTOS_DIR = "/Applications/Microsoft Word.app/Contents/Resources/DFonts"
+
 
 # ============================================================= cover render
-def find_browser():
-    candidates = [os.environ.get("CHROME_PATH", "")]
-    candidates += [shutil.which(name) or "" for name in
-                   ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser")]
-    candidates.append("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
-    pw_root = os.environ.get("PLAYWRIGHT_BROWSERS_PATH",
-                             os.path.expanduser("~/.cache/ms-playwright"))
-    candidates += sorted(glob.glob(os.path.join(pw_root, "chromium-*", "chrome-linux", "chrome")))
-    for candidate in candidates:
-        if candidate and os.path.isfile(candidate) and os.access(candidate, os.X_OK):
-            return candidate
-    raise SystemExit("No Chrome-family browser found: install chromium "
-                     "(e.g. `npx -y playwright install chromium`) or set CHROME_PATH.")
-
-
 def render_cover():
-    # Print-to-PDF, not a screenshot: screenshot viewports vary by platform and crop the page.
-    browser = find_browser()
-    with open(os.path.join(HERE, "cover.html")) as f:
-        html = f.read()
-    html = (html.replace("{{TITLE_HTML}}", TITLE_HTML)
-                .replace("{{SUBTITLE}}", SUBTITLE)
-                .replace("{{META_LINE}}", META_LINE))
-    rendered = os.path.join(HERE, "cover.rendered.html")
-    with open(rendered, "w") as f:
-        f.write(html)
-    cmd = [browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
-           "--allow-file-access-from-files",
-           f"--print-to-pdf={COVER_PDF}", f"file://{rendered}"]
-    result = subprocess.run(cmd, capture_output=True)
-    if result.returncode != 0:  # containers running as root refuse Chrome's sandbox
-        result = subprocess.run(cmd + ["--no-sandbox"], capture_output=True)
-    if result.returncode != 0:
-        raise SystemExit(f"Cover render failed ({browser}):\n"
-                         + result.stderr.decode(errors="replace")[-2000:])
-    # 192 dpi = 2x the 96-dpi CSS canvas, so the PNG is 1700x2200.
-    pymupdf.open(COVER_PDF)[0].get_pixmap(dpi=192).save(COVER_PNG)
+    forest, red = (0.11, 0.169, 0.188), (1, 0.278, 0.275)          # 1C2B30, FF4746
+    white, light, gray = (1, 1, 1), (0.682, 0.741, 0.761), (0.561, 0.627, 0.651)
+
+    cover = pymupdf.open()
+    page = cover.new_page(width=850, height=1100)
+    page.draw_rect(page.rect, fill=forest, color=None)
+
+    def svg(name, rect):
+        src = pymupdf.open("pdf", pymupdf.open(os.path.join(ASSETS, name)).convert_to_pdf())
+        page.show_pdf_page(rect, src, 0)
+
+    svg("witify-icon-tonal.svg", pymupdf.Rect(300, 722.5, 1060, 1220))  # watermark, bleeds off-page
+    svg("logo-light.svg", pymupdf.Rect(72, 64, 240, 106.3))
+    page.draw_rect(pymupdf.Rect(72, 440, 136, 444), fill=red, color=None)
+
+    def text(pos, s, size, color, bold=False):
+        ttf = os.path.join(APTOS_DIR, "Aptos-Bold.ttf" if bold else "Aptos.ttf")
+        if os.path.isfile(ttf):
+            page.insert_text(pos, s, fontsize=size, color=color, fontfile=ttf,
+                             fontname="AptosBold" if bold else "Aptos")
+        else:
+            page.insert_text(pos, s, fontsize=size, color=color,
+                             fontname="hebo" if bold else "helv")
+
+    y = 480
+    for line in TITLE.splitlines():                                # 58px title, 1.06 line-height
+        text((72, y + 45.5), line, 58, white, bold=True)
+        y += 61.5
+    text((72, y + 43), SUBTITLE, 20, light)
+    text((72, 996), META_LINE, 13, white, bold=True)
+    text((72, 1019.5), "Witify Technologies · witify.io", 13, gray)
+
+    page.get_pixmap(dpi=144).save(COVER_PNG)                       # 2x the 850x1100 design
 
 
 render_cover()
