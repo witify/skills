@@ -20,7 +20,7 @@ Type `/witify-docx`, or the agent reaches for it automatically when a deliverabl
 
 ## Prerequisites
 
-macOS with `python-docx` installed and Google Chrome (renders the cover). Microsoft Word installed locally makes the cover render in genuine Aptos; without it the cover falls back to Helvetica. Verification needs LibreOffice and `pymupdf`.
+`python-docx`, `pymupdf`, and any Chrome-family browser (renders the cover) — the script finds Chrome, Chromium, Edge, Brave, or a Playwright-installed Chromium on its own, on macOS and Linux sandboxes alike, so it runs wherever the agent does. Aptos installed (or Microsoft Word, which bundles it) makes the cover render in genuine Aptos; without it the cover falls back to Helvetica. Verification needs LibreOffice.
 
 ## The template is the brand
 

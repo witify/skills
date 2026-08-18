@@ -2,17 +2,21 @@
 <html>
 <head>
 <style>
+@page { size: 850px 1100px; margin: 0; }
+* { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 @font-face {
   font-family: 'Aptos';
   font-weight: 400;
-  src: url('file:///Applications/Microsoft Word.app/Contents/Resources/DFonts/Aptos.ttf');
+  src: local('Aptos'),
+       url('file:///Applications/Microsoft Word.app/Contents/Resources/DFonts/Aptos.ttf');
 }
 @font-face {
   font-family: 'Aptos';
   font-weight: 700;
-  src: url('file:///Applications/Microsoft Word.app/Contents/Resources/DFonts/Aptos-Bold.ttf');
+  src: local('Aptos Bold'), local('Aptos-Bold'),
+       url('file:///Applications/Microsoft Word.app/Contents/Resources/DFonts/Aptos-Bold.ttf');
 }
-body { margin: 0; font-family: 'Aptos', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; font-family: 'Aptos', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif; -webkit-font-smoothing: antialiased; }
 </style>
 </head>
 <body>

@@ -12,10 +12,11 @@ Generate a polished .docx from the proven template in `template/`: full-page dar
 1. Copy the whole `template/` folder into the scratchpad (`cp -r <skill_dir>/template <scratchpad>/<doc-name>`). Never edit the skill's own copy.
 2. Fill the `CONFIG` block in `build_docx.py`: cover title (`<br>` for line breaks), subtitle, meta line, output path.
 3. Replace the `CONTENT` section with the document's real content. The template's example demonstrates every helper: `doc.add_heading` (levels 1–2), `doc.add_paragraph`, `bullet()`, `styled_table()` (cells accept `(main, gray sub-line)` tuples), `code_block()`, and `add_run` with `B` / `N` / `CODE_INLINE` for mixed-style runs. Number Heading 1 titles manually ("1. …", "2. …").
-4. Run `python3 build_docx.py`. It renders the cover with headless Chrome (Aptos loads from Word's bundled fonts; falls back to Helvetica when Word is absent), then builds the docx.
-5. Verify every page visually before declaring done:
+4. Run `python3 build_docx.py` (needs `python-docx` and `pymupdf`; `pip install python-docx pymupdf` if missing). It prints the cover to PDF with a headless Chrome-family browser — auto-discovered across PATH, macOS app locations, and Playwright installs (`CHROME_PATH` forces one) — and rasterizes it; if no browser exists, the script's error says how to install one: do that and re-run. Aptos loads from the system or Word's bundled fonts; falls back to Helvetica/Arial when absent.
+5. Verify every page visually before declaring done (needs LibreOffice, with its Writer module):
    ```bash
-   /Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf --outdir . "<out>.docx"
+   SOFFICE=$(command -v soffice || echo "/Applications/LibreOffice.app/Contents/MacOS/soffice")
+   "$SOFFICE" --headless --convert-to pdf --outdir . "<out>.docx"
    python3 -c "import fitz; d=fitz.open('<out>.pdf'); [p.get_pixmap(dpi=140).save(f'page{i}.png') for i,p in enumerate(d,1)]"
    ```
    Read each page image. Fix and re-run until layout holds: no stray blank page, tables and code blocks unsplit, footer page numbers right-aligned.
