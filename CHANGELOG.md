@@ -1,5 +1,11 @@
 # witify-skills
 
+## 1.9.0
+
+### Minor Changes
+
+- [`1a9481f`](https://github.com/witify/skills/commit/1a9481f1b923ae19dcc622e1f7d9dfa73e87ca40) Thanks [@francoislevesque](https://github.com/francoislevesque)! - New `witify-docx` skill (productivity): generate a Witify-branded Word document from a proven template — full-page dark cover with the brand's forest ground and tone-on-tone W watermark, Aptos typography throughout, gray W icon in the header, and a paginated footer. The template encodes the hard-won Word mechanics (theme-font overrides, heading colors, unsplittable table rows, footer tab stops) and ends with a visual verification pass over every rendered page.
+
 ## 1.8.0
 
 ### Minor Changes
