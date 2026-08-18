@@ -15,7 +15,7 @@ Verified end to end with codex-cli 0.147.0 against a local marketplace add of th
 - **Codex reads `.claude-plugin/marketplace.json`** — the formats are compatible, so the repo is one marketplace for both harnesses. `codex plugin marketplace add witify/skills` registers marketplace `witify`; `codex plugin add witify-skills@witify` installs.
 - **Curation holds**: a `codex exec` skill enumeration after install shows every promoted model-invoked skill under the `witify-skills:` prefix and none of `in-progress/`. (The install *cache* copies the whole repo tree; only the manifest's listed roots are loaded as skills.)
 - **User-invoked skills don't appear in the model's skill list** — their `agents/openai.yaml` sets `allow_implicit_invocation: false`, which is the intended behaviour per [.agents/invocation.md](../invocation.md); they remain explicitly reachable.
-- The remote (`owner/repo`) marketplace form runs the same code path after cloning; re-verify once the manifest is on `main`.
+- The remote form is verified too: with the manifest on `main`, `codex plugin marketplace add witify/skills` clones the repo and `codex plugin add witify-skills@witify` installs the released version.
 
 ## Differences from the Claude manifest — read before editing either
 
