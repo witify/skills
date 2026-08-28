@@ -1,5 +1,11 @@
 # witify-skills
 
+## 1.12.0
+
+### Minor Changes
+
+- [`b7876d2`](https://github.com/witify/skills/commit/b7876d2e57b594533407aff42cd99cc2483ef775) Thanks [@francoislevesque](https://github.com/francoislevesque)! - Let `/ship` ask how aggressively to handle review findings before it starts, from analysis-only through all priorities, and cap the PR feedback loop at three waves.
+
 ## 1.11.1
 
 ### Patch Changes
