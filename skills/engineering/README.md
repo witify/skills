@@ -14,7 +14,7 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 - **[to-spec](./to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to the issue tracker.
 - **[to-tickets](./to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges — text in a local file, or native blocking links on a real tracker.
 - **[implement](./implement/SKILL.md)** — Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/code-review` before committing.
-- **[ship](./ship/SKILL.md)** — Batteries-included `/implement`: one implement and one review sub-agent per ticket, then a PR to `dev` — described in simple French with high-level smoke tests — worked until CI is green and Codex approves.
+- **[ship](./ship/SKILL.md)** — Batteries-included `/implement`: one implement and one review sub-agent per ticket, then a PR to `dev` whose feedback is handled under a user-chosen fix policy for at most three waves.
 - **[wayfinder](./wayfinder/SKILL.md)** — Plan a huge chunk of work — more than one agent session can hold — as a shared map of decision tickets on the issue tracker, resolved one at a time until the way to the destination is clear.
 - **[fix-review](./fix-review/SKILL.md)** — Work through the open review comments on a GitHub PR — fix, commit, push, and reply with commit links. Never resolves threads; reviewers close their own.
 - **[sprintify-sync](./sprintify-sync/SKILL.md)** — Sync the latest sprintify base code for one feature area from `../sprintify` into the current project — backend, frontend, and tests — so the matching base-code skill fully applies.

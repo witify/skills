@@ -1,5 +1,5 @@
 interface:
   display_name: "Ship"
-  short_description: "Tickets to a green PR, sub-agents included"
+  short_description: "Tickets to a reviewed PR with controlled fixes"
 policy:
   allow_implicit_invocation: false

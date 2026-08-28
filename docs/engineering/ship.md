@@ -12,7 +12,9 @@ npx skills update ship
 
 ## What it does
 
-`ship` takes a set of tickets all the way to a merge-ready PR: it builds each ticket with its own implement sub-agent, reviews each with its own review sub-agent, opens a PR to `dev` written in simple French for a reader without the project's context, then works that PR until CI passes and Codex approves. Its finish line is a green PR, not a commit — where `implement` stops once the code is committed, `ship` keeps going until there is nothing left to fix.
+`ship` takes a set of tickets all the way to a reviewed PR: it builds each ticket with its own implement sub-agent, reviews each with its own review sub-agent, and opens a PR to `dev` written in simple French for a reader without the project's context. Before any work starts, you choose the **fix policy** for review findings — analysis only, P1, P1 + P2, or everything — and the skill follows that boundary instead of assuming every plausible suggestion deserves a change.
+
+Its correction loop is bounded to three feedback waves. Depending on the policy you chose, its finish line may be a green, approved PR or a precise report of findings deliberately left untouched.
 
 ## When to reach for it
 
@@ -28,18 +30,22 @@ An issue tracker configured by [setup-witify-skills](./setup-witify-skills.md) (
 
 One sub-agent per ticket to implement, one per ticket to review — N tickets, 2N sub-agents. Implementations run sequentially, because they share the working tree; each ticket's review runs in parallel with the next ticket's implementation, so no wall-clock is wasted. Every implement sub-agent starts with a fresh context and drives [tdd](./tdd.md); every review sub-agent runs [code-review](./code-review.md) pinned to that one ticket's commits, with the ticket as its spec.
 
-## The green loop
+## The fix policy
 
-The word `ship` runs on is **green**. After the PR opens, it watches CI and the Codex review (👀 on the PR means Codex is still reviewing; 👍 means it approves) and keeps fixing, committing, and pushing until both are satisfied. Codex feedback is judged, not obeyed: a real bug gets fixed, a nitpick the repo's standards don't back gets skipped with a reason, and a doubtful call gets asked. Three consecutive red cycles on the same failure stop the loop with a report instead of thrashing.
+The policy applies to findings discovered after implementation: ticket reviews, CI failures, and Codex comments. Every finding is first judged as real or not, relevant or not, and worth doing or not. The chosen threshold decides what is fixed automatically; uncertain value comes back to you instead of being silently converted into code. Analysis-only mode gives you that judgment without changing the tree.
+
+## Three feedback waves
+
+After the PR opens, one wave gathers the complete CI and Codex results, triages them under the policy, and validates any authorized fixes as a batch. The initial pass counts as wave one; a re-check after a fix push starts the next. The loop stops as soon as the PR meets the selected policy, and always stops after wave three with the outstanding state made explicit.
 
 The PR description it writes is itself a deliverable: a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a ready-to-paste Claude Code prompt so a reviewer can have the PR explained to them.
 
 ## Where it fits
 
-`ship` is the batteries-included tail of the main chain — it collapses `implement → code-review → PR → fix CI` into one invocation:
+`ship` is the batteries-included tail of the main chain — it collapses `implement → code-review → PR → controlled feedback` into one invocation:
 
 ```txt
 grill-with-docs → to-spec → to-tickets → ship
 ```
 
-Its key neighbours are [implement](./implement.md), the single-session build step it orchestrates once per ticket, and [fix-review](./fix-review.md), which takes over when **human** review comes back on the PR — `ship` handles CI and Codex only. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+Its key neighbours are [implement](./implement.md), the single-session build step it orchestrates once per ticket, and [fix-review](./fix-review.md), which takes over when **human** review comes back on the PR — `ship` handles CI and Codex only, under the policy you selected. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
