@@ -43,8 +43,9 @@ Run the full test suite once; fix, push, and open a PR to `dev`. The description
 Décisions prises en route, dette assumée, hors-scope. Omise si vide.
 
 ---
-💡 Pour explorer cette PR en profondeur avec Claude Code :
-`/teach cette PR (<url>) — ce qu'elle change, et pourquoi`
+💡 Pour explorer cette PR en profondeur, collez dans Claude Code :
+`Explique-moi la PR <url> — le problème réglé, les changements
+fichier par fichier, et comment les vérifier.`
 ```
 
 ## 4. Green loop

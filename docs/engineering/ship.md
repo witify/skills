@@ -32,7 +32,7 @@ One sub-agent per ticket to implement, one per ticket to review — N tickets, 2
 
 The word `ship` runs on is **green**. After the PR opens, it watches CI and the Codex review (👀 on the PR means Codex is still reviewing; 👍 means it approves) and keeps fixing, committing, and pushing until both are satisfied. Codex feedback is judged, not obeyed: a real bug gets fixed, a nitpick the repo's standards don't back gets skipped with a reason, and a doubtful call gets asked. Three consecutive red cycles on the same failure stop the loop with a report instead of thrashing.
 
-The PR description it writes is itself a deliverable: a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a `/teach` prompt so a reviewer can have the PR explained to them.
+The PR description it writes is itself a deliverable: a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a ready-to-paste Claude Code prompt so a reviewer can have the PR explained to them.
 
 ## Where it fits
 
