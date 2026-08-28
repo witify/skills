@@ -1,5 +1,11 @@
 # witify-skills
 
+## 1.11.1
+
+### Patch Changes
+
+- [`56b3349`](https://github.com/witify/skills/commit/56b334927b5af83574c05efb40a63ced38828b47) Thanks [@francoislevesque](https://github.com/francoislevesque)! - The `/ship` PR footer now offers a ready-to-paste Claude Code prompt to have the PR explained, instead of pointing reviewers at `/teach` — a stateful multi-session learning skill that would scaffold mission and lesson files into the reviewer's repo.
+
 ## 1.11.0
 
 ### Minor Changes
