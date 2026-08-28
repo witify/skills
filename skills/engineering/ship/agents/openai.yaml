@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ship"
+  short_description: "Tickets to a green PR, sub-agents included"
+policy:
+  allow_implicit_invocation: false
