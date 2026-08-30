@@ -26,6 +26,12 @@ Reach for it when the tickets are ready — the output of [to-tickets](./to-tick
 
 An issue tracker configured by [setup-witify-skills](./setup-witify-skills.md) (that's where the tickets come from), a `dev` branch to target, and an authenticated `gh` CLI for the PR and its checks.
 
+## The branch it names
+
+Before any code is written, `ship` puts the work on a branch named `feat/<ticket-id>-<slug>` — `feat/WIT-42-stripe-webhook-retry` — so the tracker id and a two-to-four-word description of the change are both readable straight from `git branch` (`fix/` when the whole set is bug fixes).
+
+When you start from `dev` it cuts that branch. When you start from a branch a tool handed you — Polyscope's `azure-ant`, a `codex/…` — it **renames that branch in place** rather than cutting a new one, so the workspace keeps the checkout and the base it was given. The rename happens before the first push, so nothing stale is left on the remote; a branch that was already pushed keeps its name.
+
 ## The pipeline
 
 One sub-agent per ticket to implement, one per ticket to review — N tickets, 2N sub-agents. Implementations run sequentially, because they share the working tree; each ticket's review runs in parallel with the next ticket's implementation, so no wall-clock is wasted. Every implement sub-agent starts with a fresh context and drives [tdd](./tdd.md); every review sub-agent runs [code-review](./code-review.md) pinned to that one ticket's commits, with the ticket as its spec.

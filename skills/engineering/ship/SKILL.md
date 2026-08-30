@@ -21,7 +21,14 @@ If the invocation already selects one unambiguously, use it without asking again
 
 ## 2. Preflight
 
-Fetch the tickets via the workflow in `docs/agents/issue-tracker.md` (run `/setup-witify-skills` if it's missing) and order them blockers-first. Start from a clean tree on a fresh branch off `dev`.
+Fetch the tickets via the workflow in `docs/agents/issue-tracker.md` (run `/setup-witify-skills` if it's missing) and order them blockers-first. Then get the work onto a correctly named branch, from a clean tree.
+
+**The branch is `feat/<ticket-id>-<slug>`** — `feat/WIT-42-stripe-webhook-retry`, `feat/86abc123-invoice-pdf-export`. Use `fix/` when every ticket in the set is a bug fix. The `<ticket-id>` is the tracker's own identifier, verbatim and case-preserved (Linear `ABC-123`, a ClickUp task id); for a set, it is the parent ticket's id, or the first ticket's when the set has no parent. A local-markdown tracker has no identifier — use its feature slug and no id. The `<slug>` is two to four kebab-case words naming **the change**, not the ticket title truncated: someone scanning `git branch` should know what landed there.
+
+How you get onto that name depends on where the session starts:
+
+- **On `dev` or `main`** — cut it: `git switch -c <name> dev`.
+- **On any other branch** — you are on a workspace branch some tool created for you (Polyscope's `azure-ant`, a `codex/…`), so **rename it in place**: `git branch -m <name>`. Never cut a fresh branch off `dev` here; that tool owns this checkout and its base, and the rename carries the branch's tracking config with it. Rename *before* the first push, so no stale remote branch is left behind — if the branch was already pushed, keep the name it has and say why rather than rewriting a published ref.
 
 ## 3. Pipeline — build and review each ticket
 
