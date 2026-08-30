@@ -101,6 +101,29 @@ codex mcp login <name>
 
 Remote MCP servers require `experimental_use_rmcp_client = true` under `[features]` in `~/.codex/config.toml`.
 
+## Recommended Companions
+
+A few skills we lean on aren't ours and aren't vendored here — they're maintained better where they live, and a copy in this repo would only go stale. Install them alongside the Witify plugin; they compose with these skills rather than competing with them.
+
+### [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) — Anthropic
+
+Visual direction when building or reshaping UI: palette, typography, layout choices that don't read as templated defaults. Where [frontend-development](./skills/engineering/frontend-development/SKILL.md) holds the **correctness patterns** for Vue code, this holds the **aesthetics** — reach for it when a screen works but looks generic. It pairs naturally with [prototype](./skills/engineering/prototype/SKILL.md) when the open question is what a UI should look like.
+
+**Claude Code** — from inside a session:
+
+```
+/plugin marketplace add anthropics/claude-plugins-official
+/plugin install frontend-design@claude-plugins-official
+```
+
+**Codex** — the plugin is Claude-Code-only, so pull the skill files in with [skills.sh](https://skills.sh) instead:
+
+```bash
+npx skills@latest add anthropics/claude-plugins-official --skill=frontend-design
+```
+
+Update it later with `npx skills update frontend-design`.
+
 ## Making Changes & Releasing
 
 `CHANGELOG.md` and version numbers are generated — never edit them by hand. The flow:
@@ -161,7 +184,6 @@ Skills for daily code work.
 - **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** — Work through an in-progress git merge or rebase conflict hunk by hunk, resolving by intent traced to each side's primary source, then finish the operation — never `--abort`.
 - **[wizard](./skills/engineering/wizard/SKILL.md)** — Generate an interactive bash wizard that walks a human through steps only they can perform: provisioning infrastructure, credentials and CI secrets, unfamiliar third-party dashboards, one-off migrations or cutovers.
 - **[frontend-development](./skills/engineering/frontend-development/SKILL.md)** — Vue 3 + Tailwind frontend patterns: reactivity after emits, sub-forms that emit copies, orphan validation errors, and responsive layouts — plus sprintify app conventions (shared backend data, settings store, `resource_data`, `tabulation` tables).
-- **[frontend-design](./skills/engineering/frontend-design/SKILL.md)** — Distinctive, intentional visual design for new or reshaped UI: aesthetic direction, typography, and choices that don't read as templated defaults. Vendored from Anthropic's [claude-plugins-official](https://github.com/anthropics/claude-plugins-official).
 - **[sprintify-ui](./skills/engineering/sprintify-ui/SKILL.md)** — Reference for the [sprintify-ui](https://www.npmjs.com/package/sprintify-ui) component library: what every `Base*` component is, and the props, events and slots it takes. Only useful in projects that depend on the package.
 - **[audits](./skills/engineering/audits/SKILL.md)** — Record model audit trails with the sprintify Audit module: staging API, readable labels, retention, and the display layer. Falls back to core principles on older forks.
 - **[authorization](./skills/engineering/authorization/SKILL.md)** — Authorization patterns for sprintify-derived projects: policies, nested controllers, `canDo()`, and `<Gate>` components on the frontend.
