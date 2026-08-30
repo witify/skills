@@ -1,5 +1,15 @@
 # witify-skills
 
+## 2.0.0
+
+### Major Changes
+
+- [`f36a7c1`](https://github.com/witify/skills/commit/f36a7c14fff354ca4f107da28bc49cf952efc124) Thanks [@francoislevesque](https://github.com/francoislevesque)! - Removed the `frontend-design` skill. It was a verbatim copy of Anthropic's skill, and a vendored copy only drifts from the original — install it from the source instead. The README's new **Recommended Companions** section covers it, with install commands for both Claude Code and Codex.
+
+### Minor Changes
+
+- [`1ecaa47`](https://github.com/witify/skills/commit/1ecaa472f408bd84b1e122ae2169227576006a11) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` now names the branch it works on: `feat/<ticket-id>-<slug>` (or `fix/` for a set of bug fixes), so the tracker id and a short description of the change are both readable from `git branch`. When the session already starts on a branch created by a workspace tool — Polyscope's `azure-ant`, a `codex/…` — it renames that branch in place instead of cutting a new one off `dev`, keeping the checkout and base that tool set up.
+
 ## 1.12.0
 
 ### Minor Changes
