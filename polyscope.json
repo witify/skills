@@ -1,0 +1,8 @@
+{
+  "tasks": [
+    {
+      "label": "Sync with upstream",
+      "prompt": "Sync this repo's vendored skills with upstream mattpocock/skills. Follow the maintainer process in .agents/upstream-sync/PROCESS.md end to end: classify every changed upstream path, apply it by classification (never blind-copy a file listed in the adaptation ledger), do the bookkeeping CLAUDE.md and the process require, advance the sync point in .agents/upstream-sync/STATE.md, and write the changeset. Do not commit — finish with the report of what landed and what is left to my decision."
+    }
+  ]
+}
