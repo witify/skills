@@ -51,7 +51,15 @@ The comparison baseline for this level and above is the **latest sprintify `dev`
 
 **1.3 Boost is current and published.** On a project with `laravel/boost`: `boost.json` lists both `claude_code` and `codex` under `agents` (otherwise one harness gets no guidelines); the generated `CLAUDE.md` and `AGENTS.md` are both present and newer than the newest `.ai/guidelines/*` file (older = `boost:update` not run since the last guideline edit); their content comes only from guidelines — a paragraph in `CLAUDE.md` that no guideline contains is a direct edit, lost on the next update, and moves into a guideline. Compare the `laravel/boost` version to sprintify's. Treatment: fix `boost.json`, move direct edits, run `php artisan boost:update`.
 
-**1.4 Harness artefacts are tracked and ignored like sprintify's.** What sprintify tracks, the project tracks (`git ls-files`): `CLAUDE.md`, `AGENTS.md`, `.mcp.json`, `.claude/settings.json`, the Boost-published `.claude/skills/`. What is per-developer is ignored **by the repo's own `.gitignore`**, not only the developer's global one (`git check-ignore -v` says which): `.claude/settings.local.json`, `CLAUDE.local.md`, `.scratch/`. A global ignore is one more thing that differs between machines. Treatment: add the lines to `.gitignore`, track what should be tracked.
+**1.4 Harness artefacts are tracked and ignored like sprintify's.** What sprintify tracks, the project tracks (`git ls-files`): `CLAUDE.md`, `AGENTS.md`, `.mcp.json`, `.claude/settings.json`, the Boost-published `.claude/skills/`, and the Polyscope workspace trio `polyscope.json`, `polyscope-db.sh`, `polyscope-env.sh`. What is per-developer is ignored **by the repo's own `.gitignore`**, not only the developer's global one (`git check-ignore -v` says which): `.claude/settings.local.json`, `CLAUDE.local.md`, `.scratch/`. A global ignore is one more thing that differs between machines. Treatment: add the lines to `.gitignore`, track what should be tracked.
+
+`polyscope.json` is the one of those whose **contents** are checked, because a workspace that can't be created is a broken onboarding, not a style difference. Every command in its `setup`, `archive`, and `run` must resolve the way 1.1 does, and each `bash <name>.sh` must name a file the fork actually copied. Its steps are never compared verbatim — sprintify's are one project's shape, not a contract:
+
+- A step the project does differently is `keep — repo's own`: no Horizon to start, another PHP version to isolate, `npm run production` where sprintify runs `npm run dev`, an extra seeder or a different `preview.url`.
+- A step sprintify has that this one lacks with nothing in its place is drift — a missing `boost:update` leaves a fresh workspace without published guidelines, a missing `migrate-test` leaves its test database unmigrated.
+- No `polyscope.json` at all: propose sprintify's, adapted to the project's own run commands and PHP version, and say the fork has no one-click workspace until then.
+
+Treatment per finding: copy a script the fork never took, add the drifted step, or record the difference as the repo's own.
 
 **1.5 The three quality workflows exist.** `run-tests.yml`, `larastan.yml`, `laravel-pint.yml` under `.github/workflows/`, each presented with its purpose when missing:
 
