@@ -1,0 +1,5 @@
+interface:
+  display_name: "Witify Doctor"
+  short_description: "Check-up of your harness and repo against Witify's baseline"
+policy:
+  allow_implicit_invocation: false
