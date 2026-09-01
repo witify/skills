@@ -44,6 +44,8 @@ The policy applies to findings discovered after implementation: ticket reviews, 
 
 After the PR opens, one wave gathers the complete CI and Codex results, triages them under the policy, and validates any authorized fixes as a batch. The initial pass counts as wave one; a re-check after a fix push starts the next. The loop stops as soon as the PR meets the selected policy, and always stops after wave three with the outstanding state made explicit.
 
+Codex is never left hanging on the way out: when `gh` is installed, every Codex comment gets a reply in its own language saying what was decided — fixed with a commit link, rejected with the reasoning, deferred, or, in analysis-only mode, the judgment itself — and its thread is then resolved. Only Codex's own threads are closed that way; a human's stays open for [fix-review](./fix-review.md).
+
 The PR description it writes is itself a deliverable: a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a ready-to-paste Claude Code prompt so a reviewer can have the PR explained to them.
 
 ## Where it fits

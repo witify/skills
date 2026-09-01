@@ -25,7 +25,7 @@ The route most work travels. You have an idea and want it built.
 
    Either way, **`/implement`** builds each issue by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Spec) of the diff, before committing. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a full spec, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
 
-4. **When the PR is up and human review comes back** → **`/fix-review`** (`/ship` handles CI and Codex under its selected fix policy; human comments belong to `/fix-review`). It works every open comment on the GitHub PR to a conclusion — fixes committed per concern and pushed, questions answered, bad suggestions pushed back on with evidence — then replies to each comment with a commit link. It never resolves threads; reviewers close their own. `/code-review` produces a review, `/fix-review` consumes one.
+4. **When the PR is up and human review comes back** → **`/fix-review`** (`/ship` handles CI and Codex under its selected fix policy, replying to and resolving Codex's own threads; human comments belong to `/fix-review`). It works every open comment on the GitHub PR to a conclusion — fixes committed per concern and pushed, questions answered, bad suggestions pushed back on with evidence — then replies to each comment with a commit link. It never resolves threads; reviewers close their own. `/code-review` produces a review, `/fix-review` consumes one.
 
 ### Context hygiene
 
