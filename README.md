@@ -171,6 +171,7 @@ Skills for daily code work.
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** — Plan a huge chunk of work, more than one agent session can hold, as a shared map of investigation tickets on the issue tracker — resolve them one at a time until the way to the destination is clear.
 - **[fix-review](./skills/engineering/fix-review/SKILL.md)** — Work through the open review comments on a GitHub PR — fix, commit, push, and reply with commit links. Never resolves threads; reviewers close their own.
 - **[sprintify-sync](./skills/engineering/sprintify-sync/SKILL.md)** — Sync the latest sprintify base code for one feature area from `../sprintify` into the current project — backend, frontend, and tests — so the matching base-code skill fully applies.
+- **[witify-doctor](./skills/engineering/witify-doctor/SKILL.md)** — Levelled check-up you validate item by item, one level at a time: harness memory and personal instructions off your machine, plugin and MCP servers in both harnesses, then guidelines, tooling, CI workflows, PHPStan rules (each sized by the files it would touch) and base code aligned with the latest sprintify.
 
 **Model-invoked**
 

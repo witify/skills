@@ -52,6 +52,7 @@ A starting situation that generates work, then merges onto the main flow.
 Not feature work — upkeep.
 
 - **`/improve-codebase-architecture`** — run whenever you have a spare moment to keep the codebase good for agents to operate in. It surfaces **deepening opportunities**; picking one _generates an idea_ you can take into the main flow at `/grill-with-docs`. It's the survey that finds the candidates; **`/codebase-design`** (below) is the bench you design the chosen one on.
+- **`/witify-doctor`** — a **check-up** you validate item by item, run on a new machine, after a sprintify release, or when a repo feels out of step. Its checklist is split into **levels** by migration cost, and it treats one level per session, never skipping: level 0 is your machine (Claude Code / Codex memory and personal instructions off — we keep instructions in the repo, where every developer gets the same ones — plus the plugin and MCP servers in both harnesses); level 1 is hygiene (after-update checks that resolve, guidelines that point at real things, Boost published, the quality workflows present); level 2 diffs `.ai/guidelines/` and tooling against the latest sprintify with the repo's own rules flagged to keep; level 3 sizes each missing PHPStan rule by the files it would touch so you pick which to import; level 4 hands off — base code that predates a sprintify feature goes to **`/sprintify-sync`**, deploy branches to **`/migrate-deploy-branches`**. It diagnoses drift in the *guardrails*; those two repair drift in the *code*.
 
 ## Vocabulary underneath
 
