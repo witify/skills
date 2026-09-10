@@ -124,6 +124,26 @@ npx skills@latest add anthropics/claude-plugins-official --skill=frontend-design
 
 Update it later with `npx skills update frontend-design`.
 
+### [diagram-design](https://github.com/cathrynlavery/diagram-design) — Cathryn Lavery
+
+Editorial diagrams the model hand-writes as self-contained HTML with inline SVG: architecture, flowcharts, sequence, ER, Gantt, and some forty types in all, on a design system that avoids the generic Mermaid look. It is model-invoked, so it triggers on its own whenever a diagram is asked for. Where [witify-docx](./skills/productivity/witify-docx/SKILL.md) builds the **Word deliverable**, this builds the **figures** inside it: draw the diagram here, export it to PNG, and drop it in with witify-docx's `figure()` helper. It also pairs with [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md) when the report needs an architecture diagram.
+
+**Claude Code** — from inside a session:
+
+```
+/plugin marketplace add cathrynlavery/diagram-design
+/plugin install diagram-design@diagram-design
+```
+
+**Codex** — it ships as a native Codex plugin too:
+
+```bash
+codex plugin marketplace add cathrynlavery/diagram-design
+codex plugin add diagram-design@diagram-design
+```
+
+SVG export needs nothing extra; PNG export (what witify-docx needs) rasterizes through Playwright, so run `pip install playwright && playwright install chromium` once. Installs for Factory Droid, Pi, Kiro, and OpenCode are in the [upstream README](https://github.com/cathrynlavery/diagram-design#install).
+
 ## Making Changes & Releasing
 
 `CHANGELOG.md` and version numbers are generated — never edit them by hand. The flow:

@@ -14,7 +14,7 @@ from datetime import date
 from docx import Document
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.enum.text import WD_BREAK
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.shared import Inches
 
 FONT_DIRS = ("~/Library/Fonts", "/Library/Fonts", "/System/Library/Fonts",
@@ -43,7 +43,34 @@ def install_fonts():
         pass
 
 
+def install_diagram_profile():
+    """Publish the Witify diagram-design profile (diagram-profile/witify.md) so figures follow the brand. Never fails.
+
+    Copies it to ~/.diagram-design/profiles/witify.md when missing and writes the project marker
+    `.diagram-design` (profile: witify) next to this script; diagram-design resolves both on its own.
+    """
+    try:
+        here = os.path.dirname(os.path.abspath(__file__))
+        src = os.path.join(here, "diagram-profile", "witify.md")
+        lib = os.path.expanduser("~/.diagram-design/profiles")
+        dst = os.path.join(lib, "witify.md")
+        if not os.path.exists(dst):
+            os.makedirs(lib, exist_ok=True)
+            shutil.copy(src, dst)
+            print(f"Installed diagram-design profile witify to {lib}", file=sys.stderr)
+        elif open(dst, "rb").read() != open(src, "rb").read():
+            print(f"diagram-design profile {dst} differs from the skill's copy; delete it and re-run to refresh.",
+                  file=sys.stderr)
+        marker = os.path.join(here, ".diagram-design")
+        if not os.path.exists(marker):
+            with open(marker, "w", encoding="utf-8") as f:
+                f.write("profile: witify\n")
+    except Exception:
+        pass
+
+
 install_fonts()
+install_diagram_profile()
 
 # ============================================================= CONFIG
 TITLE = "Server\nRequirements"                 # "\n" for line breaks
@@ -142,11 +169,26 @@ def code(lines):
     doc.add_paragraph()
 
 
+def figure(path, caption=None, width=Inches(7)):
+    """Centered picture with an optional gray caption kept on the same page. PNG only."""
+    if path.lower().endswith(".svg"):
+        raise SystemExit(f"figure(): {path} is an SVG; Word needs a raster. Export the diagram to PNG first.")
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.keep_with_next = caption is not None
+    p.add_run().add_picture(path, width=width)
+    if caption:
+        doc.add_paragraph(caption, style="Table Sub").alignment = WD_ALIGN_PARAGRAPH.CENTER
+    doc.add_paragraph()  # breathing room before the next block
+    return p
+
+
 # ============================================================= CONTENT
 # Replace everything below with the document's real content. Available:
 # doc.add_heading("1. Title", level=1..3), para(...), bullet(...), table(...),
-# code([...]). Number Heading 1 titles yourself. A short intro paragraph right
-# before a table should use para(..., keep=True) so it stays with the table.
+# code([...]), figure("diagram.png", "Figure 1 : caption"). Number Heading 1
+# titles and figures yourself. A short intro paragraph right before a table
+# should use para(..., keep=True) so it stays with the table.
 # With TOC = True, LibreOffice does not compute the TOC field: the placeholder
 # line is expected in the PNG render; Word fills the TOC when the file opens.
 
@@ -169,6 +211,8 @@ table(
 
 doc.add_heading("Example script", level=2)
 code(["echo 'hello'", "# a comment"])
+
+# figure("architecture.png", "Figure 1 : Architecture de la solution")  # PNG exported by diagram-design at scale 2
 
 # =============================================================
 doc.save(OUT)
