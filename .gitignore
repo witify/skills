@@ -1,2 +1,4 @@
 node_modules
 polyscope.local.json
+.DS_Store
+~$*
