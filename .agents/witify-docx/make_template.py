@@ -17,8 +17,8 @@ import pymupdf
 from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
+from docx.oxml import OxmlElement, parse_xml
+from docx.oxml.ns import nsdecls, qn
 from docx.shared import Inches, Pt, RGBColor
 from PIL import Image, ImageEnhance, ImageFilter
 
@@ -34,6 +34,8 @@ GRAY = RGBColor(0x5E, 0x6A, 0x6E)
 LIGHT = RGBColor(0xAE, 0xBD, 0xC2)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 EMU_PER_INCH = 914400
+EMU_PER_PT = 12700
+BAND_COLOR, BAND_HEIGHT_PT = "1D373D", 4.5                       # teal band on content pages
 
 
 # ============================================================= cover background (one image, no text)
@@ -168,6 +170,43 @@ def anchor_full_page(inline_shape, width_in, height_in):
     inline.getparent().replace(inline, anchor)
 
 
+def add_top_band(paragraph):
+    """Teal band flush with the top edge of the page: a full-width rectangle anchored to the page
+    from the header, behind the text. A section page border (w:pgBorders, offsetFrom="page") was
+    the obvious tool, but LibreOffice lays that box out around the text area, so its top line
+    stops at the side margins in every PDF it exports; an anchored shape renders edge to edge."""
+    xml = f"""
+    <wp:anchor {nsdecls("wp", "a")} xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+               distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="0" behindDoc="1"
+               locked="0" layoutInCell="1" allowOverlap="1">
+      <wp:simplePos x="0" y="0"/>
+      <wp:positionH relativeFrom="page"><wp:posOffset>0</wp:posOffset></wp:positionH>
+      <wp:positionV relativeFrom="page"><wp:posOffset>0</wp:posOffset></wp:positionV>
+      <wp:extent cx="{int(8.5 * EMU_PER_INCH)}" cy="{int(BAND_HEIGHT_PT * EMU_PER_PT)}"/>
+      <wp:effectExtent l="0" t="0" r="0" b="0"/>
+      <wp:wrapNone/>
+      <wp:docPr id="2" name="Top band"/>
+      <wp:cNvGraphicFramePr/>
+      <a:graphic>
+        <a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+          <wps:wsp>
+            <wps:cNvSpPr/>
+            <wps:spPr>
+              <a:xfrm><a:off x="0" y="0"/><a:ext cx="{int(8.5 * EMU_PER_INCH)}" cy="{int(BAND_HEIGHT_PT * EMU_PER_PT)}"/></a:xfrm>
+              <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+              <a:solidFill><a:srgbClr val="{BAND_COLOR}"/></a:solidFill>
+              <a:ln><a:noFill/></a:ln>
+            </wps:spPr>
+            <wps:bodyPr/>
+          </wps:wsp>
+        </a:graphicData>
+      </a:graphic>
+    </wp:anchor>"""
+    drawing = OxmlElement("w:drawing")
+    drawing.append(parse_xml(xml))
+    paragraph.add_run()._r.append(drawing)
+
+
 def add_page_field(paragraph):
     run = paragraph.add_run()
     for el_name, attrs, text in (
@@ -275,18 +314,12 @@ def main():
     for side in ("top", "bottom", "left", "right"):
         setattr(section, f"{side}_margin", Inches(0.75))
     section.header_distance = Inches(0.4)
-    section.footer_distance = Inches(0.75)
+    section.footer_distance = Inches(0.4)
     section.different_first_page_header_footer = True
 
-    # Teal band flush with the top edge of every content page: a section page border, top side
-    # only, measured from the page edge so it ignores the margins, hidden on the cover.
-    borders = el("w:pgBorders", {"offsetFrom": "page", "display": "notFirstPage"},
-                 el("w:top", {"val": "single", "sz": "36", "space": "0", "color": "1D373D"}))
     # Content pages number from 1: the cover is page 0 and shows no number.
-    pg = el("w:pgNumType", {"start": "0"})
-    # sectPr schema order matters to Word: pgMar, pgBorders, pgNumType, then cols/titlePg/docGrid.
-    section._sectPr.find(qn("w:pgMar")).addnext(borders)
-    borders.addnext(pg)
+    # sectPr schema order matters to Word: pgMar, pgNumType, then cols/titlePg/docGrid.
+    section._sectPr.find(qn("w:pgMar")).addnext(el("w:pgNumType", {"start": "0"}))
 
     # ---- styles
     styles = doc.styles
@@ -297,9 +330,16 @@ def main():
     style_font(styles["Heading 3"], name=HEADING_FONT, size=11.5, bold=True)
     style_font(styles["List Bullet"], size=11)
     style_font(styles["List Number"], size=11)
-    styles["Heading 1"].paragraph_format.space_after = Pt(10)
-    styles["Heading 2"].paragraph_format.space_after = Pt(6)
-    styles["List Bullet"].paragraph_format.space_after = Pt(4)
+    for name, before, after in (("Heading 1", 29, 12), ("Heading 2", 12, 7), ("Heading 3", 12, 0)):
+        styles[name].paragraph_format.space_before = Pt(before)
+        styles[name].paragraph_format.space_after = Pt(after)
+    # Air between list items. The stock List Bullet style carries contextualSpacing, which
+    # suppresses the space between consecutive items of the same style; drop it.
+    for name in ("List Bullet", "List Number"):
+        styles[name].paragraph_format.space_after = Pt(4)
+        ppr = styles[name].element.get_or_add_pPr()
+        for contextual in ppr.findall(qn("w:contextualSpacing")):
+            ppr.remove(contextual)
 
     def new_par_style(style_name, base="Normal", **font):
         st = styles.add_style(style_name, WD_STYLE_TYPE.PARAGRAPH)
@@ -407,6 +447,7 @@ def main():
     icon_p = section.header.paragraphs[0]
     icon_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     icon_p.paragraph_format.space_after = Pt(0)
+    add_top_band(icon_p)
     icon_p.add_run().add_picture(icon_png, height=Inches(0.2))
 
     footer_p = section.footer.paragraphs[0]
