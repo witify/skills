@@ -126,7 +126,7 @@ Update it later with `npx skills update frontend-design`.
 
 ### [diagram-design](https://github.com/cathrynlavery/diagram-design) — Cathryn Lavery
 
-Editorial diagrams the model hand-writes as self-contained HTML with inline SVG: architecture, flowcharts, sequence, ER, Gantt, and some forty types in all, on a design system that avoids the generic Mermaid look. It is model-invoked, so it triggers on its own whenever a diagram is asked for. Where [witify-docx](./skills/productivity/witify-docx/SKILL.md) builds the **Word deliverable**, this builds the **figures** inside it: draw the diagram here, export it to PNG, and drop it in with witify-docx's `figure()` helper. It also pairs with [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md) when the report needs an architecture diagram.
+Editorial diagrams the model hand-writes as self-contained HTML with inline SVG: architecture, flowcharts, sequence, ER, Gantt, and some forty types in all, on a design system that avoids the generic Mermaid look. It is model-invoked, so it triggers on its own whenever a diagram is asked for. It builds the **figures** that go into a Word deliverable (draw the diagram here, export it to PNG, drop it in the document) and pairs with [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md) when the report needs an architecture diagram.
 
 **Claude Code** — from inside a session:
 
@@ -142,7 +142,7 @@ codex plugin marketplace add cathrynlavery/diagram-design
 codex plugin add diagram-design@diagram-design
 ```
 
-SVG export needs nothing extra; PNG export (what witify-docx needs) rasterizes through Playwright, so run `pip install playwright && playwright install chromium` once. Installs for Factory Droid, Pi, Kiro, and OpenCode are in the [upstream README](https://github.com/cathrynlavery/diagram-design#install).
+SVG export needs nothing extra; PNG export (what embedding a figure in a document needs) rasterizes through Playwright, so run `pip install playwright && playwright install chromium` once. Installs for Factory Droid, Pi, Kiro, and OpenCode are in the [upstream README](https://github.com/cathrynlavery/diagram-design#install).
 
 ## Making Changes & Releasing
 
@@ -238,5 +238,4 @@ General workflow tools, not code-specific.
 
 - **[grilling](./skills/productivity/grilling/SKILL.md)** — Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved. The reusable loop behind `grill-me` and `grill-with-docs`.
 - **[loom](./skills/productivity/loom/SKILL.md)** — Analyze a Loom video in detail: transcript with speakers, chapters, and actual frames inspected via ffmpeg. Fires whenever a loom.com link shows up in a task, grill, or conversation and its content matters.
-- **[witify-docx](./skills/productivity/witify-docx/SKILL.md)** — Generate a Witify-branded Word document: dark cover page, Aptos typography, logo header, paginated footer. Fires when a deliverable needs to ship as a branded .docx.
 - **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** — Reference for writing any document an agent consumes — skills, `AGENTS.md` / `CLAUDE.md`, docs reached by pointers — with the levers that make each one predictable.

@@ -19,7 +19,7 @@ Upstream path → local path. Anything not listed maps 1:1.
 | `skills/misc/`, `skills/deprecated/` | ignored — never vendored |
 | `docs/` | consulted for phrasing only; local docs pages follow `.agents/writing-docs.md`, never copied verbatim |
 
-Local-only skills (no upstream counterpart — upstream changes never touch them): `audits`, `authorization`, `confirm-request`, `create-guideline`, `fix-review`, `frontend-development`, `jobs-development`, `larastan`, `loom`, `migrate-deploy-branches`, `notification-development`, `ship`, `sprintify-sync`, `sprintify-ui`, `translations`, `witify-docx`.
+Local-only skills (no upstream counterpart — upstream changes never touch them): `audits`, `authorization`, `confirm-request`, `create-guideline`, `fix-review`, `frontend-development`, `jobs-development`, `larastan`, `loom`, `migrate-deploy-branches`, `notification-development`, `ship`, `sprintify-sync`, `sprintify-ui`, `translations`.
 
 ## Adaptation ledger
 
