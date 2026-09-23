@@ -30,7 +30,7 @@ Only useful in a project that depends on the `sprintify-ui` package. Elsewhere i
 
 The catalog is a **snapshot**, and it says so: it was last synced against v0.12.1, and the installed version is whatever `package.json` pins. So it names two escape hatches for when the snapshot is thin or stale:
 
-- `https://ui.sprintify.app/llm/{ComponentName}.txt` — per-component props, events and slots, fetched on demand. The index is at `/llm.txt`, the shared types at `/llm/types.txt`.
+- `https://ui.sprintify.app/llm/{ComponentName}.txt` — per-component props, events and slots, fetched on demand. The index is at `/llm.txt`, the shared types at `/llm/types.txt`, the `tabulation` table classes at `/llm/tabulation.txt`.
 - `node_modules/sprintify-ui/dist/types/` — the authoritative export list and prop types for the version actually installed.
 
 The catalog exists so the agent knows *a component for this exists and roughly what it does* without a round trip; the escape hatches exist so it never invents a prop. Guessing an API is the one failure mode this skill is built to kill.

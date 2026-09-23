@@ -23,6 +23,7 @@ Per-component docs are available at `https://ui.sprintify.app/llm/{ComponentName
 
 - Full component index: `https://ui.sprintify.app/llm.txt`
 - Type reference: `https://ui.sprintify.app/llm/types.txt`
+- Tailwind classes for plain tables: `https://ui.sprintify.app/llm/tabulation.txt`
 - The installed version is in `package.json`; the authoritative export list and per-component props live in `node_modules/sprintify-ui/dist/types/`. This catalog was last synced against v0.12.1.
 
 ## Component Catalog

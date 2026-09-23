@@ -256,30 +256,14 @@ For values stored as decimals where 1 = 100% (e.g. `speed_coefficient`, `profit_
 
 ### Tables: `tabulation` classes
 
-The `sprintify-ui` table plugin styles plain `<table>` elements. Use `tabulation` for base styling (collapsed borders, bottom border, rounded corners, slate header background, bold headers), plus modifiers:
+For a simple `<table>` without sorting, selection or pagination, style it with the `sprintify-ui` `tabulation` classes rather than hand-rolled borders and padding. The full class list (sizes, modifiers, outer borders, `tr:`/`th:`/`td:` variants) is at `https://ui.sprintify.app/llm/tabulation.txt`; fetch it before picking modifiers.
 
-| Class           | Padding          | Font size |
-| --------------- | ---------------- | --------- |
-| `tabulation-xs` | `0.25rem 0.5rem` | `xs`      |
-| `tabulation-sm` | `0.25rem 0.5rem` | `sm`      |
-| `tabulation-md` | `0.5rem 0.75rem` | `sm`      |
-| (default)       | `0.75rem 0.5rem` | inherited |
-| `tabulation-lg` | `0.75rem 1rem`   | `base`    |
-| `tabulation-xl` | `1rem 1.25rem`   | `lg`      |
-
-| Class                | Effect                                                         |
-| -------------------- | -------------------------------------------------------------- |
-| `tabulation-flush`   | Removes left padding on first cell, right padding on last cell |
-| `tabulation-nowrap`  | `white-space: nowrap` on all `th` and `td`                     |
-| `tabulation-striped` | Alternating slate-100 row background                           |
-| `tabulation-grid`    | Full border on every cell (not just bottom)                    |
-
-The plugin also provides `tr:`, `th:`, and `td:` Tailwind variants that target descendant cells — apply them on the `<table>` (or a wrapper) to style all cells uniformly:
+A table at the bottom of a `BaseCard` gets `tabulation-border-b-0`, otherwise the last row's border doubles the card's border. When a footer or pagination follows the table inside the card, keep the border: it separates the two.
 
 ```html
-<table class="tabulation tabulation-sm tabulation-nowrap td:text-right th:font-semibold">
-    ...
-</table>
+<BaseCard>
+    <table class="tabulation tabulation-sm tabulation-border-b-0 w-full">...</table>
+</BaseCard>
 ```
 
 ### Dynamic colors: `getColorConfig`
