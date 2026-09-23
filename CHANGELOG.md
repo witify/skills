@@ -1,5 +1,15 @@
 # witify-skills
 
+## 2.5.0
+
+### Minor Changes
+
+- [`094019f`](https://github.com/witify/skills/commit/094019fa90091d504e95cdf85e61bbb160b65c4b) Thanks [@francoislevesque](https://github.com/francoislevesque)! - Moved `witify-docx` out of this repo. The skill, its template, fonts and the maintainer script that regenerates the template now live in the private `witify/skills-admin` repo (admin staff only) and ship through the `witify-skills-admin` plugin; the public `witify-skills` plugin no longer includes it. Users who relied on it here should install the private plugin instead. The `diagram-design` companion recommendation stays, since it is still what `witify-docx` draws its figures with.
+
+### Patch Changes
+
+- [`74a3e71`](https://github.com/witify/skills/commit/74a3e714b2553f58a05ae141abf612956c863af9) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `frontend-development` no longer copies the `tabulation` class list; it links to `https://ui.sprintify.app/llm/tabulation.txt`, now published by sprintify-ui, and adds the rule for tables at the bottom of a `BaseCard` (`tabulation-border-b-0`). `sprintify-ui` lists the new doc next to the component index.
+
 ## 2.4.1
 
 ### Patch Changes
