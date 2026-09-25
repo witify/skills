@@ -30,15 +30,18 @@ A GitHub-hosted PR and an authenticated `gh` CLI. No issue-tracker setup is need
 
 The defining move is triage into buckets, where **ambiguous is actionable** — an open thread on an open PR is unfinished business, never silently skipped:
 
-- **Skip** only what's genuinely settled: resolved threads, asks a reply already handled, or an explicit human agreement to defer — acting there would override a decision people already made.
+- **Skip** only what's genuinely settled: resolved threads, asks a reply already handled, outdated comments the current code already satisfies, or an explicit human agreement to defer — acting there would override a decision people already made.
 - **Questions** get an answer in the thread, not a diff.
 - **Wrong suggestions** get a push-back reply instead of a fix — but the bar is concrete evidence of breakage, never taste, because implementing a reviewer's bad idea and stamping it "fixed" is the worst thing this skill could do.
 - **Everything else gets fixed** — one commit per logical concern, so each reply links the commit that actually contains its change.
 
-Before pushing it runs the repo's checks scoped to what changed and iterates until green; replies are posted after the push, each written in the language of the comment it answers, and the run ends with a report of what was fixed, answered, pushed back on, and skipped (with reasons).
+Before touching anything, it puts the triage to you as a numbered round, grilling-style: one question per concern, with the options and its recommended approach, plus the list of skips so you can pull any back in. Nothing is committed or posted until every concern has an approach you've confirmed — your answer overrides its triage.
+
+Once confirmed, before pushing it runs the repo's checks scoped to what changed and iterates until green; replies are posted after the push, each written in the language of the comment it answers, and the run ends with a report of what was fixed, answered, pushed back on, and skipped (with reasons).
 
 ## It's working if
 
+- It asks you to confirm the approach for each concern before the first commit or reply.
 - It refuses to switch branches over a dirty working tree, and aborts on a closed or merged PR.
 - Skips are justified in the final report — nothing disappears without a stated reason.
 - Each "fixed" reply links a commit that is already on the remote, and no thread gets resolved.
