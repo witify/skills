@@ -1,5 +1,17 @@
 # witify-skills
 
+## 3.0.0
+
+### Major Changes
+
+- [#27](https://github.com/witify/skills/pull/27) [`ae4a999`](https://github.com/witify/skills/commit/ae4a999a802643b1eeddef4a9c7081900e223d0f) Thanks [@francoislevesque](https://github.com/francoislevesque)! - The plugin drops every skill that was a copy, or a near copy, of mattpocock/skills, and the setup step with them. Removed from engineering: `ask-witify`, `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `grill-with-docs`, `implement`, `improve-codebase-architecture`, `prototype`, `research`, `resolving-merge-conflicts`, `setup-witify-skills`, `tdd`, `triage`, `wayfinder`, `wizard`. Removed from productivity: `grill-me`, `grilling`, `handoff`, `teach`, `to-questionnaire`, `writing-for-agents`. The unpublished drafts `claude-handoff`, `implement-spec`, `loop-me`, `retro`, and `wait-what` are gone too. Install them from the upstream repo if you still want them.
+
+  `to-spec` and `to-tickets` stay and no longer depend on `/setup-witify-skills`: they publish straight to **ClickUp** by default, or to **Linear** when you say so or the project's agent instructions name it, always over the tracker's MCP server. If the server isn't connected, the skill stops and tells you how to add it; there is no local-file fallback and no triage label. `to-tickets` now always files its tickets as sub-tasks of a parent (the spec, or one it creates) with native blocking dependencies, and still records the PR mode on that parent. `code-review` stays, with the same tracker rule in place of the setup pointer. `ship` fetches its tickets the same way, still runs `/code-review` per ticket, and drives its implement sub-agents with an inline test-first instruction instead of the removed `/tdd`.
+
+### Patch Changes
+
+- [`1e8244d`](https://github.com/witify/skills/commit/1e8244da74c89304f60e5fa1e793f5d8123e4a39) Thanks [@francoislevesque](https://github.com/francoislevesque)! - README: the intro now says in one paragraph who the skills are for (the whole team: engineering, productivity, migrations) instead of arguing against other frameworks. The **Recommended Companions** section gives each companion a colour-coded status badge, **Essential** or **Recommended**, and opens with [mattpocock/skills](https://github.com/mattpocock/skills) as the one essential: its `grilling` / `grill-me` interview is the step before `to-spec`, and it is where the skills removed from this plugin now live.
+
 ## 2.7.0
 
 ### Minor Changes

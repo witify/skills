@@ -1,7 +1,0 @@
----
-"witify-skills": major
----
-
-The plugin drops every skill that was a copy, or a near copy, of mattpocock/skills, and the setup step with them. Removed from engineering: `ask-witify`, `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `grill-with-docs`, `implement`, `improve-codebase-architecture`, `prototype`, `research`, `resolving-merge-conflicts`, `setup-witify-skills`, `tdd`, `triage`, `wayfinder`, `wizard`. Removed from productivity: `grill-me`, `grilling`, `handoff`, `teach`, `to-questionnaire`, `writing-for-agents`. The unpublished drafts `claude-handoff`, `implement-spec`, `loop-me`, `retro`, and `wait-what` are gone too. Install them from the upstream repo if you still want them.
-
-`to-spec` and `to-tickets` stay and no longer depend on `/setup-witify-skills`: they publish straight to **ClickUp** by default, or to **Linear** when you say so or the project's agent instructions name it, always over the tracker's MCP server. If the server isn't connected, the skill stops and tells you how to add it; there is no local-file fallback and no triage label. `to-tickets` now always files its tickets as sub-tasks of a parent (the spec, or one it creates) with native blocking dependencies, and still records the PR mode on that parent. `code-review` stays, with the same tracker rule in place of the setup pointer. `ship` fetches its tickets the same way, still runs `/code-review` per ticket, and drives its implement sub-agents with an inline test-first instruction instead of the removed `/tdd`.
