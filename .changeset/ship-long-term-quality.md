@@ -1,5 +1,0 @@
----
-"witify-skills": minor
----
-
-`ship` now builds for the long term and runs with less ceremony. The implement sub-agent's brief tells it to search the repo for existing code before writing any and to keep shared logic in the place the repo already centralizes it; the review sub-agent adds a **reinvented wheel** check that compares the diff to the existing code, and any duplicate or bypass of an existing abstraction is a P2 that gets fixed. The fix-policy question at the start is gone: every real, relevant finding worth doing is fixed by default, and the feedback loop runs for up to five waves instead of three. "Worth doing" is now spelled out: rare edge cases, busywork, decisions already made, and concurrency hardening a project does not need are rejected with the reason recorded; most projects rarely have two users on one resource at once, `statim` is the known exception, and the skill asks once for the expected concurrency when the project is unclear. Tickets move to in-progress when their build starts and to in-review when the PR opens, using the statuses the tracker actually offers, and are never marked done.
