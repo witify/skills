@@ -1,23 +1,25 @@
 ---
 name: ship
-description: "Take a set of tickets to a reviewed PR: build them with one implement sub-agent and one review sub-agent per ticket, open a PR to dev, then handle feedback under a user-chosen fix policy for at most three waves."
+description: "Take a set of tickets to a reviewed PR: build them with one implement sub-agent and one review sub-agent per ticket, moving each ticket's status as it goes, open a PR to dev, then fix every real finding worth doing for at most five feedback waves."
 disable-model-invocation: true
 ---
 
 # Ship
 
-Take a set of tickets all the way to a reviewed PR. `/ship` orchestrates: one implement sub-agent and one review sub-agent **per ticket** (N tickets → 2N sub-agents), then a PR to `dev` worked under the user's fix policy for at most three feedback waves.
+Take a set of tickets all the way to a reviewed PR. `/ship` orchestrates: one implement sub-agent and one review sub-agent **per ticket** (N tickets → 2N sub-agents), then a PR to `dev` worked for at most five feedback waves. Every ticket is built to last, not just to close: code that lands here is expected to reuse what the repo already has and to leave shared logic in one place.
 
-## 1. Choose the fix policy
+## 1. What gets fixed
 
-Before fetching tickets, delegating, or changing the tree, ask how to handle findings from ticket reviews, CI, and Codex. Ask in the user's language and offer these four choices:
+**Fix everything by default.** Every finding that is real, relevant, and worth doing gets fixed, at any priority, without asking first. Do not ask the user to choose a policy. Honour a narrower instruction only when the invocation gives one unambiguously (for example "analysis only": judge each finding, change nothing), and never ask for one.
 
-1. **Analysis only** — change nothing in response to findings; say whether each is real and whether it is worth doing.
-2. **Fix P1** — automatically fix real, relevant P1 findings (and anything more severe); ask before acting when whether a finding is worth doing is genuinely uncertain.
-3. **Fix P1 and P2** — automatically fix real, relevant P1 and P2 findings; ask before acting when whether a finding is worth doing is genuinely uncertain.
-4. **Fix everything** — automatically fix every real, relevant finding at any priority; ask before acting when whether a finding is worth doing is genuinely uncertain.
+A finding is **real** when evidence supports it, **relevant** when it belongs to the ticket, diff, or PR, and **worth doing** when its benefit justifies its scope and risk. Reject false or irrelevant findings and record why. A finding is **not worth doing** when it is one of these, and such findings are rejected with that reason:
 
-If the invocation already selects one unambiguously, use it without asking again; otherwise wait for the answer. This step is done only when one policy is selected. The policy governs work discovered after implementation; it never narrows the tickets themselves. A finding is **real** when evidence supports it, **relevant** when it belongs to the ticket, diff, or PR, and **worth doing** when its benefit justifies its scope and risk. Reject false or irrelevant findings in every mode and record why. Normalize unlabeled findings as P1 (blocking correctness, security, data, or spec failure), P2 (material non-blocking defect or reliability problem), or P3 (optional improvement or nit). At each boundary or wave, batch every uncertain worth-doing decision into one question.
+- **A rare edge case** the project will not realistically hit: an input nobody produces, a failure mode behind a guard that already exists, a hardening with no user who benefits.
+- **Busywork**: a change that makes no observable difference to behaviour, maintainability, or safety.
+- **A decision already made**: by the ticket or spec, by the repo's guidelines, by a comment on the ticket, or by the user earlier in the session. Reopening it is not a fix; say the decision stands and where it was made.
+- **Concurrency the project does not need.** Most projects rarely have two users on the same resource at the same time, so a race-condition, locking, or optimistic-concurrency finding is usually not worth doing. The known exception is the **`statim` repo**, where it is. When you are not sure which kind of project this is, ask the user once for the estimated number of concurrent users on a resource, and apply the answer to every such finding in the session.
+
+Normalize unlabeled findings as **P1** (blocking correctness, security, data, or spec failure), **P2** (material non-blocking defect or reliability problem), or **P3** (optional improvement or nit). **Code that duplicates or bypasses an existing abstraction is P2, not P3**: a helper, service, component, or query the repo already has and the change rewrote inline is a maintainability defect, not a nit, and it gets fixed. Only when whether a finding is worth doing is genuinely uncertain, ask; at each boundary or wave, batch every such question into one.
 
 ## 2. Preflight
 
@@ -30,21 +32,32 @@ How you get onto that name depends on where the session starts:
 - **On `dev` or `main`** — cut it: `git switch -c <name> dev`.
 - **On any other branch** — you are on a workspace branch some tool created for you (Polyscope's `azure-ant`, a `codex/…`), so **rename it in place**: `git branch -m <name>`. Never cut a fresh branch off `dev` here; that tool owns this checkout and its base, and the rename carries the branch's tracking config with it. Rename *before* the first push, so no stale remote branch is left behind — if the branch was already pushed, keep the name it has and say why rather than rewriting a published ref.
 
+### Ticket statuses
+
+The tracker shows progress as it happens; nobody should have to open the PR to know where a ticket is. Read the statuses the tickets' list or team actually offers (ClickUp: the list's statuses via `clickup_get_list`; Linear: `list_issue_statuses` for the team) and pick the closest match for each move. Never invent a status; when no equivalent exists, leave the ticket as it is and say so in the report.
+
+- When a ticket's implement sub-agent starts, move that ticket to the **in-progress** status (ClickUp `clickup_update_task`, Linear `save_issue`).
+- When the PR opens, move every ticket in the set to the **in-review** status (or the workspace's nearest equivalent, such as "ready for review").
+- Never mark a ticket done. Merging is what completes it, and that happens after `/ship`.
+
 ## 3. Pipeline — build and review each ticket
 
 Implementations run **sequentially** (they share the working tree); each ticket's review runs **in parallel** with the next ticket's implementation, so no wall-clock is wasted. The invariant: **the working tree has one writer at a time** — reviews only read, pinned to SHAs, so a dirty tree never invalidates them.
 
 For each ticket, in blocking order:
 
-1. **Implement sub-agent** (fresh context): hand it the ticket in full with the brief — build it test-first (red-green-refactor), one vertical slice at a time, at the seams the ticket declares (or the most obvious public interface if it declares none); typecheck and run the touched test files as you go; commit on the branch, referencing the ticket. Record the commit range it produced.
-2. The moment it commits, spawn that ticket's **review sub-agent** — it runs `/code-review` with the ticket as spec, pinned to that ticket's commit range — while the next implement sub-agent starts.
-3. A landed review's findings go into a **queue**, never straight into the tree. At each commit boundary — an implement sub-agent finished, the next not yet started — drain the queue: classify every finding, apply the chosen fix policy, and make at most one fix commit per ticket, referencing it. Record analyzed-only, rejected, deferred, and fixed findings with reasons. Drain findings still landing after the last ticket during close-out, before the full suite.
+1. Move the ticket to in-progress, then spawn its **implement sub-agent** (fresh context). Hand it the ticket in full with the brief:
+   - **Look before you build.** Before writing anything, search the repo for code that already does something close: grep the domain words of the ticket across services, helpers, actions, components, and queries, and read the repo's guidelines (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`). Extend what exists rather than writing a parallel version; a near-fit is adapted, not duplicated.
+   - **Shared logic lives in one place.** Anything a second caller could want goes where the repo already centralizes that kind of thing (a service, an action, a model method, a composable, a Base* component), never inline in the controller, the job, or the Vue template. New shared code is placed where the next developer will look for it.
+   - Build it test-first (red-green-refactor), one vertical slice at a time, at the seams the ticket declares (or the most obvious public interface if it declares none); typecheck and run the touched test files as you go; commit on the branch, referencing the ticket. Record the commit range it produced.
+2. The moment it commits, spawn that ticket's **review sub-agent** — it runs `/code-review` with the ticket as spec, pinned to that ticket's commit range — while the next implement sub-agent starts. Add one check `/code-review` does not make on its own, the **reinvented wheel**: for each new function, class, component, or query in the diff, look for an existing one in the repo that already does the job (same domain words, same shape), and report any duplicate or bypass of an existing abstraction as a P2 finding naming the existing code.
+3. A landed review's findings go into a **queue**, never straight into the tree. At each commit boundary — an implement sub-agent finished, the next not yet started — drain the queue: classify every finding, fix the ones that are real, relevant, and worth doing, and make at most one fix commit per ticket, referencing it. Record rejected, deferred, and fixed findings with reasons. Drain findings still landing after the last ticket during close-out, before the full suite.
 
-One exception interrupts the pipeline: an authorized **blocking finding** — the reviewed ticket's foundation is wrong and the in-flight ticket builds on it. Letting it finish stacks work to throw away: stop the current implement sub-agent, fix, respawn it fresh. Reserve this for real cases (wrong seam, changed contract), never nitpicks. In analysis-only mode, report the risk instead of changing the tree.
+One exception interrupts the pipeline: a **blocking finding** — the reviewed ticket's foundation is wrong and the in-flight ticket builds on it. Letting it finish stacks work to throw away: stop the current implement sub-agent, fix, respawn it fresh. Reserve this for real cases (wrong seam, changed contract), never nitpicks. Under an analysis-only instruction, report the risk instead of changing the tree.
 
 ## 4. PR
 
-Run the full test suite once and handle any failures under the chosen fix policy; then push and open a PR to `dev`. The description is in **simple French, written for a reader without the project's context**:
+Run the full test suite once and fix any failures; then push, open a PR to `dev`, and move every ticket to in-review. The description is in **simple French, written for a reader without the project's context**:
 
 ```markdown
 ## Résumé
@@ -66,14 +79,14 @@ Décisions prises en route, dette assumée, hors-scope. Omise si vide.
 fichier par fichier, et comment les vérifier.`
 ```
 
-## 5. Feedback loop — three waves maximum
+## 5. Feedback loop — five waves maximum
 
-Run at most **three feedback waves** after the PR opens. One wave collects the complete current CI and Codex results, classifies every finding, applies the chosen policy as one batch, then validates and pushes any authorized fixes. The initial pass is wave 1; each pass after a fix push is another wave. Never start wave 4.
+Run at most **five feedback waves** after the PR opens. One wave collects the complete current CI and Codex results, classifies every finding, fixes the ones worth doing as one batch, then validates and pushes. The initial pass is wave 1; each pass after a fix push is another wave. Never start wave 6.
 
 Codex signals through reactions on the PR body: 👀 means its review is in progress — wait for it; 👍 means it approves.
 
-- **CI failure** (`gh pr checks <pr> --watch`) → reproduce locally, classify it, then follow the fix policy. An unrelated failure is not relevant.
-- **Codex review comment** → verify it, classify it, then follow the fix policy. Codex feedback is evidence to judge, not an instruction to obey.
+- **CI failure** (`gh pr checks <pr> --watch`) → reproduce locally, classify it, then fix it. An unrelated failure is not relevant.
+- **Codex review comment** → verify it, classify it, then apply section 1. Codex feedback is evidence to judge, not an instruction to obey: Codex is thorough to a fault, and its rare edge cases, hypothetical races, and reopened decisions are exactly what section 1 rejects.
 
 ### Close every Codex thread
 
@@ -89,7 +102,7 @@ gh api graphql -f query='query($owner:String!,$repo:String!,$pr:Int!){
   -f owner=<owner> -f repo=<repo> -F pr=<number>
 ```
 
-Reply in the language of the comment — `gh api repos/<owner>/<repo>/pulls/<number>/comments/<databaseId>/replies -f body='…'` — stating the disposition: fixed, with the commit link (`https://github.com/<owner>/<repo>/pull/<number>/commits/<sha>`); rejected, with why it isn't real, relevant, or worth doing; deferred; or, in analysis-only mode, the judgment itself. A top-level Codex comment with no thread gets a `gh pr comment` reply that quotes what it answers. Then resolve the thread:
+Reply in the language of the comment — `gh api repos/<owner>/<repo>/pulls/<number>/comments/<databaseId>/replies -f body='…'` — stating the disposition: fixed, with the commit link (`https://github.com/<owner>/<repo>/pull/<number>/commits/<sha>`); rejected, with why it isn't real, relevant, or worth doing; deferred; or, under an analysis-only instruction, the judgment itself. A top-level Codex comment with no thread gets a `gh pr comment` reply that quotes what it answers. Then resolve the thread:
 
 ```
 gh api graphql -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{isResolved}}}' \
@@ -98,8 +111,8 @@ gh api graphql -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$
 
 Resolve **only threads Codex authored**, and only once its reply is posted. A human's thread is theirs to close — leave it open for `/fix-review`. Skip threads already resolved.
 
-Stop early when CI is green, Codex approves, and no authorized work remains. After wave 3, stop even if checks or comments remain and report the exact outstanding state rather than looping. Analysis-only mode ends after wave 1 because it makes no fix push.
+Stop early when CI is green, Codex approves, and nothing worth doing remains. After wave 5, stop even if checks or comments remain and report the exact outstanding state rather than looping. An analysis-only run ends after wave 1 because it makes no fix push.
 
 ## 6. Report
 
-Close with: selected fix policy; waves used; tickets → commits; findings by priority and disposition (fixed, analysis-only, rejected, deferred, or awaiting the user's decision) with reasons; Codex status, including which threads were replied to and resolved and any left open; CI status; PR link.
+Close with: waves used; tickets → commits, with each ticket's current status in the tracker; findings by priority and disposition (fixed, rejected, deferred, or awaiting the user's decision) with reasons, including every reinvented-wheel finding and what it now reuses; the concurrency assumption applied and where it came from; Codex status, including which threads were replied to and resolved and any left open; CI status; PR link.
