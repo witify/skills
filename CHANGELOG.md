@@ -1,5 +1,13 @@
 # witify-skills
 
+## 2.7.0
+
+### Minor Changes
+
+- [#26](https://github.com/witify/skills/pull/26) [`58e2a16`](https://github.com/witify/skills/commit/58e2a166dfed5552d4a8445fc71d396b87fb0ba1) Thanks [@francoislevesque](https://github.com/francoislevesque)! - New `figma-brief` skill (productivity): write a concise brief, a prompt, for generating interface mockups with an AI design tool such as Figma Make. It spends its words on what the tool cannot guess (the business purpose of each screen, the fr-CA vocabulary, one primary action per screen, the business rules that shape the UI, how the screens link for a clickable prototype) and none on pixels, states the global conventions once, gives labels rather than data rows, and delivers the whole brief in one code block ready to paste.
+
+- [#24](https://github.com/witify/skills/pull/24) [`db5ad9c`](https://github.com/witify/skills/commit/db5ad9c97f63c7d1738725f2329d76a57c79d37b) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `witify-docx` and `witify-writing-style` join the productivity bucket, moved here from the private `witify/skills-admin` repo. Neither carries a business secret: `witify-docx` generates a Witify-branded Word document (dark cover page, Helvetica text with Archivo bold headings, logo header, paginated footer) from a committed template and verifies every rendered page, and `witify-writing-style` holds the house rules for client-facing French copy (no dashes or semicolons, one idea per sentence, Québec number and amount formats, vouvoiement, preferred terms, a final grep check). With them comes the brand's source of truth, `brand/` (tokens, fonts, logos, the diagram-design profile), the maintainer script that regenerates the docx template, and `scripts/sync-brand.sh`, which CI runs to keep the skill's generated copies equal to `brand/`. The private admin skills keep building their quotes and agreements on this template; they now depend on this plugin instead of the other way round.
+
 ## 2.6.0
 
 ### Minor Changes
