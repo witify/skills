@@ -18,11 +18,11 @@ npx skills update code-review
 
 Type `/code-review`, or the agent reaches for it automatically when you ask to review a branch, a PR, work-in-progress changes, or anything "since X".
 
-Reach for this when there is a diff to judge against a known-good point and you want the two questions — *is it built right?* and *is it the right thing?* — answered independently. It runs at the end of the build loop; for actually writing the code test-first, use [tdd](./tdd.md), and for building a whole spec into code use [implement](./implement.md), which runs its own `/code-review` pass before committing.
+Reach for this when there is a diff to judge against a known-good point and you want the two questions — *is it built right?* and *is it the right thing?* — answered independently. It runs at the end of the build loop; [ship](./ship.md) runs it as the review sub-agent of every ticket it builds.
 
 ## Prerequisites
 
-The **Spec** axis needs somewhere to find the originating spec — an issue reference in the commit messages, a path you pass in, or a spec under `docs/`/`specs/`. That issue-tracker wiring comes from [setup-witify-skills](./setup-witify-skills.md); without a spec the Spec axis simply skips and says so. The **Standards** axis needs nothing set up — it always carries a built-in Fowler smell baseline even in a repo that documents no conventions.
+The **Spec** axis needs somewhere to find the originating spec — an issue reference in the commit messages, a path you pass in, or a spec under `docs/`/`specs/`. An issue reference is fetched over the tracker's MCP server (ClickUp by default, Linear when the project says so); without a spec the Spec axis simply skips and says so. The **Standards** axis needs nothing set up — it always carries a built-in Fowler smell baseline even in a repo that documents no conventions.
 
 ## Two axes, never merged
 
@@ -41,7 +41,7 @@ They run as parallel sub-agents so neither pollutes the other's context, and the
 `code-review` is the review step at the tail of the main build chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+to-spec → to-tickets → ship (code-review per ticket) → fix-review
 ```
 
-Its closest neighbour is [implement](./implement.md), which drives the build and calls this as its own review pass before committing; upstream, the spec it checks against is produced by [to-spec](./to-spec.md) and [to-tickets](./to-tickets.md). When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+Its closest neighbour is [ship](./ship.md), which calls this as the review pass of every ticket; upstream, the spec it checks against is produced by [to-spec](./to-spec.md) and [to-tickets](./to-tickets.md). [fix-review](./fix-review.md) is its sibling on the other side of the exchange: this one produces a review, that one consumes the comments reviewers left.

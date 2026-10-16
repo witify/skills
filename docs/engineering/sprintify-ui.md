@@ -37,4 +37,4 @@ The catalog exists so the agent knows *a component for this exists and roughly w
 
 ## Where it fits
 
-`sprintify-ui` is a **reach-for-it-anytime standalone reference**, one layer below the building skills: [implement](./implement.md), [tdd](./tdd.md) and [prototype](./prototype.md) pull it in whenever they touch a Vue template. Its closest neighbour is [frontend-development](./frontend-development.md), because the two divide one job — that skill holds the rules, this one holds the API, and each points at the other rather than duplicating it. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+`sprintify-ui` is a **reach-for-it-anytime standalone reference**, one layer below the building skills: [ship](./ship.md)'s implement sub-agents pull it in whenever they touch a Vue template. Its closest neighbour is [frontend-development](./frontend-development.md), because the two divide one job — that skill holds the rules, this one holds the API, and each points at the other rather than duplicating it.

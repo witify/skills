@@ -18,7 +18,7 @@ npx skills update create-guideline
 
 Type `/create-guideline`, or the agent reaches for it when you ask to "add a rule for…" or mention `.ai/guidelines/`.
 
-Reach for it when the rule is project-local and belongs in that repo's own agent context. For a reusable skill in *this* repo instead, use [writing-for-agents](../productivity/writing-for-agents.md).
+Reach for it when the rule is project-local and belongs in that repo's own agent context. A rule that applies to every project is a skill in the `witify/skills` repo instead.
 
 ## Prerequisites
 
@@ -26,4 +26,4 @@ A project with a `.ai/guidelines/` directory — every sprintify-derived project
 
 ## Where it fits
 
-`create-guideline` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — the way a lesson learned mid-session becomes a durable rule for the next one. When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`create-guideline` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — the way a lesson learned mid-session becomes a durable rule for the next one.

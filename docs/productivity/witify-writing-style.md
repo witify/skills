@@ -20,7 +20,7 @@ It rules on form, never on facts: an amount, a rate, a duration or a clause come
 
 Type `/witify-writing-style`, or the agent reaches for it automatically when writing or editing any text a client will read, and whenever another skill generates a document.
 
-Reach for it for a client email, a proposal paragraph, a report section, a slide. For documents an agent reads rather than a client, use [writing-for-agents](./writing-for-agents.md) instead.
+Reach for it for a client email, a proposal paragraph, a report section, a slide. It does not apply to documents an agent reads rather than a client.
 
 ## One idea per sentence
 
@@ -34,4 +34,4 @@ The leading rule is **one idea per sentence**, about twenty words. Most of the p
 
 ## Where it fits
 
-A vocabulary layer that runs underneath every document skill rather than a step in a flow. Its closest neighbour is [witify-docx](./witify-docx.md), because that skill invokes it before writing any string into a Word document. When you are unsure which skill fits, [ask-witify](../engineering/ask-witify.md) routes over the whole set.
+A vocabulary layer that runs underneath every document skill rather than a step in a flow. Its closest neighbour is [witify-docx](./witify-docx.md), because that skill invokes it before writing any string into a Word document.

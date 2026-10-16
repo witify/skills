@@ -49,10 +49,10 @@ Once confirmed, before pushing it runs the repo's checks scoped to what changed 
 
 ## Where it fits
 
-`fix-review` is a chain step just past the end of the main build chain — after `implement → code-review` produces a PR and human review comes back, it closes the review loop:
+`fix-review` is a chain step just past the end of the main build chain — after `ship` opens a PR and human review comes back, it closes the review loop:
 
 ```txt
-… → implement → code-review → (PR reviewed by humans) → fix-review
+to-spec → to-tickets → ship → (PR reviewed by humans) → fix-review
 ```
 
-Its closest neighbour is [code-review](./code-review.md), which judges a diff before it ships, where this skill services the comments reviewers left after. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+Its closest neighbour is [ship](./ship.md), which opens the PR and handles CI and Codex feedback, where this skill services the comments human reviewers left after.

@@ -38,4 +38,4 @@ The leading idea is a **template, not a stylesheet**. Everything the brand decid
 
 ## Where it fits
 
-A reach-for-it-anytime standalone: it ends whichever flow produced the content, it does not sit inside one. Its neighbour is [witify-writing-style](./witify-writing-style.md), because every string the document carries follows those rules. The private `witify/skills-admin` skills (quotes, agreements) build on the same template. When you are unsure which skill fits, [ask-witify](../engineering/ask-witify.md) routes over the whole set.
+A reach-for-it-anytime standalone: it ends whichever flow produced the content, it does not sit inside one. Its neighbour is [witify-writing-style](./witify-writing-style.md), because every string the document carries follows those rules. The private `witify/skills-admin` skills (quotes, agreements) build on the same template.

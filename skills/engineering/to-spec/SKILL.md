@@ -1,12 +1,19 @@
 ---
 name: to-spec
-description: Turn the current conversation into a spec and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
+description: Turn the current conversation into a spec and publish it to ClickUp (or Linear) over MCP — no interview, just synthesis of what you've already discussed.
 disable-model-invocation: true
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD). Do NOT interview the user — just synthesize what you already know.
+This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD), then publishes it as a task on the project's tracker. Do NOT interview the user — just synthesize what you already know.
 
-The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-witify-skills`.
+## Tracker
+
+Specs live on **ClickUp** by default, reached over its MCP server. Use **Linear** instead only when the user says so or the repo's agent instructions (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`) name Linear as the project's tracker.
+
+Before publishing, confirm two things:
+
+1. **The MCP server is connected.** The tracker's tools must be in your available tools — `clickup_create_task` for ClickUp, `save_issue` for Linear. If they are not, stop and tell the user to add the server and sign in (the install commands are under "Add the tracker's MCP server" in the `witify/skills` README). Never write the spec to a local file instead, and never claim to have published.
+2. **Where it goes.** ClickUp needs a list; Linear needs a team (and optionally a project). Resolve it in this order: a task or issue the user pointed at (publish in the same list or team), the repo's agent instructions, then ask the user once. Confirm the destination before creating anything.
 
 ## Process
 
@@ -16,7 +23,7 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage. That label makes the spec itself the unit of work an AFK agent grabs and implements whole; when the plan is to slice it first, follow up with `/to-tickets`. If the user chooses Split PR mode, `/to-tickets` moves the label down onto the tickets it publishes under the spec.
+3. Write the spec using the template below, then publish it: one ClickUp task (`clickup_create_task`) or one Linear issue (`save_issue`), titled after the feature, with the spec as its description. Reply with the link. The spec is the unit of work until `/to-tickets` slices it: that skill files its tickets as sub-tasks of this one.
 
 <spec-template>
 

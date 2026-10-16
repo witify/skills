@@ -24,4 +24,4 @@ A sprintify-derived Laravel project — the backend patterns ride `Support\Contr
 
 ## Where it fits
 
-`authorization` is a **reach-for-it-anytime standalone** in the sprintify-baseline family, picked up whenever built features need gating. [confirm-request](./confirm-request.md) is the neighbour on the same boundary — authorization decides *whether* a user may act, confirm-request double-checks that they *mean it*. When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`authorization` is a **reach-for-it-anytime standalone** in the sprintify-baseline family, picked up whenever built features need gating. [confirm-request](./confirm-request.md) is the neighbour on the same boundary — authorization decides *whether* a user may act, confirm-request double-checks that they *mean it*.

@@ -24,4 +24,4 @@ A Laravel project with `larastan/larastan` and a `phpstan.neon`.
 
 ## Where it fits
 
-`larastan` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — the reference the building skills lean on whenever static analysis complains. When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`larastan` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — the reference the building skills lean on whenever static analysis complains.

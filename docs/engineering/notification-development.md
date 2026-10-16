@@ -24,4 +24,4 @@ A sprintify-derived Laravel project recent enough to ship Herald (`modules/Notif
 
 ## Where it fits
 
-`notification-development` is a **reach-for-it-anytime standalone** in the sprintify-baseline family. Jobs that send notifications are [jobs-development](./jobs-development.md)'s territory; notification strings follow [translations](./translations.md). When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`notification-development` is a **reach-for-it-anytime standalone** in the sprintify-baseline family. Jobs that send notifications are [jobs-development](./jobs-development.md)'s territory; notification strings follow [translations](./translations.md).

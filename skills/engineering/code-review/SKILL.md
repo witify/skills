@@ -10,7 +10,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
-The issue tracker should have been provided to you. If `docs/agents/issue-tracker.md` is missing, tell the user to run `/setup-witify-skills`.
+Specs live on the tracker: **ClickUp** by default, **Linear** when the user or the repo's agent instructions (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`) say so, reached over MCP. If a spec reference points at a tracker whose tools are not among your available tools, say so and tell the user to add the MCP server and sign in (see "Add the tracker's MCP server" in the `witify/skills` README) rather than guessing at the spec.
 
 ## Process
 
@@ -26,9 +26,9 @@ Before going further, confirm the fixed point resolves (`git rev-parse <fixed-po
 
 Look for the originating spec, in this order:
 
-1. Issue references in the commit messages (a Linear identifier like `ABC-123`, a ClickUp task id or URL, `Closes #45`, etc.) — fetch via the workflow in `docs/agents/issue-tracker.md`.
+1. Issue references in the commit messages (a ClickUp task id or URL, a Linear identifier like `ABC-123`, `Closes #45`, etc.) — fetch it over MCP: `clickup_get_task` plus `clickup_get_task_comments`, or `get_issue` plus `list_comments`.
 2. A path the user passed as an argument.
-3. A PRD/spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
+3. A PRD/spec file under `docs/` or `specs/` matching the branch name or feature.
 4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
 
 ### 3. Identify the standards sources
