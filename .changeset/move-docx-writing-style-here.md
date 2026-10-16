@@ -1,5 +1,0 @@
----
-"witify-skills": minor
----
-
-`witify-docx` and `witify-writing-style` join the productivity bucket, moved here from the private `witify/skills-admin` repo. Neither carries a business secret: `witify-docx` generates a Witify-branded Word document (dark cover page, Helvetica text with Archivo bold headings, logo header, paginated footer) from a committed template and verifies every rendered page, and `witify-writing-style` holds the house rules for client-facing French copy (no dashes or semicolons, one idea per sentence, Québec number and amount formats, vouvoiement, preferred terms, a final grep check). With them comes the brand's source of truth, `brand/` (tokens, fonts, logos, the diagram-design profile), the maintainer script that regenerates the docx template, and `scripts/sync-brand.sh`, which CI runs to keep the skill's generated copies equal to `brand/`. The private admin skills keep building their quotes and agreements on this template; they now depend on this plugin instead of the other way round.
