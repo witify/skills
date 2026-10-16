@@ -96,6 +96,8 @@ Off the main flow entirely.
 - **`/loom`** — when a Loom link shows up — pasted directly, or inside a ClickUp/Linear ticket or a grill — and its content matters, this analyzes the video without anyone watching it: transcript with speakers and timestamps as the **map**, ffmpeg-extracted frames as the **evidence**. Model-invoked, so it fires on its own the moment a recording is what's blocking understanding; what it extracts feeds whatever flow it fired inside (a grill answer, a ticket's repro).
 - **`/teach`** — learn a concept over multiple sessions, using the current directory as a stateful workspace.
 - **`/writing-for-agents`** — reference for writing any document an agent consumes: skills, `AGENTS.md` / `CLAUDE.md`, docs reached by pointers.
+- **`/witify-docx`** — when the deliverable is a **Word document** a client will open (a report, server requirements, an audit): it confirms the cover values in one table, then builds a Witify-branded `.docx` from the committed template and verifies every rendered page. Model-invoked, so it fires on its own when a branded Word document is asked for. Figures inside it come from the `diagram-design` companion plugin.
+- **`/witify-writing-style`** — the house rules for any **French text a client will read**: no dashes, no semicolons, one idea per sentence, Québec number formats, vouvoiement, preferred terms, and a final grep check. Model-invoked: it fires whenever client-facing copy is written, and `/witify-docx` invokes it before writing a single string.
 
 ## Precondition
 
