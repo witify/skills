@@ -2,11 +2,7 @@
 
 [![skills.sh](https://skills.sh/b/witify/skills)](https://skills.sh/witify/skills)
 
-Witify's agent skills for doing real engineering.
-
-Developing real applications is hard. Approaches like GSD, BMAD, and Spec-Kit try to help by owning the process. But while doing so, they take away your control and make bugs in the process hard to resolve.
-
-These skills are designed to be small, easy to adapt, and composable. They work with any model. They're based on decades of engineering experience. Hack around with them. Make them your own. Enjoy.
+Agent skills for the whole Witify team, on Claude Code and Codex: **engineering** (specs, tickets, reviews, Laravel and Vue conventions), **productivity** (branded documents, writing style, Loom and Figma briefs), and one-shot **migrations**. Small, composable, easy to adapt. Install once as a plugin and every project gets them.
 
 ## Installation
 
@@ -99,9 +95,31 @@ Remote MCP servers require `experimental_use_rmcp_client = true` under `[feature
 
 ## Recommended Companions
 
-A few skills we lean on aren't ours and aren't vendored here — they're maintained better where they live, and a copy in this repo would only go stale. Install them alongside the Witify plugin; they compose with these skills rather than competing with them.
+A few skills we lean on aren't ours and aren't vendored here: they're maintained better where they live, and a copy would only go stale. Install them alongside the Witify plugin. Each one carries a status:
 
-### [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) — Anthropic
+- ![Essential](https://img.shields.io/badge/Essential-d62828) — the Witify skills assume it is there; install it on day one.
+- ![Recommended](https://img.shields.io/badge/Recommended-1d6fb8) — not required, but it makes a Witify skill noticeably better.
+
+### ![Essential](https://img.shields.io/badge/Essential-d62828) [mattpocock/skills](https://github.com/mattpocock/skills) — Matt Pocock
+
+The toolkit this repo grew out of: `to-spec`, `to-tickets`, and `code-review` are adapted forks of it, and the rest of it (`implement`, `tdd`, `diagnosing-bugs`, `research`, `handoff`, `writing-for-agents`, …) is what we removed from here rather than keep stale copies. The one you'll use most is **`grilling`** (and its user-invoked twin **`/grill-me`**): a relentless interview about a plan, decision, or idea until every branch of the design tree is resolved. It is the step *before* [to-spec](./skills/engineering/to-spec/SKILL.md): grill first, then turn the answers into a spec, then into tickets.
+
+**Claude Code** — from inside a session:
+
+```
+/plugin install mattpocock-skills@claude-plugins-official
+```
+
+**Codex**:
+
+```bash
+codex plugin marketplace add mattpocock/skills
+codex plugin add mattpocock-skills@mattpocock
+```
+
+**Other agents, or editable files** — with [skills.sh](https://skills.sh): `npx skills@latest add mattpocock/skills`, later `npx skills update`.
+
+### ![Recommended](https://img.shields.io/badge/Recommended-1d6fb8) [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) — Anthropic
 
 Visual direction when building or reshaping UI: palette, typography, layout choices that don't read as templated defaults. Where [frontend-development](./skills/engineering/frontend-development/SKILL.md) holds the **correctness patterns** for Vue code, this holds the **aesthetics** — reach for it when a screen works but looks generic.
 
@@ -120,7 +138,7 @@ npx skills@latest add anthropics/claude-plugins-official --skill=frontend-design
 
 Update it later with `npx skills update frontend-design`.
 
-### [diagram-design](https://github.com/cathrynlavery/diagram-design) — Cathryn Lavery
+### ![Recommended](https://img.shields.io/badge/Recommended-1d6fb8) [diagram-design](https://github.com/cathrynlavery/diagram-design) — Cathryn Lavery
 
 Editorial diagrams the model hand-writes as self-contained HTML with inline SVG: architecture, flowcharts, sequence, ER, Gantt, and some forty types in all, on a design system that avoids the generic Mermaid look. It is model-invoked, so it triggers on its own whenever a diagram is asked for. [witify-docx](./skills/productivity/witify-docx/SKILL.md) draws its **figures** with it (draw the diagram here, export it to PNG, drop it in the document), and the Witify brand profile it uses ships inside that skill: the docx build script installs it to `~/.diagram-design/profiles/witify.md` and writes a `.diagram-design` marker (`profile: witify`) in the document folder, so for a branded diagram outside a Word document, write that same marker in your working folder once the profile is installed.
 
