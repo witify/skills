@@ -1,28 +1,28 @@
 # Witify Skills
 
-A collection of agent skills (slash commands and behaviors) loaded by Claude Code. Skills are organized into buckets and consumed by per-repo configuration emitted by `/setup-witify-skills`.
+A collection of agent skills (slash commands and behaviors) loaded by Claude Code and Codex. Skills are organized into buckets; the tracker skills reach ClickUp or Linear directly over MCP.
 
 ## Language
 
 **Issue tracker**:
-The tool that hosts a repo's issues — GitHub Issues, Linear, a local `.scratch/` markdown convention, or similar. Skills like `to-tickets`, `to-spec`, and `triage` read from and write to it.
+The tool that hosts a repo's issues — ClickUp by default, Linear when the project says so. Skills like `to-tickets`, `to-spec`, and `ship` read from and write to it over MCP.
 _Avoid_: backlog manager, backlog backend, issue host
 
 **Issue**:
-A single tracked unit of work inside an **Issue tracker** — a bug, task, spec, or slice produced by `to-tickets`.
-_Avoid_: ticket (use only when quoting external systems that call them tickets, or for a **Decision ticket** — see below)
+A single tracked unit of work inside an **Issue tracker** — a bug, task, spec, or slice produced by `to-tickets`. ClickUp calls it a task.
+_Avoid_: ticket (use only when quoting external systems that call them tickets)
 
-**Decision ticket**:
-A `wayfinder` unit — a child **Issue** of a `wayfinder:map` holding a *question* whose resolution is a decision, not a slice of a build to execute. The **decision** qualifier is what keeps it distinct from an implementation ticket; `wayfinder` introduces the term, then uses "ticket".
+**Parent**:
+The **Issue** that `to-tickets` files its slices under — the spec from `to-spec`, or one created for the feature. It carries the **PR mode** and the cross-cutting context every slice shares.
 
-**Triage role**:
-A canonical state-machine label applied to an **Issue** during triage (e.g. `needs-triage`, `ready-for-afk`). Each role maps to a real label string in the **Issue tracker** via `docs/agents/triage-labels.md`.
+**PR mode**:
+A label on the **Parent** — `single-pr` or `split-pr` — recording whether the set ships as one PR on one branch or one PR per slice.
 
 ## Relationships
 
 - An **Issue tracker** holds many **Issues**
-- An **Issue** carries one **Triage role** at a time
-- A **Decision ticket** is an **Issue** (a child of a `wayfinder:map`)
+- A **Parent** is an **Issue** whose sub-tasks are the slices of one feature
+- A **Parent** carries one **PR mode**
 
 ## Flagged ambiguities
 

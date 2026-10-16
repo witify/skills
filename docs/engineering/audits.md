@@ -28,4 +28,4 @@ The idea the whole skill defends: a single user action — columns changed, rela
 
 ## Where it fits
 
-`audits` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — a reference layer picked up while building features that touch tracked models. Audit events and value keys need translation keys, so it leans on [translations](./translations.md). When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`audits` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — a reference layer picked up while building features that touch tracked models. Audit events and value keys need translation keys, so it leans on [translations](./translations.md).

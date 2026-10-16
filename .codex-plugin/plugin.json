@@ -1,7 +1,7 @@
 {
   "name": "witify-skills",
   "version": "2.7.0",
-  "description": "Witify's agent skills for real engineering — grilling, spec/ticket flows, TDD, code review, domain modelling and more. Plug-and-play, not vibe coding.",
+  "description": "Witify's agent skills for real engineering — spec/ticket flows on ClickUp or Linear, shipping tickets to a reviewed PR, sprintify base-code conventions, and branded documents.",
   "author": {
     "name": "Witify",
     "url": "https://witify.io"
@@ -12,10 +12,10 @@
   "keywords": [
     "engineering",
     "skills",
-    "tdd",
-    "code-review",
-    "grilling",
-    "domain-modeling",
+    "clickup",
+    "linear",
+    "laravel",
+    "sprintify",
     "productivity"
   ],
   "skills": [

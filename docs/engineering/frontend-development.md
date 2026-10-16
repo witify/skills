@@ -22,7 +22,7 @@ The skill carries a second, scoped layer for **sprintify-derived projects**: sha
 
 Type `/frontend-development`, or the agent reaches for it automatically when the work touches Vue components, frontend forms, or interactive UI.
 
-Reach for it directly when you want a screen reviewed against the patterns — a form that keeps stale values, an error users never see, a layout that breaks on a phone. To explore what a UI *should look like* rather than build it correctly, use [prototype](./prototype.md) instead.
+Reach for it directly when you want a screen reviewed against the patterns — a form that keeps stale values, an error users never see, a layout that breaks on a phone.
 
 ## Orphan validation errors
 
@@ -30,4 +30,4 @@ The other pattern worth naming: field components only display errors whose key m
 
 ## Where it fits
 
-`frontend-development` is a **reach-for-it-anytime standalone** — a reference layer that runs beneath the building skills whenever the work is frontend: [implement](./implement.md) and [tdd](./tdd.md) pick it up while writing Vue code, [prototype](./prototype.md) while sketching UI variations. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+`frontend-development` is a **reach-for-it-anytime standalone** — a reference layer that runs beneath the building skills whenever the work is frontend: [ship](./ship.md)'s implement sub-agents pick it up while writing Vue code.

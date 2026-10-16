@@ -42,4 +42,4 @@ The sync isn't done until it proves no breaking changes: the area's tests, laras
 
 ## Where it fits
 
-`sprintify-sync` is a run-when-needed upgrade step underneath the sprintify baseline skills: they detect the drift and skip; it repairs the drift so they apply. Its neighbours are the base-code skills themselves — each names the applicability check this skill must make pass. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+`sprintify-sync` is a run-when-needed upgrade step underneath the sprintify baseline skills: they detect the drift and skip; it repairs the drift so they apply. Its neighbours are the base-code skills themselves — each names the applicability check this skill must make pass.

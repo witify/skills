@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket locally, or native blocking links on a real tracker — and record whether the set ships as one PR or one PR per ticket.
+description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to ClickUp (or Linear) over MCP as sub-tasks with native blocking links — and record whether the set ships as one PR or one PR per ticket.
 disable-model-invocation: true
 ---
 
@@ -8,13 +8,25 @@ disable-model-invocation: true
 
 Break a plan, spec, or conversation into a set of **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-witify-skills`.
+## Tracker
+
+Tickets live on **ClickUp** by default, reached over its MCP server. Use **Linear** instead only when the user says so, the source spec already lives there, or the repo's agent instructions (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`) name Linear as the project's tracker.
+
+Before publishing, confirm two things:
+
+1. **The MCP server is connected.** The tracker's tools must be in your available tools — `clickup_create_task` for ClickUp, `save_issue` for Linear. If they are not, stop and tell the user to add the server and sign in (the install commands are under "Add the tracker's MCP server" in the `witify/skills` README). Never write tickets to local files instead, and never claim to have published.
+2. **Where they go.** Tickets are always filed as sub-tasks of a **parent**: the spec or task the user pointed at, or one this skill creates (step 6). A new parent needs a ClickUp list or a Linear team — resolve it from the repo's agent instructions, or ask the user once, and confirm before creating anything.
+
+Operations, per tracker:
+
+- **ClickUp** — read a task with `clickup_get_task` plus `clickup_get_task_comments`; create a ticket with `clickup_create_task` giving the parent; record a blocking edge with `clickup_add_task_dependency`, the ticket *waiting on* its blocker; the PR-mode label is a tag, `clickup_add_tag_to_task`.
+- **Linear** — read an issue with `get_issue` plus `list_comments`; create a ticket with `save_issue` giving the parent; use Linear's native **blocked by** relation where the tooling at hand can set it, otherwise put a `Blocked by: ABC-123` line at the top of the description; the PR-mode label is an issue label set through `save_issue`, created first with `create_issue_label` if missing.
 
 ## Process
 
 ### 1. Gather context
 
-Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
+Work from whatever is already in the conversation context. If the user passes a reference (a ClickUp task id or URL, a Linear identifier or URL, a spec path) as an argument, fetch it and read its full body and comments.
 
 ### 2. Explore the codebase (optional)
 
@@ -64,54 +76,25 @@ Iterate until the user approves the breakdown.
 
 The breakdown itself does not change either way — the same tickets, the same blocking edges. Only how they get branched and reviewed changes.
 
-### 6. Publish the tickets to the configured tracker
+### 6. Publish the tickets
 
-Publish the approved tickets. **How** depends on the tracker `/setup-witify-skills` configured — the tickets are the same either way, only the shape of the blocking edges changes:
+First settle the **parent**. If the source was an existing task or issue (typically a spec from `/to-spec`), use it. Otherwise create one for the feature — title and one-paragraph summary of what the whole set delivers. Never close or otherwise modify a pre-existing source beyond the two additions below (the PR-mode label and the shared context).
 
-- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
-- **A real issue tracker (Linear, ClickUp)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues.
-
-Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
+Then publish one ticket per slice as a sub-task of the parent, **in dependency order (blockers first)** so each ticket's blocking edge can point at a real identifier. Record every edge with the tracker's native dependency (see Tracker above). Use the issue template below. Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
 #### Recording the PR mode
 
-The answer from step 5 rides on the **parent** issue, as a label — `single-pr` or `split-pr`. It is what tells an AFK agent whether to run the set as one epic branch or one branch per ticket, so it must be set explicitly even when it matches the agent's default.
+The answer from step 5 rides on the **parent**, as a label — `single-pr` or `split-pr`. It is what tells an agent whether to run the set as one epic branch or one branch per ticket, so it must be set explicitly even when it matches the agent's default. In Single PR mode the parent is what gets picked up and its sub-tasks are worked in blocking order on one branch; in Split PR mode each sub-task is picked up on its own.
 
-- **Split PRs** → each ticket carries the `ready-for-agent` triage label itself (unless instructed otherwise) — the tickets are agent-grabbable by construction. The parent, if one exists, carries `split-pr`.
-- **Single PR** → the **parent** carries `single-pr` *and* `ready-for-agent`; the sub-issues carry neither. The parent is what gets grabbed, and its sub-issues are worked in blocking order on one branch. Labeling a sub-issue `ready-for-agent` here would make it grabbable on its own and defeat the mode.
+#### Writing for the agent that implements
 
-Single PR needs a parent to hang the label on. If the source was an existing issue, use it. If there is no parent, create one for the feature — title and one-paragraph summary of what the whole set delivers — and publish the tickets as its sub-issues.
-
-In Split PR mode, when the source issue (typically a spec) already carries `ready-for-agent`, **move the label down**: on an issue without sub-issues that label marks the whole spec as one grabbable unit of work, which is exactly what the split tickets replace. That label move is the only change to make to a pre-existing source issue — never close or otherwise modify it.
-
-#### Writing for the AFK agent
-
-An AFK implement session receives exactly two descriptions as text: the ticket's own and its direct parent's. It has no tracker access — a link in a description resolves to nothing, and any issue beyond that pair (the source spec included) is invisible. So put the cross-cutting decisions a ticket set shares — naming conventions, patterns to follow, known traps — in the direct parent's description, and make each ticket self-contained for everything else. In Single PR mode, the parent's title becomes the PR title; name it like one.
-
-On **local files** there is no tracker to label: record the mode as a `**PR mode:**` line in each ticket file instead.
-
-<local-ticket-template>
-
-# <NN> — <Ticket title>
-
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
-
-**Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
-
-**PR mode:** `single-pr` (all tickets on one branch, one PR) or `split-pr` (one branch and PR per ticket).
-
-**Status:** ready-for-agent
-
-- [ ] Acceptance criterion 1
-- [ ] Acceptance criterion 2
-
-</local-ticket-template>
+An implement session typically receives two descriptions as text: the ticket's own and its direct parent's. It may have no tracker access — a link in a description resolves to nothing, and anything beyond that pair is invisible. So put the cross-cutting decisions a ticket set shares — naming conventions, patterns to follow, known traps — in the parent's description, and make each ticket self-contained for everything else. In Single PR mode, the parent's title becomes the PR title; name it like one.
 
 <issue-template>
 
 ## Parent
 
-A reference to the parent issue on the tracker (if the source was an existing issue, otherwise omit this section).
+A reference to the parent task or issue.
 
 ## What to build
 
@@ -128,4 +111,4 @@ The end-to-end behaviour this ticket makes work, from the user's perspective —
 
 </issue-template>
 
-In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
+Avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.

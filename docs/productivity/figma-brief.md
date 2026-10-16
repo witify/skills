@@ -34,4 +34,4 @@ The leading idea is **labels, not data**. A field name, a column name, a status 
 
 ## Where it fits
 
-A reach-for-it-anytime standalone that sits between thinking and building: what a grill, a spec, or a ticket describes becomes mockups before it becomes code. Its neighbours are [grilling](./grilling.md), because a sharpened idea makes a better brief, and [to-spec](../engineering/to-spec.md), because what comes back from Figma is material for the spec, not the spec itself. When you are unsure which skill fits, [ask-witify](../engineering/ask-witify.md) routes over the whole set.
+A reach-for-it-anytime standalone that sits between thinking and building: what a grill, a spec, or a ticket describes becomes mockups before it becomes code. Its neighbour is [to-spec](../engineering/to-spec.md), because what comes back from Figma is material for the spec, not the spec itself.

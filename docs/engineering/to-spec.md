@@ -12,7 +12,7 @@ npx skills update to-spec
 
 ## What it does
 
-`to-spec` turns the current conversation and your codebase understanding into a spec (you may know this document as a PRD), then publishes it to your issue tracker.
+`to-spec` turns the current conversation and your codebase understanding into a spec (you may know this document as a PRD), then publishes it as a task on your tracker.
 
 It does **not** interview you again. By the time you reach for it, the alignment work is done — `to-spec` synthesises what is already known rather than asking a fresh round of questions.
 
@@ -20,11 +20,11 @@ It does **not** interview you again. By the time you reach for it, the alignment
 
 You invoke this by typing `/to-spec` — the agent won't reach for it on its own.
 
-Reach for it once a change has been talked through and the domain language is settled, and you want that shared understanding written down before any code is written. If you *haven't* aligned yet, grill first — for that, use [grill-with-docs](./grill-with-docs.md). To split the finished spec into tickets, use [to-tickets](./to-tickets.md).
+Reach for it once a change has been talked through and the domain language is settled, and you want that shared understanding written down before any code is written. To split the finished spec into tickets, use [to-tickets](./to-tickets.md).
 
 ## Prerequisites
 
-`to-spec` publishes into your issue tracker, so [setup-witify-skills](./setup-witify-skills.md) must have configured the tracker and triage labels for this repo first. It applies the `ready-for-agent` label itself — no separate triage pass needed. That label makes the spec the unit an AFK agent grabs and implements whole; if a later [to-tickets](./to-tickets.md) pass uses Split PR mode, it moves the label down onto the tickets it publishes.
+`to-spec` publishes over MCP, so the tracker's server must be connected in your harness. **ClickUp** is the default; it uses **Linear** only when you say so or the repo's agent instructions name Linear. The install commands are under "Add the tracker's MCP server" in the README. It asks once where the spec goes (a ClickUp list or a Linear team) when the repo's instructions don't say, and it never falls back to a local file.
 
 ## What the spec includes
 
@@ -47,13 +47,14 @@ That matters for agentic development: a good interface gives tests something dur
 - It starts writing the spec instead of asking you a fresh round of questions.
 - It checks the seams with you before writing, and proposes as few as possible.
 - The spec comes back in your project's domain vocabulary, not generic boilerplate.
+- It stops and tells you to connect the MCP server rather than writing the spec somewhere else.
 
 ## Where it fits
 
-`to-spec` is a step in the main build chain:
+`to-spec` is the first step in the main build chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+to-spec → to-tickets → ship → fix-review
 ```
 
-Reach for it after the plan and domain language are resolved, and before you break the work into implementation tickets. Its key neighbours are [grill-with-docs](./grill-with-docs.md), which sharpens the context so the spec is precise, and [to-tickets](./to-tickets.md), which turns the spec into a set of tickets for [implement](./implement.md) to build. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+Reach for it after the plan and domain language are resolved, and before you break the work into implementation tickets. Its key neighbour is [to-tickets](./to-tickets.md), which files its tickets as sub-tasks of the spec for [ship](./ship.md) to build.

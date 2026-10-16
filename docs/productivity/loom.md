@@ -35,4 +35,4 @@ The skill's discipline is that the transcript is the **map** and frames are the 
 
 ## Where it fits
 
-A reach-for-it-anytime standalone that mostly fires *inside* other flows: a grill where the user drops a Loom instead of typing the context, or a triage/implement pass over a ticket whose repro is a recording. See [ask-witify](../engineering/ask-witify.md) for the map of the whole set.
+A reach-for-it-anytime standalone that mostly fires *inside* other flows: a grill where the user drops a Loom instead of typing the context, or a `/ship` pass over a ticket whose repro is a recording.

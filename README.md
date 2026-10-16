@@ -10,7 +10,7 @@ These skills are designed to be small, easy to adapt, and composable. They work 
 
 ## Installation
 
-Three steps: install the skills, set them up to talk to your issue tracker, then connect the tracker's MCP server.
+Two steps: install the skills, then connect your issue tracker's MCP server.
 
 ### 1. Install the skills
 
@@ -55,7 +55,7 @@ The two alternatives below copy skill files **into a project**. Reach for one on
 npx skills@latest add witify/skills
 ```
 
-Pick the skills you want (**make sure `setup-witify-skills` is one of them**) and which agents to install them on. Update when you want with `npx skills update`.
+Pick the skills you want and which agents to install them on. Update when you want with `npx skills update`.
 
 </details>
 
@@ -74,13 +74,9 @@ Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions l
 
 </details>
 
-### 2. Set up the issue tracker
+### 2. Add the tracker's MCP server
 
-The engineering skills read and write issues. Run `/setup-witify-skills` once per repo to wire them up — it asks where your issues live (Linear, ClickUp, or local files), which triage labels you use, and where to save the docs it creates.
-
-### 3. Add the tracker's MCP server
-
-If you picked Linear or ClickUp, the agent talks to it over MCP. Add the official hosted server, then authenticate (OAuth in the browser on first connection).
+`to-spec`, `to-tickets`, and `ship` read and write tickets over MCP. **ClickUp is the default**; the skills use Linear instead when you say so or when the project's agent instructions (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`) name Linear as its tracker. There is no setup step and no local-file fallback: if the server isn't connected, the skill stops and says so. Add the official hosted server, then authenticate (OAuth in the browser on first connection).
 
 **Claude Code**
 
@@ -107,7 +103,7 @@ A few skills we lean on aren't ours and aren't vendored here — they're maintai
 
 ### [frontend-design](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design) — Anthropic
 
-Visual direction when building or reshaping UI: palette, typography, layout choices that don't read as templated defaults. Where [frontend-development](./skills/engineering/frontend-development/SKILL.md) holds the **correctness patterns** for Vue code, this holds the **aesthetics** — reach for it when a screen works but looks generic. It pairs naturally with [prototype](./skills/engineering/prototype/SKILL.md) when the open question is what a UI should look like.
+Visual direction when building or reshaping UI: palette, typography, layout choices that don't read as templated defaults. Where [frontend-development](./skills/engineering/frontend-development/SKILL.md) holds the **correctness patterns** for Vue code, this holds the **aesthetics** — reach for it when a screen works but looks generic.
 
 **Claude Code** — from inside a session:
 
@@ -126,7 +122,7 @@ Update it later with `npx skills update frontend-design`.
 
 ### [diagram-design](https://github.com/cathrynlavery/diagram-design) — Cathryn Lavery
 
-Editorial diagrams the model hand-writes as self-contained HTML with inline SVG: architecture, flowcharts, sequence, ER, Gantt, and some forty types in all, on a design system that avoids the generic Mermaid look. It is model-invoked, so it triggers on its own whenever a diagram is asked for. [witify-docx](./skills/productivity/witify-docx/SKILL.md) draws its **figures** with it (draw the diagram here, export it to PNG, drop it in the document), and the Witify brand profile it uses ships inside that skill: the docx build script installs it to `~/.diagram-design/profiles/witify.md` and writes a `.diagram-design` marker (`profile: witify`) in the document folder, so for a branded diagram outside a Word document, write that same marker in your working folder once the profile is installed. It also pairs with [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md) when the report needs an architecture diagram.
+Editorial diagrams the model hand-writes as self-contained HTML with inline SVG: architecture, flowcharts, sequence, ER, Gantt, and some forty types in all, on a design system that avoids the generic Mermaid look. It is model-invoked, so it triggers on its own whenever a diagram is asked for. [witify-docx](./skills/productivity/witify-docx/SKILL.md) draws its **figures** with it (draw the diagram here, export it to PNG, drop it in the document), and the Witify brand profile it uses ships inside that skill: the docx build script installs it to `~/.diagram-design/profiles/witify.md` and writes a `.diagram-design` marker (`profile: witify`) in the document folder, so for a branded diagram outside a Word document, write that same marker in your working folder once the profile is installed.
 
 **Claude Code** — from inside a session:
 
@@ -167,11 +163,11 @@ If several changesets are pending, the highest bump wins — one `minor` among f
 
 ## Syncing with Upstream
 
-Most skills here are vendored from [mattpocock/skills](https://github.com/mattpocock/skills), some with deliberate local adaptations. To pull upstream updates, ask your agent to follow [.agents/upstream-sync/PROCESS.md](./.agents/upstream-sync/PROCESS.md) (e.g. "sync with upstream") — it's a plain maintainer doc rather than a slash command, on purpose: skill installers pick up any `SKILL.md` in the repo, and this process is internal. Its sibling [STATE.md](./.agents/upstream-sync/STATE.md) records the last-synced upstream commit and the adaptation ledger — the files that deliberately diverge and must never be blindly overwritten. A sync lands like any other change: with a changeset, released through the flow above.
+`to-spec`, `to-tickets`, and `code-review` descend from [mattpocock/skills](https://github.com/mattpocock/skills), each adapted (they reach ClickUp or Linear straight over MCP). To pull upstream updates into them, ask your agent to follow [.agents/upstream-sync/PROCESS.md](./.agents/upstream-sync/PROCESS.md) (e.g. "sync with upstream") — it's a plain maintainer doc rather than a slash command, on purpose: skill installers pick up any `SKILL.md` in the repo, and this process is internal. Its sibling [STATE.md](./.agents/upstream-sync/STATE.md) records the last-synced upstream commit and the adaptation ledger — the files that deliberately diverge and must never be blindly overwritten. A sync lands like any other change: with a changeset, released through the flow above.
 
 ## Reference
 
-These split on one axis — who can invoke them. **User-invoked** skills are reachable only when you type them (e.g. `/grill-me`); their job is to orchestrate. **Model-invoked** skills can be invoked by you _or_ reached for automatically by the agent when the task fits; they hold the reusable discipline. A user-invoked skill may invoke model-invoked skills, but never another user-invoked one.
+These split on one axis — who can invoke them. **User-invoked** skills are reachable only when you type them (e.g. `/to-spec`); their job is to orchestrate. **Model-invoked** skills can be invoked by you _or_ reached for automatically by the agent when the task fits; they hold the reusable discipline. A user-invoked skill may invoke model-invoked skills, but never another user-invoked one.
 
 ### Engineering
 
@@ -179,31 +175,16 @@ Skills for daily code work.
 
 **User-invoked**
 
-- **[ask-witify](./skills/engineering/ask-witify/SKILL.md)** — Ask which skill or flow fits your situation. A router over the user-invoked skills in this repo.
-- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** — Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline.
-- **[triage](./skills/engineering/triage/SKILL.md)** — Move issues through a state machine of triage roles.
-- **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
-- **[setup-witify-skills](./skills/engineering/setup-witify-skills/SKILL.md)** — Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
-- **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to the issue tracker. No interview — just synthesizes what you've already discussed.
-- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges — written as text in a local file, or as native blocking links on a real tracker.
-- **[implement](./skills/engineering/implement/SKILL.md)** — Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/code-review` before committing.
-- **[ship](./skills/engineering/ship/SKILL.md)** — Batteries-included `/implement`: one implement and one review sub-agent per ticket, then a PR to `dev` whose feedback is handled under a user-chosen fix policy for at most three waves.
-- **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** — Plan a huge chunk of work, more than one agent session can hold, as a shared map of investigation tickets on the issue tracker — resolve them one at a time until the way to the destination is clear.
+- **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to ClickUp (or Linear) over MCP. No interview — just synthesizes what you've already discussed.
+- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, filed as sub-tasks on ClickUp (or Linear) with native blocking links, and record whether the set ships as one PR or one PR per ticket.
+- **[ship](./skills/engineering/ship/SKILL.md)** — Take a set of tickets to a reviewed PR: one implement and one review sub-agent per ticket, then a PR to `dev` whose feedback is handled under a user-chosen fix policy for at most three waves.
 - **[fix-review](./skills/engineering/fix-review/SKILL.md)** — Work through the open review comments on a GitHub PR — triage, confirm the approach with you, then fix, commit, push, and reply with commit links. Never resolves threads; reviewers close their own.
 - **[sprintify-sync](./skills/engineering/sprintify-sync/SKILL.md)** — Sync the latest sprintify base code for one feature area from `../sprintify` into the current project — backend, frontend, and tests — so the matching base-code skill fully applies.
 - **[witify-doctor](./skills/engineering/witify-doctor/SKILL.md)** — Levelled check-up you validate item by item, one level at a time: harness memory and personal instructions off your machine, plugin and MCP servers in both harnesses, then guidelines, tooling, CI workflows, PHPStan rules (each sized by the files it would touch) and base code aligned with the latest sprintify.
 
 **Model-invoked**
 
-- **[prototype](./skills/engineering/prototype/SKILL.md)** — Build a throwaway prototype to answer a design question — a single shareable HTML demo for state/logic questions, or several radically different UI variations toggleable from one route.
-- **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
-- **[research](./skills/engineering/research/SKILL.md)** — Investigate a question against high-trust primary sources and capture the findings as a cited Markdown file in the repo, run as a background agent.
-- **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
-- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** — Actively build and sharpen a project's domain model — challenge terms against the glossary, stress-test with edge-case scenarios, and update `CONTEXT.md` and ADRs inline.
-- **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** — Shared discipline and vocabulary for designing deep modules: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface.
 - **[code-review](./skills/engineering/code-review/SKILL.md)** — Two-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/PRD?), run as parallel sub-agents so neither pollutes the other.
-- **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** — Work through an in-progress git merge or rebase conflict hunk by hunk, resolving by intent traced to each side's primary source, then finish the operation — never `--abort`.
-- **[wizard](./skills/engineering/wizard/SKILL.md)** — Generate an interactive bash wizard that walks a human through steps only they can perform: provisioning infrastructure, credentials and CI secrets, unfamiliar third-party dashboards, one-off migrations or cutovers.
 - **[frontend-development](./skills/engineering/frontend-development/SKILL.md)** — Vue 3 + Tailwind frontend patterns: reactivity after emits, sub-forms that emit copies, orphan validation errors, and responsive layouts — plus sprintify app conventions (shared backend data, settings store, `resource_data`, `tabulation` tables).
 - **[sprintify-ui](./skills/engineering/sprintify-ui/SKILL.md)** — Reference for the [sprintify-ui](https://www.npmjs.com/package/sprintify-ui) component library: what every `Base*` component is, and the props, events and slots it takes. Only useful in projects that depend on the package.
 - **[audits](./skills/engineering/audits/SKILL.md)** — Record model audit trails with the sprintify Audit module: staging API, readable labels, retention, and the display layer. Falls back to core principles on older forks.
@@ -227,18 +208,9 @@ One-way moves from one setup to another. Each runs once per project, then stops 
 
 General workflow tools, not code-specific.
 
-**User-invoked**
-
-- **[grill-me](./skills/productivity/grill-me/SKILL.md)** — Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
-- **[handoff](./skills/productivity/handoff/SKILL.md)** — Compact the current conversation into a handoff document so another agent can continue the work.
-- **[teach](./skills/productivity/teach/SKILL.md)** — Teach the user a new skill or concept over multiple sessions, using the current directory as a stateful teaching workspace.
-- **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)** — Turn a decision you can't fully answer into a Markdown questionnaire for someone else to fill in async, or over a meeting. It grills you about the send (who it's for, what you need back), not the subject.
-
 **Model-invoked**
 
-- **[grilling](./skills/productivity/grilling/SKILL.md)** — Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved. The reusable loop behind `grill-me` and `grill-with-docs`.
 - **[loom](./skills/productivity/loom/SKILL.md)** — Analyze a Loom video in detail: transcript with speakers, chapters, and actual frames inspected via ffmpeg. Fires whenever a loom.com link shows up in a task, grill, or conversation and its content matters.
-- **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)** — Reference for writing any document an agent consumes — skills, `AGENTS.md` / `CLAUDE.md`, docs reached by pointers — with the levers that make each one predictable.
 - **[witify-docx](./skills/productivity/witify-docx/SKILL.md)** — Generate a Witify-branded Word document: dark cover page, Helvetica text with Archivo bold headings, logo header, paginated footer. Fires when a deliverable needs to ship as a branded .docx.
 - **[witify-writing-style](./skills/productivity/witify-writing-style/SKILL.md)** — Witify's writing rules for client-facing French copy: no dashes or semicolons, one idea per sentence, Québec number and amount formats, vouvoiement, preferred French terms, and a final grep check. It is the single source of those rules, so every document skill invokes it rather than carrying its own. Fires when writing or editing any text a client will read, and whenever another skill generates a document.
 - **[figma-brief](./skills/productivity/figma-brief/SKILL.md)** — Write a concise brief (a prompt) for generating interface mockups with an AI design tool such as Figma Make: business purpose per screen, fr-CA vocabulary, one primary action, the business rules that shape the UI, and how the screens link. Labels, not data; intent, not pixels. Fires when screens are being described so a tool can render them.

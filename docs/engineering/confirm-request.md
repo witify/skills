@@ -24,4 +24,4 @@ A sprintify-derived Laravel project recent enough to ship the confirmation flow 
 
 ## Where it fits
 
-`confirm-request` is a **reach-for-it-anytime standalone** in the sprintify-baseline family. [authorization](./authorization.md) is the neighbour on the same boundary — authorization decides *whether* a user may act, confirm-request double-checks that they *mean it*. When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`confirm-request` is a **reach-for-it-anytime standalone** in the sprintify-baseline family. [authorization](./authorization.md) is the neighbour on the same boundary — authorization decides *whether* a user may act, confirm-request double-checks that they *mean it*.

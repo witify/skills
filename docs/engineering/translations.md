@@ -24,4 +24,4 @@ A sprintify-derived Laravel + Vue project with the shared `lang/` layout.
 
 ## Where it fits
 
-`translations` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — a reference layer under nearly everything, since every user-facing string built by the other skills ends up as a key it places. [audits](./audits.md) and [notification-development](./notification-development.md) both route their keys through it, and [frontend-development](./frontend-development.md)'s every-string-is-a-key rule lands here. When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`translations` is a **reach-for-it-anytime standalone** in the sprintify-baseline family — a reference layer under nearly everything, since every user-facing string built by the other skills ends up as a key it places. [audits](./audits.md) and [notification-development](./notification-development.md) both route their keys through it, and [frontend-development](./frontend-development.md)'s every-string-is-a-key rule lands here.

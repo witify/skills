@@ -52,4 +52,4 @@ The **repo half** is the workflow file. The **host half** is repointing each For
 
 ## Where it fits
 
-A run-once cutover, standalone: nothing feeds it and nothing follows it. Its nearest neighbour is [wizard](../engineering/wizard.md), because both exist for procedures where a human has to click through a dashboard — this one walks you through Forge inline, where `wizard` would generate a script for a procedure you'll repeat. When you're unsure which skill fits the moment, [ask-witify](../engineering/ask-witify.md) routes you.
+A run-once cutover, standalone: nothing feeds it and nothing follows it. It walks you through Forge inline.

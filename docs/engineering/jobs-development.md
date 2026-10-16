@@ -28,4 +28,4 @@ The non-negotiable the checklist is built around: jobs get retried, so **running
 
 ## Where it fits
 
-`jobs-development` is a **reach-for-it-anytime standalone** in the sprintify-baseline family, picked up whenever built features need background work. Notifications a job sends are [notification-development](./notification-development.md)'s territory; the business logic itself belongs in an Action, not the job. When you're unsure which skill fits, [ask-witify](./ask-witify.md) routes you.
+`jobs-development` is a **reach-for-it-anytime standalone** in the sprintify-baseline family, picked up whenever built features need background work. Notifications a job sends are [notification-development](./notification-development.md)'s territory; the business logic itself belongs in an Action, not the job.

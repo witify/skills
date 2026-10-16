@@ -47,4 +47,4 @@ The checklist is ordered by migration cost, so an old fork can start where it st
 
 ## Where it fits
 
-`witify-doctor` is **periodic maintenance**, like [improve-codebase-architecture](./improve-codebase-architecture.md) — that one keeps the *code* good for agents, this one keeps the *instructions and guardrails* aligned across developers and projects. Its neighbours are [sprintify-sync](./sprintify-sync.md) and [migrate-deploy-branches](../migration/migrate-deploy-branches.md), the two hand-offs its top level makes: the doctor spots drift in guidelines, rules, and CI, they repair drift in base code and deployment. When you're unsure which skill or flow fits, [ask-witify](./ask-witify.md) routes you.
+`witify-doctor` is **periodic maintenance**: it keeps the instructions and guardrails aligned across developers and projects. Its neighbours are [sprintify-sync](./sprintify-sync.md) and [migrate-deploy-branches](../migration/migrate-deploy-branches.md), the two hand-offs its top level makes: the doctor spots drift in guidelines, rules, and CI, they repair drift in base code and deployment.

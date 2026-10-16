@@ -1,12 +1,12 @@
 ---
 name: ship
-description: "Batteries-included /implement: build a set of tickets with one implement sub-agent and one review sub-agent per ticket, open a PR to dev, then handle feedback under a user-chosen fix policy for at most three waves."
+description: "Take a set of tickets to a reviewed PR: build them with one implement sub-agent and one review sub-agent per ticket, open a PR to dev, then handle feedback under a user-chosen fix policy for at most three waves."
 disable-model-invocation: true
 ---
 
 # Ship
 
-Take a set of tickets all the way to a reviewed PR. Where `/implement` builds one piece of work in the current session, `/ship` orchestrates: one implement sub-agent and one review sub-agent **per ticket** (N tickets → 2N sub-agents), then a PR to `dev` worked under the user's fix policy for at most three feedback waves.
+Take a set of tickets all the way to a reviewed PR. `/ship` orchestrates: one implement sub-agent and one review sub-agent **per ticket** (N tickets → 2N sub-agents), then a PR to `dev` worked under the user's fix policy for at most three feedback waves.
 
 ## 1. Choose the fix policy
 
@@ -21,9 +21,9 @@ If the invocation already selects one unambiguously, use it without asking again
 
 ## 2. Preflight
 
-Fetch the tickets via the workflow in `docs/agents/issue-tracker.md` (run `/setup-witify-skills` if it's missing) and order them blockers-first. Then get the work onto a correctly named branch, from a clean tree.
+Fetch the tickets from the tracker over MCP: **ClickUp** by default (`clickup_get_task` plus `clickup_get_task_comments`, the sub-tasks of the parent the user pointed at), **Linear** when the user or the repo's agent instructions say so (`get_issue` plus `list_comments`). The tracker's tools must be among your available tools; if they are not, stop and tell the user to add the MCP server and sign in (see "Add the tracker's MCP server" in the `witify/skills` README). Order the tickets blockers-first. Then get the work onto a correctly named branch, from a clean tree.
 
-**The branch is `feat/<ticket-id>-<slug>`** — `feat/WIT-42-stripe-webhook-retry`, `feat/86abc123-invoice-pdf-export`. Use `fix/` when every ticket in the set is a bug fix. The `<ticket-id>` is the tracker's own identifier, verbatim and case-preserved (Linear `ABC-123`, a ClickUp task id); for a set, it is the parent ticket's id, or the first ticket's when the set has no parent. A local-markdown tracker has no identifier — use its feature slug and no id. The `<slug>` is two to four kebab-case words naming **the change**, not the ticket title truncated: someone scanning `git branch` should know what landed there.
+**The branch is `feat/<ticket-id>-<slug>`** — `feat/WIT-42-stripe-webhook-retry`, `feat/86abc123-invoice-pdf-export`. Use `fix/` when every ticket in the set is a bug fix. The `<ticket-id>` is the tracker's own identifier, verbatim and case-preserved (Linear `ABC-123`, a ClickUp task id); for a set, it is the parent ticket's id, or the first ticket's when the set has no parent. The `<slug>` is two to four kebab-case words naming **the change**, not the ticket title truncated: someone scanning `git branch` should know what landed there.
 
 How you get onto that name depends on where the session starts:
 
@@ -36,7 +36,7 @@ Implementations run **sequentially** (they share the working tree); each ticket'
 
 For each ticket, in blocking order:
 
-1. **Implement sub-agent** (fresh context): hand it the ticket in full with the brief — build it with `/tdd`, one vertical slice at a time, at the seams the ticket declares (or the most obvious public interface if it declares none); typecheck and run the touched test files as you go; commit on the branch, referencing the ticket. Record the commit range it produced.
+1. **Implement sub-agent** (fresh context): hand it the ticket in full with the brief — build it test-first (red-green-refactor), one vertical slice at a time, at the seams the ticket declares (or the most obvious public interface if it declares none); typecheck and run the touched test files as you go; commit on the branch, referencing the ticket. Record the commit range it produced.
 2. The moment it commits, spawn that ticket's **review sub-agent** — it runs `/code-review` with the ticket as spec, pinned to that ticket's commit range — while the next implement sub-agent starts.
 3. A landed review's findings go into a **queue**, never straight into the tree. At each commit boundary — an implement sub-agent finished, the next not yet started — drain the queue: classify every finding, apply the chosen fix policy, and make at most one fix commit per ticket, referencing it. Record analyzed-only, rejected, deferred, and fixed findings with reasons. Drain findings still landing after the last ticket during close-out, before the full suite.
 
