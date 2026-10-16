@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to ClickUp (or Linear) over MCP as sub-tasks with native blocking links — and record whether the set ships as one PR or one PR per ticket.
+description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to ClickUp (or Linear) over MCP as sub-tasks with native blocking links.
 disable-model-invocation: true
 ---
 
@@ -15,12 +15,12 @@ Tickets live on **ClickUp** by default, reached over its MCP server. Use **Linea
 Before publishing, confirm two things:
 
 1. **The MCP server is connected.** The tracker's tools must be in your available tools — `clickup_create_task` for ClickUp, `save_issue` for Linear. If they are not, stop and tell the user to add the server and sign in (the install commands are under "Add the tracker's MCP server" in the `witify/skills` README). Never write tickets to local files instead, and never claim to have published.
-2. **Where they go.** Tickets are always filed as sub-tasks of a **parent**: the spec or task the user pointed at, or one this skill creates (step 6). A new parent needs a ClickUp list or a Linear team — resolve it from the repo's agent instructions, or ask the user once, and confirm before creating anything.
+2. **Where they go.** Tickets are always filed as sub-tasks of a **parent**: the spec or task the user pointed at, or one this skill creates (step 5). A new parent needs a ClickUp list or a Linear team — resolve it from the repo's agent instructions, or ask the user once, and confirm before creating anything.
 
 Operations, per tracker:
 
-- **ClickUp** — read a task with `clickup_get_task` plus `clickup_get_task_comments`; create a ticket with `clickup_create_task` giving the parent; record a blocking edge with `clickup_add_task_dependency`, the ticket *waiting on* its blocker; the PR-mode label is a tag, `clickup_add_tag_to_task`.
-- **Linear** — read an issue with `get_issue` plus `list_comments`; create a ticket with `save_issue` giving the parent; use Linear's native **blocked by** relation where the tooling at hand can set it, otherwise put a `Blocked by: ABC-123` line at the top of the description; the PR-mode label is an issue label set through `save_issue`, created first with `create_issue_label` if missing.
+- **ClickUp** — read a task with `clickup_get_task` plus `clickup_get_task_comments`; create a ticket with `clickup_create_task` giving the parent; record a blocking edge with `clickup_add_task_dependency`, the ticket *waiting on* its blocker.
+- **Linear** — read an issue with `get_issue` plus `list_comments`; create a ticket with `save_issue` giving the parent; use Linear's native **blocked by** relation where the tooling at hand can set it, otherwise put a `Blocked by: ABC-123` line at the top of the description.
 
 ## Process
 
@@ -67,28 +67,15 @@ Ask the user:
 
 Iterate until the user approves the breakdown.
 
-### 5. Ask how the work ships — split PRs or one PR
+### 5. Publish the tickets
 
-**Always ask this, unless the user already said which they want.** Never assume a default and never infer one from the size of the breakdown.
-
-- **Split PRs** — each ticket is worked on its own branch and reviewed as its own PR. Independently grabbable, reviewed in small pieces, but the reviewer sees the feature arrive in fragments.
-- **Single PR** — every ticket is worked in order on one shared branch and reviewed as one PR. One review of the whole feature, but nothing lands until all of it is done, and a failure part-way leaves a partial PR.
-
-The breakdown itself does not change either way — the same tickets, the same blocking edges. Only how they get branched and reviewed changes.
-
-### 6. Publish the tickets
-
-First settle the **parent**. If the source was an existing task or issue (typically a spec from `/to-spec`), use it. Otherwise create one for the feature — title and one-paragraph summary of what the whole set delivers. Never close or otherwise modify a pre-existing source beyond the two additions below (the PR-mode label and the shared context).
+First settle the **parent**. If the source was an existing task or issue (typically a spec from `/to-spec`), use it. Otherwise create one for the feature — title and one-paragraph summary of what the whole set delivers. Never close or otherwise modify a pre-existing source beyond adding the shared context described below.
 
 Then publish one ticket per slice as a sub-task of the parent, **in dependency order (blockers first)** so each ticket's blocking edge can point at a real identifier. Record every edge with the tracker's native dependency (see Tracker above). Use the issue template below. Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
-#### Recording the PR mode
-
-The answer from step 5 rides on the **parent**, as a label — `single-pr` or `split-pr`. It is what tells an agent whether to run the set as one epic branch or one branch per ticket, so it must be set explicitly even when it matches the agent's default. In Single PR mode the parent is what gets picked up and its sub-tasks are worked in blocking order on one branch; in Split PR mode each sub-task is picked up on its own.
-
 #### Writing for the agent that implements
 
-An implement session typically receives two descriptions as text: the ticket's own and its direct parent's. It may have no tracker access — a link in a description resolves to nothing, and anything beyond that pair is invisible. So put the cross-cutting decisions a ticket set shares — naming conventions, patterns to follow, known traps — in the parent's description, and make each ticket self-contained for everything else. In Single PR mode, the parent's title becomes the PR title; name it like one.
+An implement session typically receives two descriptions as text: the ticket's own and its direct parent's. It may have no tracker access — a link in a description resolves to nothing, and anything beyond that pair is invisible. So put the cross-cutting decisions a ticket set shares — naming conventions, patterns to follow, known traps — in the parent's description, and make each ticket self-contained for everything else. A set always ships as **one PR** worked in blocking order on one branch (that is how `/ship` runs it), and the parent's title becomes that PR's title; name it like one.
 
 <issue-template>
 

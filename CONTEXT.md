@@ -13,16 +13,12 @@ A single tracked unit of work inside an **Issue tracker** — a bug, task, spec,
 _Avoid_: ticket (use only when quoting external systems that call them tickets)
 
 **Parent**:
-The **Issue** that `to-tickets` files its slices under — the spec from `to-spec`, or one created for the feature. It carries the **PR mode** and the cross-cutting context every slice shares.
-
-**PR mode**:
-A label on the **Parent** — `single-pr` or `split-pr` — recording whether the set ships as one PR on one branch or one PR per slice.
+The **Issue** that `to-tickets` files its slices under — the spec from `to-spec`, or one created for the feature. It carries the cross-cutting context every slice shares, and its title becomes the PR's title: a set always ships as one PR.
 
 ## Relationships
 
 - An **Issue tracker** holds many **Issues**
 - A **Parent** is an **Issue** whose sub-tasks are the slices of one feature
-- A **Parent** carries one **PR mode**
 
 ## Flagged ambiguities
 

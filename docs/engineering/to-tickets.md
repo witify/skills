@@ -24,26 +24,17 @@ Reach for it once you have an agreed plan or a written spec and you want it spli
 
 ## Prerequisites
 
-`to-tickets` publishes over MCP, so the tracker's server must be connected in your harness. **ClickUp** is the default; it uses **Linear** only when you say so, the spec already lives there, or the repo's agent instructions name Linear. The install commands are under "Add the tracker's MCP server" in the README. It never falls back to local files. The PR-mode label it sets on the parent (`single-pr` or `split-pr`) is a ClickUp tag or a Linear label, created when missing.
+`to-tickets` publishes over MCP, so the tracker's server must be connected in your harness. **ClickUp** is the default; it uses **Linear** only when you say so, the spec already lives there, or the repo's agent instructions name Linear. The install commands are under "Add the tracker's MCP server" in the README. It never falls back to local files.
 
 ## Always under a parent
 
-Tickets are always sub-tasks of a **parent**: the spec from `to-spec`, the task you pointed at, or one it creates for the feature when there is none. The parent is where the cross-cutting context lives — naming conventions, patterns to follow, known traps — because an implement session typically sees only its own ticket and the parent, with no tracker access. Each ticket stays self-contained for everything else.
+Tickets are always sub-tasks of a **parent**: the spec from `to-spec`, the task you pointed at, or one it creates for the feature when there is none. The parent is where the cross-cutting context lives — naming conventions, patterns to follow, known traps — because an implement session typically sees only its own ticket and the parent, with no tracker access. Each ticket stays self-contained for everything else. A set always ships as one PR, worked in blocking order on one branch, so the parent's title is written to be that PR's title.
 
 ## Vertical slices, not horizontal ones
 
 The whole skill turns on one distinction. A **horizontal** slice ships one layer of the change — all the schema, or all the API — and nothing works until every layer lands. A **vertical** slice, the tracer bullet, ships one narrow path through *every* layer at once, so it can be demoed the moment it's done.
 
 Before slicing, `to-tickets` looks for prefactoring — "make the change easy, then make the easy change" — and orders that work first. It then quizzes you on the breakdown (granularity, blocking edges, what to merge or split) before publishing anything, and publishes blockers first so each ticket's dependency can point at a real ticket. The tickets always form one strictly linear chain: only one is executable at a time.
-
-## One PR or many — it always asks
-
-Slicing decides what the tickets *are*; it says nothing about how they reach review. So before it publishes, `to-tickets` asks — and it always asks, unless you already said which you want:
-
-- **Split PRs** — each ticket gets its own branch and its own PR. Independently grabbable, reviewed in small pieces, at the cost of the reviewer seeing the feature arrive in fragments.
-- **Single PR** — every ticket is worked in blocking order on one shared branch and reviewed once, as the whole feature. Nothing lands until all of it is done, and a failure part-way leaves a partial PR.
-
-The answer rides on the parent as a `single-pr` or `split-pr` label — that's what an agent reads to decide whether to run the set as one epic branch or one branch per ticket. In single-PR mode, the parent's title also doubles as the PR title.
 
 ## The wide-refactor exception
 

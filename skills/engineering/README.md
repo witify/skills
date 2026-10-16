@@ -7,8 +7,8 @@ Skills for daily code work.
 Reachable only when you type them (Claude Code: `disable-model-invocation: true`; Codex: `policy.allow_implicit_invocation: false` in `agents/openai.yaml`).
 
 - **[to-spec](./to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to ClickUp (or Linear) over MCP.
-- **[to-tickets](./to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, filed as sub-tasks on ClickUp (or Linear) with native blocking links, plus the PR mode on the parent.
-- **[ship](./ship/SKILL.md)** — Take a set of tickets to a reviewed PR: one implement and one review sub-agent per ticket, then a PR to `dev` whose feedback is handled under a user-chosen fix policy for at most three waves.
+- **[to-tickets](./to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, filed as sub-tasks on ClickUp (or Linear) with native blocking links.
+- **[ship](./ship/SKILL.md)** — Take a set of tickets to a reviewed PR: one implement and one review sub-agent per ticket, then one PR to `dev` where every real finding worth doing is fixed by default, for at most five feedback waves.
 - **[fix-review](./fix-review/SKILL.md)** — Work through the open review comments on a GitHub PR — triage, confirm the approach with you, then fix, commit, push, and reply with commit links. Never resolves threads; reviewers close their own.
 - **[sprintify-sync](./sprintify-sync/SKILL.md)** — Sync the latest sprintify base code for one feature area from `../sprintify` into the current project — backend, frontend, and tests — so the matching base-code skill fully applies.
 - **[witify-doctor](./witify-doctor/SKILL.md)** — Levelled check-up you validate item by item, one level at a time: harness memory and personal instructions off your machine, plugin and MCP servers in both harnesses, then guidelines, tooling, CI workflows, PHPStan rules (each sized by the files it would touch) and base code aligned with the latest sprintify.

@@ -12,7 +12,7 @@ npx skills update ship
 
 ## What it does
 
-`ship` takes a set of tickets all the way to a reviewed PR: it builds each ticket with its own implement sub-agent, reviews each with its own review sub-agent, moves each ticket's status in the tracker as it goes, and opens a PR to `dev` written in simple French for a reader without the project's context. It fixes every real finding worth doing by default, without asking you to pick a threshold first, and it builds for the long term: an implement sub-agent looks for what the repo already has before writing anything, and a change that reinvents an existing abstraction is a defect the review catches, not a nit.
+`ship` takes a set of tickets all the way to a reviewed PR: it builds each ticket with its own implement sub-agent, reviews each with its own review sub-agent, moves each ticket's status in the tracker as it goes, and opens one PR to `dev` written in simple French for a reader without the project's context. A set always ships as one branch and one PR, worked in blocking order. It fixes every real finding worth doing by default, without asking you to pick a threshold first, and it builds for the long term: an implement sub-agent looks for what the repo already has before writing anything, and a change that reinvents an existing abstraction is a defect the review catches, not a nit.
 
 Its correction loop is bounded to five feedback waves. Its finish line is a green, approved PR, or a precise report of what was deliberately left untouched and why.
 
@@ -24,7 +24,7 @@ Reach for it when the tickets are ready — the output of [to-tickets](./to-tick
 
 ## Prerequisites
 
-The tracker's MCP server connected (ClickUp by default, Linear when the project says so: that's where the tickets come from), a `dev` branch to target, and an authenticated `gh` CLI for the PR and its checks.
+The tracker's MCP server connected (ClickUp by default, Linear when the project says so: that's where the tickets come from), a `dev` branch to target, a clean working tree (it stops rather than stash or commit work it did not make), and an authenticated `gh` CLI for the PR and its checks.
 
 ## The branch it names
 
@@ -34,7 +34,7 @@ When you start from `dev` it cuts that branch. When you start from a branch a to
 
 ## The pipeline
 
-One sub-agent per ticket to implement, one per ticket to review — N tickets, 2N sub-agents. Implementations run sequentially, because they share the working tree; each ticket's review runs in parallel with the next ticket's implementation, so no wall-clock is wasted. Every implement sub-agent starts with a fresh context and builds test-first; every review sub-agent runs [code-review](./code-review.md) pinned to that one ticket's commits, with the ticket as its spec.
+One sub-agent per ticket to implement, one per ticket to review — N tickets, 2N sub-agents. Implementations run sequentially, because they share the working tree; each ticket's review runs in parallel with the next ticket's implementation, so no wall-clock is wasted. Every implement sub-agent starts with a fresh context, receives its ticket and the parent's description (where `to-tickets` puts the decisions the whole set shares), and builds test-first; its commits follow the repo's own convention and always name the ticket, with review fixes marked `review:` so a reader can tell the build from the corrections; every review sub-agent runs [code-review](./code-review.md) pinned to that one ticket's commits, with the ticket as its spec.
 
 ## Look before you build
 
@@ -46,15 +46,15 @@ The tracker shows progress as it happens. A ticket moves to in-progress when its
 
 ## What gets fixed
 
-Everything real, relevant, and worth doing, at any priority, from ticket reviews, CI failures, and Codex comments. The judgment that matters is **worth doing**: a rare edge case the project will never hit, busywork with no observable effect, a decision already made in the ticket, the guidelines, or the session, and concurrency hardening a project does not need are all rejected with the reason recorded. Most projects rarely have two users on the same resource at once, so race-condition findings are usually rejected; the `statim` repo is the known exception, and when the project is unclear, `ship` asks you once for the expected concurrency and applies the answer to the whole session. Pass "analysis only" in the invocation if you want the judgment without any change to the tree.
+Everything real, relevant, and worth doing, at any priority, from ticket reviews, CI failures, and Codex comments. The judgment that matters is **worth doing**: a rare edge case the project will never hit, busywork with no observable effect, a decision already made in the ticket, the guidelines, or the session, and concurrency hardening a project does not need are all rejected with the reason recorded. Most internal apps rarely have two users on the same resource at once, so race-condition findings are usually rejected; `ship` reads the project's domain once per session to decide, treats booking, inventory, sales, payments, queues, collaborative editing and public-crowd domains as ones where concurrency is worth doing, and asks you once when the domain is unclear. Pass "analysis only" in the invocation if you want the tickets built and the PR opened but every finding judged and reported rather than applied.
 
 ## Five feedback waves
 
-After the PR opens, one wave gathers the complete CI and Codex results, triages them, and validates the fixes as a batch. The initial pass counts as wave one; a re-check after a fix push starts the next. The loop stops as soon as CI is green, Codex approves, and nothing worth doing remains, and always stops after wave five with the outstanding state made explicit.
+After the PR opens, one wave gathers the complete CI and Codex results, triages them, and validates the fixes as a batch. The initial pass counts as wave one; a re-check after a fix push starts the next. Codex gets at most fifteen minutes per wave: if it never reacts, the run is CI-only rather than waiting forever. The loop stops as soon as CI is green, Codex approves, and nothing worth doing remains, and always stops after wave five with the outstanding state made explicit.
 
 Codex is never left hanging on the way out: when `gh` is installed, every Codex comment gets a reply in its own language saying what was decided — fixed with a commit link, rejected with the reasoning, or deferred — and its thread is then resolved. Only Codex's own threads are closed that way; a human's stays open for [fix-review](./fix-review.md).
 
-The PR description it writes is itself a deliverable: a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a ready-to-paste Claude Code prompt so a reviewer can have the PR explained to them.
+The PR description it writes is itself a deliverable: the parent's title as the PR title, a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a ready-to-paste Claude Code prompt so a reviewer can have the PR explained to them.
 
 ## Where it fits
 

@@ -194,8 +194,8 @@ Skills for daily code work.
 **User-invoked**
 
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to ClickUp (or Linear) over MCP. No interview — just synthesizes what you've already discussed.
-- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, filed as sub-tasks on ClickUp (or Linear) with native blocking links, and record whether the set ships as one PR or one PR per ticket.
-- **[ship](./skills/engineering/ship/SKILL.md)** — Take a set of tickets to a reviewed PR: one implement and one review sub-agent per ticket, then a PR to `dev` whose feedback is handled under a user-chosen fix policy for at most three waves.
+- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, filed as sub-tasks on ClickUp (or Linear) with native blocking links.
+- **[ship](./skills/engineering/ship/SKILL.md)** — Take a set of tickets to a reviewed PR: one implement and one review sub-agent per ticket, then one PR to `dev` where every real finding worth doing is fixed by default, for at most five feedback waves.
 - **[fix-review](./skills/engineering/fix-review/SKILL.md)** — Work through the open review comments on a GitHub PR — triage, confirm the approach with you, then fix, commit, push, and reply with commit links. Never resolves threads; reviewers close their own.
 - **[sprintify-sync](./skills/engineering/sprintify-sync/SKILL.md)** — Sync the latest sprintify base code for one feature area from `../sprintify` into the current project — backend, frontend, and tests — so the matching base-code skill fully applies.
 - **[witify-doctor](./skills/engineering/witify-doctor/SKILL.md)** — Levelled check-up you validate item by item, one level at a time: harness memory and personal instructions off your machine, plugin and MCP servers in both harnesses, then guidelines, tooling, CI workflows, PHPStan rules (each sized by the files it would touch) and base code aligned with the latest sprintify.
