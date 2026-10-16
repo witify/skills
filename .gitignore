@@ -3,3 +3,4 @@ polyscope.local.json
 .DS_Store
 ~$*
 .diagram-design
+evals/results
