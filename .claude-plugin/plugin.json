@@ -60,6 +60,7 @@
     "./skills/productivity/to-questionnaire",
     "./skills/productivity/writing-for-agents",
     "./skills/productivity/witify-docx",
-    "./skills/productivity/witify-writing-style"
+    "./skills/productivity/witify-writing-style",
+    "./skills/productivity/figma-brief"
   ]
 }

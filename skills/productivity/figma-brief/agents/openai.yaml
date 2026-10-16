@@ -1,0 +1,3 @@
+interface:
+  display_name: "Figma Brief"
+  short_description: "Write a concise brief (prompt) for generating interface mockups with Figma Make"
