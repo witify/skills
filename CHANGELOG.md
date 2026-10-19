@@ -1,5 +1,11 @@
 # witify-skills
 
+## 3.3.0
+
+### Minor Changes
+
+- [`54cdc3b`](https://github.com/witify/skills/commit/54cdc3bdbeb6c7435f735935ad8cdcb98c67b711) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` now prints a boxed banner at each milestone of a run, so the transcript can be scanned without reading the sub-agent chatter: when a ticket starts (`🎫 TICKET n / m`, with the previous ticket's result and the tickets left), when the PR opens (`🚀 PR OUVERTE`, double-lined, with the PR link), and at each Codex wave as the review starts (`👀`), as its findings are fixed (`🔧`, with the fixed, rejected and deferred counts) and when Codex approves (`👍`). A repo without Codex gets a single `⏱` banner when the 15-minute wait runs out.
+
 ## 3.2.0
 
 ### Minor Changes
