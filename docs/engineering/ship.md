@@ -48,6 +48,10 @@ The tracker shows progress as it happens. A ticket moves to in-progress when its
 
 Everything real, relevant, and worth doing, at any priority, from ticket reviews, CI failures, and Codex comments. The judgment that matters is **worth doing**: a rare edge case the project will never hit, busywork with no observable effect, a decision already made in the ticket, the guidelines, or the session, and concurrency hardening a project does not need are all rejected with the reason recorded. Most internal apps rarely have two users on the same resource at once, so race-condition findings are usually rejected; `ship` reads the project's domain once per session to decide, treats booking, inventory, sales, payments, queues, collaborative editing and public-crowd domains as ones where concurrency is worth doing, and asks you once when the domain is unclear. Pass "analysis only" in the invocation if you want the tickets built and the PR opened but every finding judged and reported rather than applied.
 
+## Milestone banners
+
+A run is long and most of its transcript is sub-agent chatter, so `ship` marks each milestone with a boxed banner you can spot while scrolling: one when a ticket starts (`🎫 TICKET 2 / 4`, with the previous ticket's result and what remains), a double-lined one when the PR opens (`🚀 PR OUVERTE`, with the link), and one per Codex wave as the review starts (`👀`), as its findings are fixed (`🔧`, with the fixed, rejected and deferred counts) and when Codex approves (`👍`). The emoji is what tells them apart.
+
 ## Five feedback waves
 
 After the PR opens, one wave gathers the complete CI and Codex results, triages them, and validates the fixes as a batch. The initial pass counts as wave one; a re-check after a fix push starts the next. Codex gets at most fifteen minutes per wave: if it never reacts, the run is CI-only rather than waiting forever. The loop stops as soon as CI is green, Codex approves, and nothing worth doing remains, and always stops after wave five with the outstanding state made explicit.
