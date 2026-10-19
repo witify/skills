@@ -1,5 +1,11 @@
 # witify-skills
 
+## 3.3.1
+
+### Patch Changes
+
+- [`4a25b7b`](https://github.com/witify/skills/commit/4a25b7b6fbad650dcab48ce469a267c623ddf8b6) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `witify-writing-style`: hours are written glued to the number (`2h`, `0,5h`, `1h30`), no longer with a space (`2 h`).
+
 ## 3.3.0
 
 ### Minor Changes
