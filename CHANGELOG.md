@@ -1,5 +1,11 @@
 # witify-skills
 
+## 3.3.2
+
+### Patch Changes
+
+- [`202f7bf`](https://github.com/witify/skills/commit/202f7bf32d6931e2dadbe54f23f632b5a09a63db) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` milestone banners now actually show up: the skill requires each banner to be written as visible reply text before the milestone's tool calls. Before, the model could skip it, keep it in its thinking, or replace it with a one-line status sentence, so the boxed `🎫 TICKET n / m` banner never appeared in the transcript.
+
 ## 3.3.1
 
 ### Patch Changes
