@@ -1,0 +1,5 @@
+interface:
+  display_name: "QA Path"
+  short_description: "Guided test path: steps, observations, questions"
+policy:
+  allow_implicit_invocation: false
