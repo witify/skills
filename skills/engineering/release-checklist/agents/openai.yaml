@@ -1,0 +1,5 @@
+interface:
+  display_name: "Release Checklist"
+  short_description: "Production go/no-go checklist: steps, criteria, decision rule, drafts"
+policy:
+  allow_implicit_invocation: false
