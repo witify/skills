@@ -1,5 +1,17 @@
 # witify-skills
 
+## 3.3.2
+
+### Patch Changes
+
+- [`202f7bf`](https://github.com/witify/skills/commit/202f7bf32d6931e2dadbe54f23f632b5a09a63db) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` milestone banners now actually show up: the skill requires each banner to be written as visible reply text before the milestone's tool calls. Before, the model could skip it, keep it in its thinking, or replace it with a one-line status sentence, so the boxed `🎫 TICKET n / m` banner never appeared in the transcript.
+
+## 3.3.1
+
+### Patch Changes
+
+- [`4a25b7b`](https://github.com/witify/skills/commit/4a25b7b6fbad650dcab48ce469a267c623ddf8b6) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `witify-writing-style`: hours are written glued to the number (`2h`, `0,5h`, `1h30`), no longer with a space (`2 h`).
+
 ## 3.3.0
 
 ### Minor Changes

@@ -25,6 +25,8 @@ Normalize unlabeled findings as **P1** (blocking correctness, security, data, or
 
 A `/ship` run is long and its transcript is mostly sub-agent chatter, so the milestones below each get a **banner**: a fenced code block, printed as the very first thing at that moment, before any other sentence about it. A reader scrolling the transcript must be able to find where each ticket started, where the PR opened, and what each Codex wave did, from the banners alone. The emoji is what tells the banners apart; the PR banner alone uses the double-line box, because it is the run's single most important moment.
 
+**A banner exists only as visible reply text.** At a milestone, your turn opens with a text block holding the banner, and only then come its tool calls (the status move, the sub-agent spawn, the next `gh` command). A banner kept in your thinking, echoed from a Bash command (its output is collapsed), or paraphrased as a status sentence ("Starting ticket 1/6…") is a missed banner: the human sees nothing. If you are about to write such a sentence at a milestone, write the banner instead.
+
 Rules: print the banner inside a ```` ``` ```` fence so the box stays aligned; fill every placeholder with the real value, never leave a `<…>`; keep every line the same width (the boxes below are 76 columns wide), truncating a long title with `…` rather than wrapping it; put nothing else inside the box. Print the ticket banner **before** the tracker status move, and the PR banner **after** the PR exists, so the url is real.
 
 **Ticket start** — printed once per ticket, before its implement sub-agent is spawned. The `Précédent` line is omitted for the first ticket; `Reste` says `aucun` for the last.
@@ -116,7 +118,7 @@ Implementations run **sequentially** (they share the working tree); each ticket'
 
 For each ticket, in blocking order:
 
-1. Print the **ticket banner** (section 2), move the ticket to in-progress, then spawn its **implement sub-agent** (fresh context). Hand it the ticket in full **and the parent's description**, with the brief:
+1. Write the **ticket banner** (section 2) as reply text, before any tool call for this ticket; then move the ticket to in-progress, then spawn its **implement sub-agent** (fresh context). Hand it the ticket in full **and the parent's description**, with the brief:
    - **Look before you build.** Before writing anything, search the repo for code that already does something close: grep the domain words of the ticket across services, helpers, actions, components, and queries, and read the repo's guidelines (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`). Extend what exists rather than writing a parallel version; a near-fit is adapted, not duplicated.
    - **Shared logic lives in one place.** Anything a second caller could want goes where the repo already centralizes that kind of thing (a service, an action, a model method, a composable, a Base* component), never inline in the controller, the job, or the Vue template. New shared code is placed where the next developer will look for it.
    - Build it test-first (red-green-refactor), one vertical slice at a time, at the seams the ticket declares (or the most obvious public interface if it declares none); typecheck and run the touched test files as you go; commit on the branch in the format above. Record the commit range it produced.
