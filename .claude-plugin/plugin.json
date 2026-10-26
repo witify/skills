@@ -1,7 +1,7 @@
 {
   "name": "witify-skills",
   "version": "3.3.0",
-  "description": "Witify's agent skills for real engineering — spec/ticket flows on ClickUp or Linear, shipping tickets to a reviewed PR, sprintify base-code conventions, and branded documents.",
+  "description": "Witify's agent skills for real engineering \u2014 spec/ticket flows on ClickUp or Linear, shipping tickets to a reviewed PR, sprintify base-code conventions, and branded documents.",
   "author": {
     "name": "Witify",
     "url": "https://witify.io"
@@ -37,6 +37,7 @@
     "./skills/engineering/witify-doctor",
     "./skills/engineering/translations",
     "./skills/migration/migrate-deploy-branches",
+    "./skills/migration/migrate-forge-server",
     "./skills/productivity/loom",
     "./skills/productivity/witify-docx",
     "./skills/productivity/witify-writing-style",
