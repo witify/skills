@@ -218,6 +218,12 @@ Skills for daily code work.
 
 One-way moves from one setup to another. Each runs once per project, then stops being relevant.
 
+**User-invoked**
+
+Reachable only by typing the name.
+
+- **[migrate-forge-server](./skills/migration/migrate-forge-server/SKILL.md)** — Move a Laravel site from an obsolete Forge server to a new one through the Forge API: upgrade branch with deep verification, new server and site, `.env` and deploy script carried over, rehearsal transfer on `*.on-forge.com`, real cutover with the old site down, cron/daemons/integrations moved, DNS and SSL. Phase by phase, each ending at a checkpoint.
+
 **Model-invoked**
 
 - **[migrate-deploy-branches](./skills/migration/migrate-deploy-branches/SKILL.md)** — Move a project to deploy branches: a GitHub Actions workflow builds the frontend assets and force-pushes source + build to `deploy` / `deploy-dev`, and Forge deploys those instead of building on the server.

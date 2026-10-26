@@ -37,6 +37,7 @@
     "./skills/engineering/witify-doctor",
     "./skills/engineering/translations",
     "./skills/migration/migrate-deploy-branches",
+    "./skills/migration/migrate-forge-server",
     "./skills/productivity/loom",
     "./skills/productivity/witify-docx",
     "./skills/productivity/witify-writing-style",
