@@ -254,7 +254,9 @@ Multi-select relationship components. Same pattern as BaseBelongsTo but supports
 
 ### BaseButton
 
-**Key props:** `type` ("submit" | "button" | "reset"), `size`, `color`, `icon`, `iconPosition` ("start" | "end"), `loading`, `disabled`, `to` (RouteLocation), `href`, `tooltip`, `align` ("center" | "between")
+`type` defaults to `"submit"`, so a `BaseButton` inside a form submits it unless told otherwise. Always pass `type`: `"button"` for every action that is not the form's submit. `/frontend-development` carries the rule.
+
+**Key props:** `type` ("submit" | "button" | "reset", default `"submit"`), `size`, `color`, `icon`, `iconPosition` ("start" | "end"), `loading`, `disabled`, `to` (RouteLocation), `href`, `tooltip`, `align` ("center" | "between")
 
 **Events:** `click`, `mouseenter`, `mouseleave`, `mouseover`
 
