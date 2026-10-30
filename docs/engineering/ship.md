@@ -58,6 +58,8 @@ After the PR opens, one wave gathers the complete CI and Codex results, triages 
 
 Codex is never left hanging on the way out: when `gh` is installed, every Codex comment gets a reply in its own language saying what was decided — fixed with a commit link, rejected with the reasoning, or deferred — and its thread is then resolved. Only Codex's own threads are closed that way; a human's stays open for [fix-review](./fix-review.md).
 
+In the Claude desktop app, the loop gives way to **Auto-fix**. `ship` turns the switch on if it is off, and while it is on the app owns CI failures, merge conflicts, and review comments, human ones included: `ship` runs no waves and polls nothing, and only handles each event the app wakes it with, still judging what is worth fixing. The five waves run when the app refuses the switch, or outside the app.
+
 The PR description it writes is itself a deliverable: the parent's title as the PR title, a plain-French summary, one bullet per ticket, and a short list of hand-runnable smoke tests — plus a ready-to-paste Claude Code prompt so a reviewer can have the PR explained to them.
 
 ## Where it fits
@@ -68,4 +70,4 @@ The PR description it writes is itself a deliverable: the parent's title as the 
 to-spec → to-tickets → ship → fix-review
 ```
 
-Its key neighbours are [to-tickets](./to-tickets.md), which produces the tickets it builds, and [fix-review](./fix-review.md), which takes over when **human** review comes back on the PR — `ship` handles CI and Codex only.
+Its key neighbours are [to-tickets](./to-tickets.md), which produces the tickets it builds, and [fix-review](./fix-review.md), which takes over when **human** review comes back on the PR — outside Auto-fix, `ship` handles CI and Codex only.
