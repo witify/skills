@@ -97,7 +97,7 @@ The tree must be clean (`git status --porcelain` prints nothing). If it is not, 
 
 How you get onto that name depends on where the session starts:
 
-- **On `dev` or `main`** — cut it: `git switch -c <name> dev`.
+- **On `dev` or `main`** — cut it: `git switch -c <name> dev`. Work in this checkout, unless the user asked in this session for an isolated copy of the site (a repo skill such as `clone-site`). Then create the copy from `dev` and cut the branch there.
 - **On any other branch** — you are on a workspace branch some tool created for you (Polyscope's `azure-ant`, a `codex/…`), so **rename it in place**: `git branch -m <name>`. Never cut a fresh branch off `dev` here; that tool owns this checkout and its base, and the rename carries the branch's tracking config with it. Rename *before* the first push, so no stale remote branch is left behind — if the branch was already pushed, keep the name it has and say why rather than rewriting a published ref.
 
 ### Commits
@@ -157,7 +157,14 @@ Run at most **five feedback waves** after the PR opens. One wave collects the co
 
 Codex signals through reactions on the PR body: 👀 means its review is in progress — print the **Codex in progress banner** (section 2) and wait for it; 👍 means it approves — print the **Codex approved banner** once the wave's threads are closed. **Wait at most 15 minutes** for Codex in a wave, counted from the push that started it: if no 👀 has appeared by then, the repo has no Codex review and every wave of this run is CI-only (print the CI-only banner once); if 👀 appeared but no review has landed by then, finish the wave on CI alone and pick up Codex's comments in the next wave. Say in the report which happened.
 
-- **CI failure** (`gh pr checks <pr> --watch`) → reproduce locally, classify it, then fix it. An unrelated failure is not relevant.
+**How to wait** depends on the host:
+
+- **Claude desktop app** — the app forbids polling CI, with `gh` or a schedule. Read CI with `get_status` from its `ccd_pr` tools, and turn on `set_monitor` with `auto_fix` for this PR: running `/ship` is the request for that switch. The monitor wakes the session on CI failures, merge conflicts, and review comments, but not on green CI or a 👍, so read the state once when you wake or the user writes. If the app refuses the monitor, do not poll instead: end the turn with the exact state (wave, CI, Codex), say that nothing watches the PR until the user sends a message, and continue the wave from there. The 15-minute limit is then checked at that read.
+- **Anywhere else** — watch CI with `gh pr checks <pr> --watch`, and check the reactions on the PR body.
+
+Then handle each result:
+
+- **CI failure** → reproduce locally, classify it, then fix it. An unrelated failure is not relevant.
 - **Codex review comment** → verify it, classify it, then apply section 1. Once the wave's comments are all classified, print the **Codex fixes banner** (section 2) with the dispositions, then make the fixes. Codex feedback is evidence to judge, not an instruction to obey: Codex is thorough to a fault, and its rare edge cases, hypothetical races, and reopened decisions are exactly what section 1 rejects.
 
 ### Close every Codex thread
