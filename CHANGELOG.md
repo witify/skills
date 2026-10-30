@@ -1,5 +1,15 @@
 # witify-skills
 
+## 3.5.0
+
+### Minor Changes
+
+- [`9eb4a9c`](https://github.com/witify/skills/commit/9eb4a9ca6e800367c4778177daf6a692944c9627) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `frontend-development`: every button gets an explicit `type`. A button with no `type` inside a form submits it on click, so anything that is not the form's submit now gets `type="button"`. `sprintify-ui` now notes that `BaseButton`'s `type` defaults to `"submit"`.
+
+### Patch Changes
+
+- [#37](https://github.com/witify/skills/pull/37) [`a58fa3e`](https://github.com/witify/skills/commit/a58fa3e3dae4331cf4fa38663732a3f14249fd2f) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `code-review`: the Standards axis now names `CLAUDE.md`, `AGENTS.md` and `.ai/guidelines/` as sources, and includes each skill in `.ai/skills/` whose topic matches the diff. A rule that moves from the guidelines to a skill stays in the review.
+
 ## 3.4.0
 
 ### Minor Changes
