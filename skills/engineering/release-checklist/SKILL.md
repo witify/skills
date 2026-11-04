@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Write the checklist the team walks to put something in production and decide, on the evening itself, whether it stays there. The deliverable is a **go/no-go**: the steps in chronological order from the weeks before to the weeks after, each owned by one person; the **criteria** the deployment must meet, each with a threshold and the place where its result is read; the **decision rule** that turns the criteria into go, retry, or no-go; and a first draft of everything that has to exist on the day (the rollback plan, the emails, the list of what the client must hand over). It comes out of one prompt complete: decide, draft, and mark what you could not source `À confirmer`, so a human reviews a finished document instead of answering questions.
 
+The checklist carries only what the person running the day does: every item is a box to tick. What you learned along the way and nobody ticks has its own place, never a line inside a phase: a data case to settle with the client goes to the data document (section 5), a defect you suspect in the code goes to the closing report. The checklist never asks for a code change.
+
 The checklist is a dev document. Every step belongs to Witify unless nobody else can do it. The client appears only for the actions that are theirs by nature (freeze their old system, export their data, choose the date, name their on-call), and those actions are also gathered in one place so they can be sent in one message.
 
 ## 1. Context
@@ -34,24 +36,30 @@ For a project-sized inventory, delegate the reading of each area to a read-only 
 
 ## 3. The checklist
 
-Chronological, phase by phase, keeping the phases the context earns. Each phase opens with two sentences on what it secures. Each item is one line: a bold lead word, the action in the imperative, the owner when it is not Witify, and the detail that makes it checkable (the file to look for, the command, the value to compare).
+Chronological, phase by phase, keeping the phases the context earns. Each phase opens with one or two sentences on what it secures and the line **Terminée quand :** with its completion criterion. Each item is a checkbox (`- [ ]`) on one line, 20 words at most: a bold lead word, the action in the imperative, the owner in a tag when it is not Witify (« (MP2B) »), and the detail that makes it checkable (the file to look for, the command, the value to compare). The why of an item is not written; when a reader needs it, it lives in the criterion the item serves.
 
-1. **Objectif et portée**, with the **fiche**: a table of the values the day depends on (date of day X, freeze hour, decider, on-call for day 1, measured durations, the limit hour of the window), each `À confirmer` until sourced.
-2. **Préparation**, the weeks before: date and hour; the decider; the criteria validated with the client; the rollback plan; the witness records chosen and captured before the freeze; the production server checked against what the procedure needs (binaries, memory, disk, `tmux`); outbound mail tested from production into a real mailbox; the decisions that must be made once (where a manual mapping happens, what the import erases); the drafts written.
+1. **Fiche du jour X**, first, after two lines saying what day X is: a two-column table of the values the day depends on (date of day X, freeze hour, decider, on-call for day 1, the measured durations, the limit hour of the window, the production server and URL), each `À confirmer` until sourced, bare: the commentary on why a value is unknown goes to the report.
+2. **Préparation**, the weeks before: date and hour; the decider; the criteria validated with the client; the rollback plan; the witness records chosen and captured before the freeze; the production server checked against what the procedure needs (binaries, memory, disk, `tmux`); the production environment variables; outbound mail tested from production into a real mailbox; the decisions that must be made once (where a manual mapping happens, what the import erases); the drafts written.
 3. **Répétition**: the full procedure run on the production server with staging data (cutover, launch), or the deploy of the branch on staging over a fresh production copy (release). It measures the durations the window is built from, and it leaves no configuration behind that must survive.
 4. **Formation**, only when users change tool or see the change: recent data in staging first, the session, a trial period, a question channel kept open after the day.
 5. **Jour X**: the freeze and export (cutover: close the old system, verify its lock file is gone, compact, export the database and the document share with their structure intact, lock the old system, copy to the server outside the deployed folder), or the deploy (launch, release: backup first, maintenance mode when a migration locks tables, deploy, migrate, backfill, caches warmed, queues restarted).
-6. **Importation** (cutover): the steps in the readme's order, each in `tmux`, stop at the first failure, rollback when the window is passed.
-7. **Vérification et tâches d'après**: witness records compared; the admin account and roles recreated when the import removes them; users with placeholder emails corrected and departed ones disabled; the manual mappings done; a backup taken right after the last successful step; then the **decision**.
+6. **Importation** (cutover): the commands in the readme's order in one code block, run in `tmux`; stop at the first failure and restart from the clean state; rollback when the window is passed. The behaviour of the import (transactions, memory, timeouts) is one line each, only where it changes what the operator does.
+7. **Vérification et tâches d'après**: witness records compared (the method is written once, in the witness section); the admin account and roles recreated when the import removes them; the manual mappings done; the critical path walked on a test record then deleted; the health page, queues, and error tracker read; a backup taken right after the last successful step; then the **decision**. Data cleanup (placeholder users, duplicates, records to settle with the client) is one item pointing at the data document of section 5.
 8. **Communication et jour 1**: the email sent only after the go, everyone's first login confirmed, the old system readable, the on-call named with a checkpoint at the end of day 1. For a release, only what users notice is communicated.
 9. **Après**: the old system read-only for a stated period then archived; the data copies on the server deleted or secured by a named person on a date; the logs kept with the backup; the first week's monitoring (queues, failed jobs, error tracker, scheduled jobs).
 10. **Critères de go/no-go** (section 4).
 11. **Dossiers témoins** or **Parcours de vérification** (section 5).
-12. **Annexe**: the drafts (section 6).
+12. **Annexes**: the drafts (section 6), then the reference tables and commands that an item cites and nobody reads in sequence: the expected counts per table, the commands to validate (`tinker` snippets), kept out of the phases.
+
+**Budget.** A cutover checklist is 3 000 words at most before the annexes; a launch or a release 1 500. An item is one line; a phase intro is two sentences; a criterion row names the criterion, the threshold, and the source in a few words each; a witness row says what to verify in one line and the reason in four words. When the draft is over, cut until it holds: an item that explains itself, a rule stated twice, a table consulted rather than read. Count words, not punctuation, and report the count:
+
+```bash
+awk '/^## .*Annexe/{exit} {print}' qa/release-checklist-<scope-slug>.md | tr -s ' ' '\n' | grep -cE '[[:alnum:]]'
+```
 
 ## 4. Criteria and the decision rule
 
-A criterion is observable by one person on the evening, from one source. Each row names the criterion, its threshold, and the source where the result is read (a command's output, a CSV, the user list, a mailbox, the clock). Thresholds are proposals: say in the section that the hours and minutes are examples to confirm with the client.
+A criterion is observable by one person on the evening, from one source. Each row names the criterion, its threshold, and the source where the result is read (a command's output, a CSV, the user list, a mailbox, the clock), each in a few words. Thresholds are proposals: say in the section that the hours and minutes are examples to confirm with the client. A table a criterion cites (the expected counts per table) sits in the annex, the row names it.
 
 **Blocking** criteria, every one needed for a go: the procedure finished without error; counts per table match the source (100 % on the main tables, any gap explained by a log line); every witness record matches field by field; an administrator can log in; the password-reset email reaches a real mailbox within minutes and outside spam; every active user has a real email; the critical happy path works end to end in production (one test record created, its document generated, then deleted); the window is respected; a dated backup exists after the last verification. For a release: migrations applied and reversible or backed up, the feature's happy path and its neighbouring screens, no new failed jobs, error rate unchanged.
 
@@ -65,7 +73,9 @@ The **decision rule**, applied in order and without exception:
 
 ## 5. Witness records and verification paths
 
-For a **cutover**, choose ten to fifteen **witness records** (dossiers témoins) among real records, each covering one rule of the import that can go wrong: the most active record of the year (what users open first on day 1), the longest chain of linked records, a cycle or multi-level hierarchy, truncated or free-text fields, duplicate codes, a shared record with several owners, a counter or numbering sequence (the next number proposed must follow the last issued), a rare type, a record still open at the moment of the freeze, the entity with the most linked items, and a user with no email in the source. For each: its name and source identifier, what to verify, and the reason in one sentence. Then the comparison method: screenshots of each record in the old system before the freeze, compared field by field after the import, each gap noted with record, field, old value, new value, and a gap explained by the import log is not a failure.
+For a **cutover**, choose ten to fifteen **witness records** (dossiers témoins) among real records, each covering one rule of the import that can go wrong: the most active record of the year (what users open first on day 1), the longest chain of linked records, a cycle or multi-level hierarchy, truncated or free-text fields, duplicate codes, a shared record with several owners, a counter or numbering sequence (the next number proposed must follow the last issued), a rare type, a record still open at the moment of the freeze, the entity with the most linked items, and a user with no email in the source. For each: its name and source identifier, what to verify in one line, and the reason in four words. The comparison method is written once, here, and nowhere else: screenshots of each record in the old system before the freeze, compared field by field after the import, each gap noted with record, field, old value, new value, and a gap explained by the import log is not a failure. The phases and the criteria refer to this section instead of restating it.
+
+The data cases the client must settle (records without an owner, duplicates, placeholder users, empty numbers, with their counts) are **a separate document**: `qa/<scope-slug>-donnees.md` written by `/qa-path` when it exists, else one you write in the same shape (one table: case, count, what to decide). The checklist points at it from one item and never lists the cases itself.
 
 For a **launch** or a **release**, the verification is a short smoke test in production: the journeys of the `qa/` path when one exists, otherwise two to four numbered paths in the shape `/qa-path` writes (steps, what to observe), on a fictitious record created then deleted.
 
@@ -76,7 +86,7 @@ Write every draft yourself, in the annex, with the values that depend on the day
 - **The login or announcement email** to the users (cutover, launch; release only when users notice): what changes from which date, how to log in the first time (the password-reset path, link validity, what to do when the email does not arrive), the old system read-only until a date, where the old documents are, who answers questions, and the checkpoint meeting.
 - **The message to the client** gathering every action that is theirs, each with its date: the export, the freeze, the date, the decider, the list of employees with their real emails.
 - **The rollback plan**: the exact commands or actions in order, who runs them, and how long they take, derived from the deploy mechanism the repo actually uses.
-- **The fiche** of section 3 filled with every value you could source.
+- **The reference annexes**: the expected counts per table (source rows, imported rows, explained gap) and the commands an item says to validate, each under its own heading so an item can cite it.
 
 ## 7. Language and style
 
@@ -88,4 +98,4 @@ Write the Markdown to `qa/release-checklist-<scope-slug>.md` in the project (`qa
 
 ## 9. Report
 
-Close with: the context and the signs that decided it; the sources read (readme, workflow, tickets) or that no requirements were available; the phases kept and the ones dropped, with why; the count of blocking and non-blocking criteria; the witness records or paths; every `À confirmer` in the fiche and the criteria; the drafts written; where the file is and whether a document was rendered.
+Close with: the context and the signs that decided it; the sources read (readme, workflow, tickets) or that no requirements were available; the phases kept and the ones dropped, with why; the count of blocking and non-blocking criteria; the witness records or paths; every `À confirmer` in the fiche and the criteria, with why each is unknown; the defects you suspect in the code, for the team, which the checklist never carries; the word count against the budget; the drafts written; where the files are (the checklist, the data document) and whether a document was rendered.

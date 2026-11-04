@@ -26,6 +26,10 @@ Reach for it when a date is coming: a new app replacing a legacy system (a **cut
 
 Writes `qa/release-checklist-<slug>.md` in the project, uncommitted. When a ticket is passed, it reads the tracker over MCP (ClickUp by default, Linear when the project says so) and stops with the install pointer if the server is not connected. Durations and counts come from an import log, a rehearsal, or the staging database; with none of those reachable they stay `À confirmer`. A rendered document goes through [witify-docx](../productivity/witify-docx.md).
 
+## A list you tick
+
+Every phase is a list of checkboxes, one line each: the action, the command or file in code, the owner in a tag when it is the client. The why stays out of the item. The data cases the client must settle go to a separate document (the one [qa-path](./qa-path.md) writes when it exists), and a defect the agent suspects in the code goes to its closing report, never into the list. The tables an item cites but nobody reads in sequence (expected counts per table, commands to validate) sit in the annex. A word budget (3 000 for a cutover, 1 500 for a launch or a release) is counted and reported.
+
 ## Criteria, then a rule
 
 The leading idea is the **decision rule**. Criteria come in two tables: **blocking** ones, every one needed for a go (the procedure finished clean, counts match the source, witness records match field by field, an admin can log in, the reset email reaches a real mailbox, the happy path works in production, the window held, a dated backup exists), and **non-blocking** ones that only open a follow-up task. The rule then applies in order: go when everything blocking passes; decide again when one blocking criterion fails and the fix fits in thirty minutes inside the window; no-go in every other case, with the rollback plan that the context implies.
