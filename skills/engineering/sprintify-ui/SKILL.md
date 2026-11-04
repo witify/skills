@@ -135,6 +135,7 @@ Per-component docs are available at `https://ui.sprintify.app/llm/{ComponentName
 | `BaseFilePickerCrop`                 | File picker with built-in image cropping                        |
 | `BaseMediaPreview`                   | Media file preview                                              |
 | `BaseMediaItem`                      | Single media item display                                       |
+| `BaseLightbox`                       | Full-screen image viewer (prev/next, thumbnails, arrow keys)    |
 | `BaseAvatar` / `BaseAvatarGroup`     | User avatar display                                             |
 
 ### Feedback & Utility
@@ -327,6 +328,22 @@ Form field wrapper with label and error display.
 **Events:** `update:modelValue`, `success`, `start`, `end`, `fail`
 
 **Slots:** `default` (state info), `list` (custom list rendering)
+
+### BaseLightbox
+
+Full-screen image viewer built on `BaseModalCenter`. Use it instead of a custom image modal (since v0.12.34).
+
+**Required props:** `media` (LightboxMedia[] — `{ id?, url, thumbnail_url?, file_name? }`; Spatie Media Library media fit as-is)
+
+**Key props:** `title` (string | null — defaults to the active image's `file_name`)
+
+**Models:** `v-model` (open), `v-model:index` (active image — kept inside the list on open and when the list changes)
+
+Previous / Next, a thumbnail strip (`thumbnail_url` when present) and a "1 / 3" counter, hidden with a single image. Left / Right arrows step through the images. Escape closes only the lightbox, not the modal underneath. It closes itself when `media` becomes empty.
+
+```vue
+<BaseLightbox v-model="showImages" v-model:index="imageIndex" :media="item.images" :title="item.name" />
+```
 
 ## Key Types
 
