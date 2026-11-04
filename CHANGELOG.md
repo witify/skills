@@ -1,5 +1,17 @@
 # witify-skills
 
+## 3.6.0
+
+### Minor Changes
+
+- [#39](https://github.com/witify/skills/pull/39) [`68a4ea3`](https://github.com/witify/skills/commit/68a4ea38668fa82b611c1f2aed8c491f56718d42) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` no longer duplicates Auto-fix in the Claude desktop app: while Auto-fix is on for the PR, the app owns CI failures, merge conflicts, and review comments, so `ship` runs no feedback waves, polls nothing, and only handles the events the app wakes it with. The five waves still run when the app refuses the switch, and outside the app.
+
+- [`3ae39bb`](https://github.com/witify/skills/commit/3ae39bbb4b70b11a41f33c37008c9104d29a9697) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` now says when to work in an isolated copy of the site, and how to wait for CI and Codex in the Claude desktop app: it uses the `ccd_pr` tools and the monitor in place of `gh pr checks --watch`, and it reports the exact state if the app refuses the monitor.
+
+### Patch Changes
+
+- [#40](https://github.com/witify/skills/pull/40) [`5da38c7`](https://github.com/witify/skills/commit/5da38c7583f83040bdbb9abd6d5dbca68560c2b4) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `sprintify-ui` now documents `BaseLightbox` (sprintify-ui 0.12.34), the full-screen image viewer, in the media catalog and the key component reference.
+
 ## 3.5.0
 
 ### Minor Changes
