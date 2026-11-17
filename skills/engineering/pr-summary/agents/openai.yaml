@@ -1,0 +1,5 @@
+interface:
+  display_name: "PR Summary"
+  short_description: "Brief a PR's reviewer: what changed, 🔴🟡🟢 checks, before/after video, impacts"
+policy:
+  allow_implicit_invocation: false
