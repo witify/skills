@@ -198,6 +198,7 @@ Skills for daily code work.
 - **[ship](./skills/engineering/ship/SKILL.md)** — Take a set of tickets to a reviewed PR: one implement and one review sub-agent per ticket, then one PR to `dev` where every real finding worth doing is fixed by default, for at most five feedback waves.
 - **[fix-review](./skills/engineering/fix-review/SKILL.md)** — Work through the open review comments on a GitHub PR — triage, confirm the approach with you, then fix, commit, push, and reply with commit links. Never resolves threads; reviewers close their own.
 - **[release-checklist](./skills/engineering/release-checklist/SKILL.md)** — Write the go/no-go checklist for a production deployment, whether a cutover from a legacy system, the launch of a new app, or the release of a big feature: chronological steps owned by the dev team, blocking criteria with thresholds, the decision rule, witness records, and a first draft of every email and plan, from one prompt.
+- **[pr-summary](./skills/engineering/pr-summary/SKILL.md)** — Brief the reviewer of a GitHub PR: what the PR changes and why, the features to validate by hand with a 🔴🟡🟢 priority, a side-by-side before/after video of every visual change, and the impacts to flag, posted at the top of the PR description.
 - **[sprintify-sync](./skills/engineering/sprintify-sync/SKILL.md)** — Sync the latest sprintify base code for one feature area from `../sprintify` into the current project — backend, frontend, and tests — so the matching base-code skill fully applies.
 - **[witify-doctor](./skills/engineering/witify-doctor/SKILL.md)** — Levelled check-up you validate item by item, one level at a time: harness memory and personal instructions off your machine, plugin and MCP servers in both harnesses, then guidelines, tooling, CI workflows, PHPStan rules (each sized by the files it would touch) and base code aligned with the latest sprintify.
 
@@ -218,6 +219,12 @@ Skills for daily code work.
 ### Migration
 
 One-way moves from one setup to another. Each runs once per project, then stops being relevant.
+
+**User-invoked**
+
+Reachable only by typing the name.
+
+- **[migrate-forge-server](./skills/migration/migrate-forge-server/SKILL.md)** — Move a Laravel site from an obsolete Forge server to a new one through the Forge API: upgrade branch with deep verification, new server and site, `.env` and deploy script carried over, rehearsal transfer on `*.on-forge.com`, real cutover with the old site down, cron/daemons/integrations moved, DNS and SSL. Phase by phase, each ending at a checkpoint.
 
 **Model-invoked**
 

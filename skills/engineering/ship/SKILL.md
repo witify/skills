@@ -21,7 +21,73 @@ A finding is **real** when evidence supports it, **relevant** when it belongs to
 
 Normalize unlabeled findings as **P1** (blocking correctness, security, data, or spec failure), **P2** (material non-blocking defect or reliability problem), or **P3** (optional improvement or nit). **Code that duplicates or bypasses an existing abstraction is P2, not P3**: a helper, service, component, or query the repo already has and the change rewrote inline is a maintainability defect, not a nit, and it gets fixed. Only when whether a finding is worth doing is genuinely uncertain, ask; at each boundary or wave, batch every such question into one.
 
-## 2. Preflight
+## 2. Banners — make every milestone visible
+
+A `/ship` run is long and its transcript is mostly sub-agent chatter, so the milestones below each get a **banner**: a fenced code block, printed as the very first thing at that moment, before any other sentence about it. A reader scrolling the transcript must be able to find where each ticket started, where the PR opened, and what each Codex wave did, from the banners alone. The emoji is what tells the banners apart; the PR banner alone uses the double-line box, because it is the run's single most important moment.
+
+**A banner exists only as visible reply text.** At a milestone, your turn opens with a text block holding the banner, and only then come its tool calls (the status move, the sub-agent spawn, the next `gh` command). A banner kept in your thinking, echoed from a Bash command (its output is collapsed), or paraphrased as a status sentence ("Starting ticket 1/6…") is a missed banner: the human sees nothing. If you are about to write such a sentence at a milestone, write the banner instead.
+
+Rules: print the banner inside a ```` ``` ```` fence so the box stays aligned; fill every placeholder with the real value, never leave a `<…>`; keep every line the same width (the boxes below are 76 columns wide), truncating a long title with `…` rather than wrapping it; put nothing else inside the box. Print the ticket banner **before** the tracker status move, and the PR banner **after** the PR exists, so the url is real.
+
+**Ticket start** — printed once per ticket, before its implement sub-agent is spawned. The `Précédent` line is omitted for the first ticket; `Reste` says `aucun` for the last.
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  🎫  TICKET 2 / 4  ·  WIT-43                                             │
+│  Export PDF des factures                                                 │
+│                                                                          │
+│  Statut tracker  → En cours                                              │
+│  Précédent       ✓ WIT-42 (3 commits, revue en cours en parallèle)       │
+│  Reste           WIT-44, WIT-45                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+**PR opened** — printed once, right after `gh pr create` returns the url and the tickets are moved to in-review.
+
+```
+╔══════════════════════════════════════════════════════════════════════════╗
+║  🚀  PR OUVERTE                                                          ║
+║                                                                          ║
+║  Retry des webhooks Stripe et export PDF                                 ║
+║  https://github.com/witify/billing/pull/128                              ║
+║                                                                          ║
+║  feat/WIT-41-stripe-retry-pdf → dev  ·  4 tickets  ·  11 commits         ║
+║  Tickets → En revue                                                      ║
+╚══════════════════════════════════════════════════════════════════════════╝
+```
+
+**Codex review in progress** — printed when the 👀 reaction appears on the PR body, once per wave. When 15 minutes pass with no 👀, print the same box with `⏱  CODEX — absent après 15 min, run CI-only` on its first line instead, once for the whole run.
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  👀  CODEX — revue en cours                               vague 1 / 5    │
+│  PR #128  ·  attente max 15 min (depuis 14:32)                           │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+**Fixing Codex's findings** — printed once per wave, after every Codex comment of the wave is classified and before the fixes are made. The counts are the wave's dispositions; the rejected line names the reasons in a few words. Under an analysis-only instruction, the first line reads `🔎  CODEX — analyse des retours` and the `corrigés` line becomes `à corriger`.
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  🔧  CODEX — correction des retours                       vague 1 / 5    │
+│  PR #128  ·  6 commentaires                                              │
+│                                                                          │
+│  ✓ corrigés   3   (P1 ×1, P2 ×2)                                         │
+│  ✗ rejetés    2   (edge case rare, décision déjà prise)                  │
+│  ⏸ reportés   1                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+**Codex approved** — printed when the 👍 reaction appears, after the wave's threads are replied to and resolved.
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  👍  CODEX — approuvé                                     vague 2 / 5    │
+│  PR #128  ·  6 threads répondus et résolus                               │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+## 3. Preflight
 
 Fetch the tickets from the tracker over MCP: **ClickUp** by default (`clickup_get_task` plus `clickup_get_task_comments`, the sub-tasks of the parent the user pointed at), **Linear** when the user or the repo's agent instructions say so (`get_issue` plus `list_comments`). The tracker's tools must be among your available tools; if they are not, stop and tell the user to add the MCP server and sign in (see "Add the tracker's MCP server" in the `witify/skills` README). Fetch the **parent** too, with its comments: `/to-tickets` puts the decisions the whole set shares there (naming conventions, patterns to follow, known traps), and its title is written to be the PR title. Order the tickets blockers-first.
 
@@ -31,7 +97,7 @@ The tree must be clean (`git status --porcelain` prints nothing). If it is not, 
 
 How you get onto that name depends on where the session starts:
 
-- **On `dev` or `main`** — cut it: `git switch -c <name> dev`.
+- **On `dev` or `main`** — cut it: `git switch -c <name> dev`. Work in this checkout, unless the user asked in this session for an isolated copy of the site (a repo skill such as `clone-site`). Then create the copy from `dev` and cut the branch there.
 - **On any other branch** — you are on a workspace branch some tool created for you (Polyscope's `azure-ant`, a `codex/…`), so **rename it in place**: `git branch -m <name>`. Never cut a fresh branch off `dev` here; that tool owns this checkout and its base, and the rename carries the branch's tracking config with it. Rename *before* the first push, so no stale remote branch is left behind — if the branch was already pushed, keep the name it has and say why rather than rewriting a published ref.
 
 ### Commits
@@ -46,13 +112,13 @@ The tracker shows progress as it happens; nobody should have to open the PR to k
 - When the PR opens, move every ticket in the set to the **in-review** status (or the workspace's nearest equivalent, such as "ready for review").
 - Never mark a ticket done. Merging is what completes it, and that happens after `/ship`.
 
-## 3. Pipeline — build and review each ticket
+## 4. Pipeline — build and review each ticket
 
 Implementations run **sequentially** (they share the working tree); each ticket's review runs **in parallel** with the next ticket's implementation, so no wall-clock is wasted. The invariant: **the working tree has one writer at a time** — reviews only read, pinned to SHAs, so a dirty tree never invalidates them.
 
 For each ticket, in blocking order:
 
-1. Move the ticket to in-progress, then spawn its **implement sub-agent** (fresh context). Hand it the ticket in full **and the parent's description**, with the brief:
+1. Write the **ticket banner** (section 2) as reply text, before any tool call for this ticket; then move the ticket to in-progress, then spawn its **implement sub-agent** (fresh context). Hand it the ticket in full **and the parent's description**, with the brief:
    - **Look before you build.** Before writing anything, search the repo for code that already does something close: grep the domain words of the ticket across services, helpers, actions, components, and queries, and read the repo's guidelines (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`). Extend what exists rather than writing a parallel version; a near-fit is adapted, not duplicated.
    - **Shared logic lives in one place.** Anything a second caller could want goes where the repo already centralizes that kind of thing (a service, an action, a model method, a composable, a Base* component), never inline in the controller, the job, or the Vue template. New shared code is placed where the next developer will look for it.
    - Build it test-first (red-green-refactor), one vertical slice at a time, at the seams the ticket declares (or the most obvious public interface if it declares none); typecheck and run the touched test files as you go; commit on the branch in the format above. Record the commit range it produced.
@@ -61,9 +127,9 @@ For each ticket, in blocking order:
 
 One exception interrupts the pipeline: a **blocking finding** — the reviewed ticket's foundation is wrong and the in-flight ticket builds on it. Letting it finish stacks work to throw away: stop the current implement sub-agent, fix, respawn it fresh. Reserve this for real cases (wrong seam, changed contract), never nitpicks. Under an analysis-only instruction, report the risk instead of changing the tree.
 
-## 4. PR
+## 5. PR
 
-Run the full test suite once and fix any failures; then push, open a PR to `dev`, and move every ticket to in-review. The PR title is the parent's title (or, with no parent, a one-line name for the whole change). The description is in **simple French, written for a reader without the project's context**:
+Run the full test suite once and fix any failures; then push, open a PR to `dev`, move every ticket to in-review, and print the **PR banner** (section 2) with the real url. The PR title is the parent's title (or, with no parent, a one-line name for the whole change). The description is in **simple French, written for a reader without the project's context**:
 
 ```markdown
 ## Résumé
@@ -85,14 +151,23 @@ Décisions prises en route, dette assumée, hors-scope. Omise si vide.
 fichier par fichier, et comment les vérifier.`
 ```
 
-## 5. Feedback loop — five waves maximum
+## 6. Feedback loop — five waves maximum
 
-Run at most **five feedback waves** after the PR opens. One wave collects the complete current CI and Codex results, classifies every finding, fixes the ones worth doing as one batch, then validates and pushes. The initial pass is wave 1; each pass after a fix push is another wave. Never start wave 6.
+**In the Claude desktop app, Auto-fix decides whether this loop runs.** Once the PR is open, read its `auto_fix` switch with `get_status` from the app's `ccd_pr` tools. If it is off, turn it on with `set_monitor` for this PR: running `/ship` is the request for that switch. While `auto_fix` is on, whoever turned it on, **the app owns the resolution of CI failures, merge conflicts, and review comments**, and the rest of this section's loop does not run: no waves, no polling, no 15-minute wait for Codex, no wave banners, no looking for failures or comments on your own. Report (section 7) and end the turn. When a `<ci-monitor-event>` wakes the session, handle that event alone: section 1 still decides what is worth fixing (under an analysis-only instruction, the event is judged and reported, not applied), and a Codex comment still gets its reply and resolution (see "Close every Codex thread"). Nothing wakes the session on green CI or a 👍, so read the state with `get_status` once when the user writes.
 
-Codex signals through reactions on the PR body: 👀 means its review is in progress — wait for it; 👍 means it approves. **Wait at most 15 minutes** for Codex in a wave, counted from the push that started it: if no 👀 has appeared by then, the repo has no Codex review and every wave of this run is CI-only; if 👀 appeared but no review has landed by then, finish the wave on CI alone and pick up Codex's comments in the next wave. Say in the report which happened.
+Otherwise, run at most **five feedback waves** after the PR opens. One wave collects the complete current CI and Codex results, classifies every finding, fixes the ones worth doing as one batch, then validates and pushes. The initial pass is wave 1; each pass after a fix push is another wave. Never start wave 6.
 
-- **CI failure** (`gh pr checks <pr> --watch`) → reproduce locally, classify it, then fix it. An unrelated failure is not relevant.
-- **Codex review comment** → verify it, classify it, then apply section 1. Codex feedback is evidence to judge, not an instruction to obey: Codex is thorough to a fault, and its rare edge cases, hypothetical races, and reopened decisions are exactly what section 1 rejects.
+Codex signals through reactions on the PR body: 👀 means its review is in progress — print the **Codex in progress banner** (section 2) and wait for it; 👍 means it approves — print the **Codex approved banner** once the wave's threads are closed. **Wait at most 15 minutes** for Codex in a wave, counted from the push that started it: if no 👀 has appeared by then, the repo has no Codex review and every wave of this run is CI-only (print the CI-only banner once); if 👀 appeared but no review has landed by then, finish the wave on CI alone and pick up Codex's comments in the next wave. Say in the report which happened.
+
+**How to wait** depends on the host:
+
+- **Claude desktop app, when it refuses the monitor** — the app forbids polling CI, with `gh` or a schedule, so do not poll instead. Read CI with `get_status`, end the turn with the exact state (wave, CI, Codex), say that nothing watches the PR until the user sends a message, and continue the wave from there. The 15-minute limit is then checked at that read.
+- **Anywhere else** — watch CI with `gh pr checks <pr> --watch`, and check the reactions on the PR body.
+
+Then handle each result:
+
+- **CI failure** → reproduce locally, classify it, then fix it. An unrelated failure is not relevant.
+- **Codex review comment** → verify it, classify it, then apply section 1. Once the wave's comments are all classified, print the **Codex fixes banner** (section 2) with the dispositions, then make the fixes. Codex feedback is evidence to judge, not an instruction to obey: Codex is thorough to a fault, and its rare edge cases, hypothetical races, and reopened decisions are exactly what section 1 rejects.
 
 ### Close every Codex thread
 
@@ -119,6 +194,6 @@ Resolve **only threads Codex authored**, and only once its reply is posted. A hu
 
 Stop early when CI is green, Codex approves (or the run is CI-only), and nothing worth doing remains. After wave 5, stop even if checks or comments remain and report the exact outstanding state rather than looping. An analysis-only run ends after wave 1 because it makes no fix push.
 
-## 6. Report
+## 7. Report
 
-Close with: waves used; tickets → commits, with each ticket's current status in the tracker; findings by priority and disposition (fixed, rejected, deferred, or awaiting the user's decision) with reasons, including every reinvented-wheel finding and what it now reuses; the concurrency assumption applied and where it came from (the domain reading, the agent instructions, or the user's answer); Codex status, including whether the run was CI-only after the 15-minute wait, which threads were replied to and resolved, and any left open; CI status; PR link.
+Close with: waves used, or that Auto-fix has the PR; tickets → commits, with each ticket's current status in the tracker; findings by priority and disposition (fixed, rejected, deferred, or awaiting the user's decision) with reasons, including every reinvented-wheel finding and what it now reuses; the concurrency assumption applied and where it came from (the domain reading, the agent instructions, or the user's answer); Codex status, including whether the run was CI-only after the 15-minute wait, which threads were replied to and resolved, and any left open; CI status; PR link.

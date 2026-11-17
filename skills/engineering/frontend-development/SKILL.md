@@ -56,6 +56,26 @@ For dynamic lists where users fill rows one by one, that follow-up is typically 
 
 ## Forms
 
+### Always set the button `type`
+
+A `<button>` with no `type` inside a `<form>` defaults to `type="submit"`: clicking it submits the form. Give every button an explicit `type` — raw `<button>` or the kit's button component alike — with `type="button"` for anything that is not the form's submit:
+
+```vue
+<!-- WRONG — "Add line" submits the form -->
+<form @submit.prevent="save">
+    <BaseButton icon="plus" @click="addLine">{{ $t("invoices.add_line") }}</BaseButton>
+    <BaseButton>{{ $t("app.save") }}</BaseButton>
+</form>
+
+<!-- CORRECT -->
+<form @submit.prevent="save">
+    <BaseButton type="button" icon="plus" @click="addLine">{{ $t("invoices.add_line") }}</BaseButton>
+    <BaseButton type="submit">{{ $t("app.save") }}</BaseButton>
+</form>
+```
+
+Set it even on a button that is not in a form today: a component gets rendered inside a form later, and the missing `type` turns into a stray submit.
+
 ### Sub-forms emit copies
 
 A sub-form component edits its parent's data, so `v-model` on the prop would mutate the parent's state directly. Bind `:model-value`, and on change emit a cloned, modified copy:

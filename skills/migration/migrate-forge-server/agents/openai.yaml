@@ -1,0 +1,5 @@
+interface:
+  display_name: "Migrate Forge Server"
+  short_description: "Move a Laravel site from an obsolete Forge server to a new one"
+policy:
+  allow_implicit_invocation: false
