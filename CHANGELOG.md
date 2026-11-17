@@ -1,5 +1,51 @@
 # witify-skills
 
+## 3.6.0
+
+### Minor Changes
+
+- [#39](https://github.com/witify/skills/pull/39) [`68a4ea3`](https://github.com/witify/skills/commit/68a4ea38668fa82b611c1f2aed8c491f56718d42) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` no longer duplicates Auto-fix in the Claude desktop app: while Auto-fix is on for the PR, the app owns CI failures, merge conflicts, and review comments, so `ship` runs no feedback waves, polls nothing, and only handles the events the app wakes it with. The five waves still run when the app refuses the switch, and outside the app.
+
+- [`3ae39bb`](https://github.com/witify/skills/commit/3ae39bbb4b70b11a41f33c37008c9104d29a9697) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` now says when to work in an isolated copy of the site, and how to wait for CI and Codex in the Claude desktop app: it uses the `ccd_pr` tools and the monitor in place of `gh pr checks --watch`, and it reports the exact state if the app refuses the monitor.
+
+### Patch Changes
+
+- [#40](https://github.com/witify/skills/pull/40) [`5da38c7`](https://github.com/witify/skills/commit/5da38c7583f83040bdbb9abd6d5dbca68560c2b4) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `sprintify-ui` now documents `BaseLightbox` (sprintify-ui 0.12.34), the full-screen image viewer, in the media catalog and the key component reference.
+
+## 3.5.0
+
+### Minor Changes
+
+- [`9eb4a9c`](https://github.com/witify/skills/commit/9eb4a9ca6e800367c4778177daf6a692944c9627) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `frontend-development`: every button gets an explicit `type`. A button with no `type` inside a form submits it on click, so anything that is not the form's submit now gets `type="button"`. `sprintify-ui` now notes that `BaseButton`'s `type` defaults to `"submit"`.
+
+### Patch Changes
+
+- [#37](https://github.com/witify/skills/pull/37) [`a58fa3e`](https://github.com/witify/skills/commit/a58fa3e3dae4331cf4fa38663732a3f14249fd2f) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `code-review`: the Standards axis now names `CLAUDE.md`, `AGENTS.md` and `.ai/guidelines/` as sources, and includes each skill in `.ai/skills/` whose topic matches the diff. A rule that moves from the guidelines to a skill stays in the review.
+
+## 3.4.0
+
+### Minor Changes
+
+- [#34](https://github.com/witify/skills/pull/34) [`573c052`](https://github.com/witify/skills/commit/573c052c413dbe52dcc425f0fd27804899e035b5) Thanks [@francoislevesque](https://github.com/francoislevesque)! - New `migrate-forge-server` skill: move a Laravel site from an obsolete Forge server to a new one through the Forge API. Upgrade branch with deep verification (PHP 8.3, MySQL 8.4, Node), new server and site, `.env` and deploy script carried over, rehearsal data transfer on `*.on-forge.com`, real cutover with the old site down, cron/daemons/integrations moved, DNS switch on the Witify A record, SSL without a gap. Phase by phase, each ending at a checkpoint. Nine phases with a fixed banner, a fixed checkpoint layout (result table, one 🟢/🟡/🔴 status line, next phase in plain French, one question), the DNS change asked at one explicit moment, a `reader` MySQL user with a generated password stored with the other server secrets, zero-downtime and push-to-deploy on by default, and the copied certificate removed once Let's Encrypt is active.
+
+## 3.3.2
+
+### Patch Changes
+
+- [`202f7bf`](https://github.com/witify/skills/commit/202f7bf32d6931e2dadbe54f23f632b5a09a63db) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` milestone banners now actually show up: the skill requires each banner to be written as visible reply text before the milestone's tool calls. Before, the model could skip it, keep it in its thinking, or replace it with a one-line status sentence, so the boxed `🎫 TICKET n / m` banner never appeared in the transcript.
+
+## 3.3.1
+
+### Patch Changes
+
+- [`4a25b7b`](https://github.com/witify/skills/commit/4a25b7b6fbad650dcab48ce469a267c623ddf8b6) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `witify-writing-style`: hours are written glued to the number (`2h`, `0,5h`, `1h30`), no longer with a space (`2 h`).
+
+## 3.3.0
+
+### Minor Changes
+
+- [`54cdc3b`](https://github.com/witify/skills/commit/54cdc3bdbeb6c7435f735935ad8cdcb98c67b711) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `ship` now prints a boxed banner at each milestone of a run, so the transcript can be scanned without reading the sub-agent chatter: when a ticket starts (`🎫 TICKET n / m`, with the previous ticket's result and the tickets left), when the PR opens (`🚀 PR OUVERTE`, double-lined, with the PR link), and at each Codex wave as the review starts (`👀`), as its findings are fixed (`🔧`, with the fixed, rejected and deferred counts) and when Codex approves (`👍`). A repo without Codex gets a single `⏱` banner when the 15-minute wait runs out.
+
 ## 3.2.0
 
 ### Minor Changes

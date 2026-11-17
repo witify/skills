@@ -1,0 +1,5 @@
+---
+"witify-skills": minor
+---
+
+New `pr-summary` skill (user-invoked, `/pr-summary`). It writes the briefing a reviewer reads before opening the code of a GitHub PR and posts it at the top of the PR description, in four short bulleted sections: what the PR changes and why; the features to validate by hand, each with a priority (🔴 must look, 🟡 worth a look, 🟢 covered by tests); a side-by-side before/after video of every visual change, captioned with what changed and framing the changed element; and the impacts to flag (breaking changes, migrations, config and env, permissions, dependencies). It is written from the whole PR rather than the author's description. The videos are recorded with Claude in Chrome on the base commit first, then on the PR head, merged into one mp4 by a script the skill carries (ffmpeg, with a GIF fallback), and uploaded into the PR through the extension, the one route that needs no human; without it the briefing ships without them and says so. The briefing sits between markers, so re-running replaces it, keeps the reviewer's ticks, and leaves the rest of the description intact.

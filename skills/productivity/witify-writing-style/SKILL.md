@@ -20,8 +20,8 @@ Every client-facing text Witify produces reads the same way: short sentences, pl
 
 ## Numbers, amounts, dates
 
-- Thousands separated by a non-breaking space, decimals with a comma: `80 000 $`, `1 233,91 $`, `7,6 %`, `0,5 h`. The currency sign and the percent sign follow a non-breaking space.
-- Hours as `2 h`, durations as `13 semaines` or `≈ 13 semaines` when approximate, rates as `150 $/h`, monthly amounts as `1 500 $/mois`.
+- Thousands separated by a non-breaking space, decimals with a comma: `80 000 $`, `1 233,91 $`, `7,6 %`, `0,5h`. The currency sign and the percent sign follow a non-breaking space.
+- Hours glued to the number, no space: `2h`, `0,5h`, `1h30`, never `2 h`. Durations as `13 semaines` or `≈ 13 semaines` when approximate, rates as `150 $/h`, monthly amounts as `1 500 $/mois`.
 - Dates in full: `15 septembre 2026`, never `15/09/2026`.
 - Versions with a dot: `PHP 8.5`, `Laravel 13`, `MySQL 8.4`.
 - A number the reader must compare sits in a table, not in prose. Prose carries at most one number per sentence.
