@@ -77,7 +77,7 @@ Done when every file from step 4 has its `user-attachments` URL, each video's co
 
 ## 6. Write the briefing
 
-Written in the language of the PR's existing description, and in simple French when it has none, the convention `/ship` sets. Bullets everywhere, one line each where possible, no paragraph longer than two sentences: the reviewer scans it in two minutes. Facts only: a claim the PR, the repo, or the ticket does not support is left out, never guessed.
+Always written in simple French, whatever the language of the PR's existing description, its commits, or the conversation: the reviewers read French, and the section headings above are fixed. Code identifiers, routes, and quoted UI strings stay as they are. Bullets everywhere, one line each where possible, no paragraph longer than two sentences: the reviewer scans it in two minutes. Facts only: a claim the PR, the repo, or the ticket does not support is left out, never guessed.
 
 ```markdown
 <!-- pr-summary:start -->
