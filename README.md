@@ -72,7 +72,7 @@ Use `--skill <name>` instead of `--all` to cherry-pick. To pull newer versions l
 
 ### 2. Add the tracker's MCP server
 
-`to-spec`, `to-tickets`, and `ship` read and write tickets over MCP. **ClickUp is the default**; the skills use Linear instead when you say so or when the project's agent instructions (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`) name Linear as its tracker. There is no setup step and no local-file fallback: if the server isn't connected, the skill stops and says so. Add the official hosted server, then authenticate (OAuth in the browser on first connection).
+`to-spec`, `to-tickets`, `ship`, and `sentry-fix` read and write tickets over MCP. **ClickUp is the default**; the skills use Linear instead when you say so or when the project's agent instructions (`CLAUDE.md`, `AGENTS.md`, `.ai/guidelines/`) name Linear as its tracker. There is no setup step and no local-file fallback: if the server isn't connected, the skill stops and says so. Add the official hosted server, then authenticate (OAuth in the browser on first connection).
 
 **Claude Code**
 
@@ -204,6 +204,7 @@ Skills for daily code work.
 **Model-invoked**
 
 - **[code-review](./skills/engineering/code-review/SKILL.md)** — Two-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/PRD?), run as parallel sub-agents so neither pollutes the other.
+- **[sentry-fix](./skills/engineering/sentry-fix/SKILL.md)** — Take a Sentry issue to a reviewed PR so the fix shows up as an intervention in the client portal: cause, failing test, fix, then ClickUp task, a commit with `Fixes <SHORT-ID>`, one PR per fix, and the issue resolved in Sentry. Fires on a sentry.io link or a Sentry short ID.
 - **[frontend-development](./skills/engineering/frontend-development/SKILL.md)** — Vue 3 + Tailwind frontend patterns: reactivity after emits, sub-forms that emit copies, orphan validation errors, and responsive layouts — plus sprintify app conventions (shared backend data, settings store, `resource_data`, `tabulation` tables).
 - **[sprintify-ui](./skills/engineering/sprintify-ui/SKILL.md)** — Reference for the [sprintify-ui](https://www.npmjs.com/package/sprintify-ui) component library: what every `Base*` component is, and the props, events and slots it takes. Only useful in projects that depend on the package.
 - **[audits](./skills/engineering/audits/SKILL.md)** — Record model audit trails with the sprintify Audit module: staging API, readable labels, retention, and the display layer. Falls back to core principles on older forks.
