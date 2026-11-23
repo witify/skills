@@ -1,0 +1,3 @@
+interface:
+  display_name: "Sentry Fix"
+  short_description: "Fix a Sentry issue so it shows up in the client portal"
