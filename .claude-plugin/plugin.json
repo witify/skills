@@ -27,6 +27,7 @@
     "./skills/engineering/sprintify-ui",
     "./skills/engineering/fix-review",
     "./skills/engineering/release-checklist",
+    "./skills/engineering/sentry-fix",
     "./skills/engineering/pr-summary",
     "./skills/engineering/audits",
     "./skills/engineering/authorization",

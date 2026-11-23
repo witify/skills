@@ -20,6 +20,7 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 Model- or user-reachable (rich trigger phrasing so the model can reach for them).
 
 - **[code-review](./code-review/SKILL.md)** — Two-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/PRD?), run as parallel sub-agents.
+- **[sentry-fix](./sentry-fix/SKILL.md)** — Take a Sentry issue to a reviewed PR so the fix shows up as an intervention in the client portal: cause, failing test, fix, then ClickUp task, a commit with `Fixes <SHORT-ID>`, one PR per fix, and the issue resolved in Sentry. Fires on a sentry.io link or a Sentry short ID.
 - **[frontend-development](./frontend-development/SKILL.md)** — Vue 3 + Tailwind frontend patterns: reactivity after emits, sub-forms that emit copies, orphan validation errors, and responsive layouts that collapse to a single column — plus sprintify app conventions (shared backend data, settings store, `resource_data`, `tabulation` tables).
 - **[sprintify-ui](./sprintify-ui/SKILL.md)** — Reference for the `sprintify-ui` component library: what every `Base*` component is, and the props, events and slots it takes. Only useful in projects that depend on the package.
 - **[audits](./audits/SKILL.md)** — Record model audit trails with the sprintify Audit module: staging API, readable labels, retention, and the display layer. Falls back to core principles on older forks.
