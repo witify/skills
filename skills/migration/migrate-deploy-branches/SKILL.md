@@ -7,27 +7,32 @@ description: "Migrate a project to deploy branches: a GitHub Actions workflow bu
 
 A **deploy branch** is the source commit plus its built assets, committed. CI checks out the pushed commit on `dev` / `main`, runs the frontend build, force-adds the build output (normally gitignored), commits it, and force-pushes to `deploy-dev` / `deploy`. The host deploys those branches, so no build tooling ever runs on the server — no npm on production, no OOM-killed vite, no half-built assets served while the build is mid-flight.
 
-Migrating is two halves: the **repo half** (a workflow file) and the **host half** (repointing the site and stripping the build out of its deploy script). Both must land, in that order. Repointing the host before the deploy branch exists breaks deploys.
+The CI side is not written per project: every Witify project calls the shared **Deploy branch** workflow of [witify/workflows](https://github.com/witify/workflows#deploy-branch) with a few inputs, so a fix lands once for all of them. Never copy the build steps into the project.
+
+Migrating is two halves: the **repo half** (a small caller workflow) and the **host half** (repointing the site and stripping the build out of its deploy script). Both must land, in that order. Repointing the host before the deploy branch exists breaks deploys.
 
 ## 1. Check the pattern applies
 
 Skip and say so if any of these fail:
 
-- `package.json` has a build script (`npm run build`) that emits into the repo — typically `public/build` via `laravel-vite-plugin`.
+- `package.json` has a build script that emits into the repo — typically `npm run build` into `public/build` via `laravel-vite-plugin`, or `npm run production` into `public/css`, `public/js` and `public/mix-manifest.json` with Laravel Mix.
 - The build output is **gitignored** on the source branches. If it's already committed, there's nothing to migrate; the project already ships built assets.
 - Deploys pull a **git branch** (Forge, Envoyer, a bare `git pull` on a VPS). A container image build or Laravel Cloud already builds elsewhere — this pattern buys nothing.
 
 Then check one thing that decides whether the build can move at all: **build-time env vars**. Grep for `import.meta.env.VITE_` (or `process.env.` in the build config). Every one of those is baked into the bundle when the build runs, so moving the build to CI means CI must supply them — as workflow `env:` from repository variables/secrets, per target branch. If the values differ between staging and production, they need a per-branch mapping before you write anything. Say so and settle it first; a silent default here ships a bundle pointing at the wrong backend.
 
-## 2. Read the four variables out of the repo
+## 2. Read the variables out of the repo
 
-Don't ask — the repo answers all four.
+Don't ask — the repo answers all of them. Each one becomes an input of the shared workflow only when it differs from the default.
 
 | Variable | Where it comes from |
 | --- | --- |
 | **Source branches** | The branches that deploy today. Usually `dev` and `main`; confirm with `git ls-remote --heads origin` and the existing workflows' `on: push: branches:`. |
-| **Node version** | `.nvmrc`, then `package.json` `engines.node`, then whatever the existing CI workflows pin. Match CI to what the project already builds with — and if the repo declares it nowhere, add an `.nvmrc` rather than inventing a number that lives only in the workflow. |
-| **Build artifacts** | Every gitignored path the build writes — see below. |
+| **Node version** | `.nvmrc`, then `package.json` `engines.node`, then whatever the existing CI workflows pin. The shared workflow reads `.nvmrc` by default — if the repo declares the version nowhere, add an `.nvmrc` rather than passing `node-version`. |
+| **Build command** | `npm run build` (the default), or `npm run production` for Laravel Mix → `build-command`. |
+| **Build artifacts** | Every gitignored path the build writes — see below → `paths`. |
+| **Composer before the build** | Needed when the frontend imports from `vendor/` (Ziggy, the Vue pages of the `witify/*` packages): grep the JS for `vendor/` → `composer: true`, plus `php-version` when it isn't `8.4`. |
+| **Laravel Pint auto-commit** | A workflow (usually named "Laravel Pint") that pushes a "Fix styling" commit. A push made with `GITHUB_TOKEN` starts no `push` run, so the caller also listens to that workflow with `workflow_run`. |
 | **Target branch names** | `deploy` for the production source branch, `deploy-dev` for staging. Keep these names; the whole team reads them. |
 
 **Enumerate the artifacts by building, not by guessing.** This is the step that goes wrong most often:
@@ -37,11 +42,11 @@ npm ci && npm run build
 git status --porcelain --ignored public | grep '^!!'
 ```
 
-Everything listed is written by the build and ignored by git — so everything listed must be force-added, or the deploy branch ships a partial build. `public/build/` is always there. A project with `vite-plugin-pwa` writing into `public/` also emits `public/sw.js` and `public/workbox-*.js`; miss those and production keeps serving a stale service worker forever, with no error anywhere to tell you. Adjust the paths in the workflow to exactly what this command printed.
+Everything listed is written by the build and ignored by git — so everything listed must be force-added, or the deploy branch ships a partial build. A project with `vite-plugin-pwa` writing into `public/` also emits `public/sw.js` and `public/workbox-*.js`; miss those and production keeps serving a stale service worker forever, with no error anywhere to tell you. The default `paths` (`public/build public/sw.js public/workbox-*.js`, missing ones skipped) covers a Vite project with or without the PWA plugin; pass `paths` only when the command printed something else.
 
-## 3. Write the workflow
+## 3. Write the caller workflow
 
-`.github/workflows/build-deploy-branch.yml`, with the four variables substituted:
+`.github/workflows/build-deploy-branch.yml`, on `dev` and on the production branch:
 
 ```yaml
 name: Build deploy branch
@@ -49,53 +54,32 @@ name: Build deploy branch
 on:
   push:
     branches: [dev, main]
+  workflow_run:
+    workflows: ["Laravel Pint"]
+    types: [completed]
+    branches: [dev, main]
 
 permissions:
   contents: write
 
-concurrency:
-  group: build-deploy-${{ github.ref_name }}
-  cancel-in-progress: true
-
 jobs:
   build:
-    name: Build and push
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
-
-      - name: Commit build and push to deploy branch
-        run: |
-          TARGET=$([ "${{ github.ref_name }}" = "main" ] && echo deploy || echo deploy-dev)
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f public/build
-          git commit -m "build: ${{ github.sha }}"
-          git push -f origin "HEAD:$TARGET"
+    uses: witify/workflows/.github/workflows/deploy-branch.yml@v1
+    with:
+      build-command: npm run production
+      paths: public/css public/js public/mix-manifest.json
 ```
 
-Why each piece is there — keep them:
+Adjust it to what step 2 found:
 
-- `permissions: contents: write` — the default `GITHUB_TOKEN` is read-only in most repos, and the push is the whole point.
-- `concurrency` with `cancel-in-progress` — two pushes in a minute would otherwise race to force-push, and the loser could land last with the older commit.
-- `git add -f` — the build output is still gitignored; `-f` is what puts it on the deploy branch without un-ignoring it on the source branches.
-- `push -f` — every build makes a fresh commit parented on the source commit, so the deploy branch is rewritten each time. It is a build artifact, not history.
-- `node-version-file: .nvmrc` — reads the version the repo already declares, so CI and local dev can't drift apart. Pin `node-version:` inline only in a repo that has no `.nvmrc` and isn't getting one.
+- `branches:` — `master` instead of `main` in both lists when that is the production branch. One source branch only? Keep it alone and pass `staging-branch: ""`.
+- `workflow_run` — keep it only when the repo has the Pint auto-commit, with that workflow's exact `name`. Otherwise drop the block.
+- `with:` — only the inputs that differ from the defaults (`build-command`, `paths`, `composer`, `php-version`, `node-version`; the full list is in the [witify/workflows README](https://github.com/witify/workflows#deploy-branch)). The example above is a Laravel Mix project; a standard Vite project has no `with:` at all.
+- `production-branch` — pass it only while the repository's default branch is not the production branch (a default branch still on `dev`).
 
-Only three things vary per project: the `branches:` list, the Node version source, and the `git add -f` paths from step 2. One source branch only? Drop the `TARGET` conditional and push straight to `deploy`.
+The shared workflow carries the rest: `contents: write`, a per-branch `concurrency` that cancels the older build so two pushes cannot race their force-pushes, `git add -f` of the existing paths (it fails when none exists, so a wrong `paths` shows as a red run), and the force-push. Call `@v1`, never `@main`.
+
+To check the inputs before merging, push a throwaway branch whose caller sets `staging-branch` to that branch and `dry_run: true`: the run builds, lists the files it would commit, and pushes nothing. Delete the branch afterwards.
 
 If the repo has rulesets or branch protection, exclude `deploy` and `deploy-dev` from anything that forbids force-pushes or requires PRs — otherwise the workflow fails on the push, after a green build.
 
@@ -141,7 +125,7 @@ Verify staging end to end before repointing production.
 - **Never commit to a deploy branch by hand.** The next build force-pushes over it and the change is gone.
 - **Never open a PR against a deploy branch**, and never merge one into a source branch — it would drag the built assets into the source history, which is exactly what this pattern avoids.
 - **Keep the build output gitignored** on the source branches. `git add -f` is doing the work; un-ignoring it would put built assets back in every feature branch diff.
-- **When the build starts emitting a new artifact** — a plugin added, an output path changed — the `git add -f` list must grow with it. Re-run the step 2 command whenever the build config changes.
+- **When the build starts emitting a new artifact** — a plugin added, an output path changed — the `paths` input must grow with it. Re-run the step 2 command whenever the build config changes.
 - **A failed build is silent.** When the workflow fails, the deploy branch simply stops moving and the site keeps serving the last good build — no deploy, no error on the host. The check, any time a deploy seems not to have landed, is whether the deploy branch's tip commit names the source branch's tip:
   ```bash
   git fetch origin && git log -1 --format=%s origin/deploy   # "build: <sha>"
@@ -149,9 +133,13 @@ Verify staging end to end before repointing production.
   ```
 - **A red test suite still ships.** This workflow builds on any push to a source branch, independent of the test workflow. If that's not acceptable, gate it with `on: workflow_run` against the test workflow's name and `conclusion == 'success'` — at the cost of a slower deploy.
 
+## 7. Join the release flow
+
+A project with `dev` and a production branch also uses the shared release workflows and the organization rulesets, so every repo works the same way. Point the human at the [witify/workflows README](https://github.com/witify/workflows#release-pr): add `release-pr.yml` and `release.yml`, make the production branch the repository's default branch, and turn on the custom property `release_flow`. Skip it while `dev` is far ahead of the production branch (dozens of unreleased commits): merge them with a merge commit first, then join, so the first changelog stays readable.
+
 ## Done when
 
-- `.github/workflows/build-deploy-branch.yml` exists, force-adds every artifact the build writes, and has run green.
+- `.github/workflows/build-deploy-branch.yml` calls `witify/workflows/.github/workflows/deploy-branch.yml@v1`, its inputs force-add every artifact the build writes, and it has run green.
 - `deploy` and `deploy-dev` exist on the remote and carry the build in their tip commit.
 - Each Forge site points at its deploy branch, its deploy script fetch-and-resets, and it contains no npm.
 - A staging deploy has been verified end to end, then production.
