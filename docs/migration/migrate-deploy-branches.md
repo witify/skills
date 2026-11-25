@@ -14,6 +14,8 @@ npx skills update migrate-deploy-branches
 
 `migrate-deploy-branches` moves a project's frontend build off the server and into CI. A GitHub Actions workflow checks out each push to `dev` / `main`, builds the assets, commits them on top of the source commit, and force-pushes the result to `deploy-dev` / `deploy` — the branches Forge then deploys. The server stops running npm entirely.
 
+The project never holds those build steps itself: it gets a ten-line caller of the shared **Deploy branch** workflow in [witify/workflows](https://github.com/witify/workflows#deploy-branch), with only the inputs that differ from the defaults (build command, built paths, composer). A fix to the build lands once, for every project.
+
 The deploy branch is a build artifact, not history. Every build rewrites it, so nothing you hand-commit there survives, and a `git pull` on the server cannot follow it — swapping that pull for a fetch-and-reset is the step that makes the whole cutover hold.
 
 ## When to reach for it
@@ -24,13 +26,13 @@ Reach for it when the server build is the thing hurting: vite OOM-killed on a sm
 
 ## Prerequisites
 
-A project whose build emits into the repo (`public/build` via `laravel-vite-plugin` is the usual shape), gitignored today, deployed by pulling a git branch. Half the migration happens in the Forge dashboard, so a human has to be present for the cutover. Projects that build a container image or run on Laravel Cloud already build elsewhere and gain nothing.
+A project whose build emits into the repo (`public/build` via `laravel-vite-plugin` is the usual shape; Laravel Mix's `public/css` and `public/js` work too), gitignored today, deployed by pulling a git branch. Half the migration happens in the Forge dashboard, so a human has to be present for the cutover. Projects that build a container image or run on Laravel Cloud already build elsewhere and gain nothing.
 
 One thing decides whether the build can move at all: `VITE_*` env vars are baked into the bundle at build time, so if the app reads any, CI has to supply them per target branch before anything else happens.
 
 ## Force-add every artifact the build writes
 
-The failure this skill exists to prevent is a **partial build** on the deploy branch. The workflow's `git add -f` list has to name every gitignored path the build emits — and the way to know that list is to build and look, never to guess:
+The failure this skill exists to prevent is a **partial build** on the deploy branch. The caller's `paths` input has to name every gitignored path the build emits — and the way to know that list is to build and look, never to guess:
 
 ```bash
 npm ci && npm run build
@@ -45,6 +47,7 @@ The **repo half** is the workflow file. The **host half** is repointing each For
 
 ## It's working if
 
+- `.github/workflows/build-deploy-branch.yml` is a caller of `witify/workflows/.github/workflows/deploy-branch.yml@v1`, with no build steps of its own.
 - `deploy` and `deploy-dev` exist on the remote, and their tip commit contains the built assets.
 - The Forge deploy log shows no npm step, and the deploy script fetch-and-resets rather than pulls.
 - A commit pushed to `dev` walks the whole chain on its own: workflow green → deploy branch moves → Forge deploys → new asset hashes live.
@@ -52,4 +55,4 @@ The **repo half** is the workflow file. The **host half** is repointing each For
 
 ## Where it fits
 
-A run-once cutover, standalone: nothing feeds it and nothing follows it. It walks you through Forge inline.
+A run-once cutover: nothing feeds it. It walks you through Forge inline, then points you at the release flow of [witify/workflows](https://github.com/witify/workflows#release-pr) (release pull request, organization rulesets), so the project ends up working like every other Witify repo.
