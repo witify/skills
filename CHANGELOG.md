@@ -1,5 +1,15 @@
 # witify-skills
 
+## 3.7.0
+
+### Minor Changes
+
+- [#41](https://github.com/witify/skills/pull/41) [`536d659`](https://github.com/witify/skills/commit/536d659ec93f2fd08f397568ed5947c2a58c801e) Thanks [@NicolasSacC](https://github.com/NicolasSacC)! - New `pr-summary` skill (user-invoked, `/pr-summary`). It writes the briefing a reviewer reads before opening the code of a GitHub PR and posts it at the top of the PR description, in four short bulleted sections: what the PR changes and why; the features to validate by hand, each with a priority (🔴 must look, 🟡 worth a look, 🟢 covered by tests); a side-by-side before/after video of every visual change, captioned with what changed and framing the changed element; and the impacts to flag (breaking changes, migrations, config and env, permissions, dependencies). It is always written in French, and from the whole PR rather than the author's description. The videos are recorded with Claude in Chrome on the base commit first, then on the PR head, merged into one mp4 by a script the skill carries (ffmpeg, with a GIF fallback), and uploaded into the PR through the extension, the one route that needs no human; without it the briefing ships without them and says so. The briefing sits between markers, so re-running replaces it, keeps the reviewer's ticks, and leaves the rest of the description intact.
+
+- [#48](https://github.com/witify/skills/pull/48) [`a5adab0`](https://github.com/witify/skills/commit/a5adab0b668a6bca537b5aec66a654306b9ee08b) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `migrate-deploy-branches` now writes a small caller of the shared Deploy branch workflow of witify/workflows instead of copying the build steps into each project: the build command, the built paths, composer and the Node version become inputs, and a fix to the build lands once for every project. It also covers Laravel Mix projects, the Laravel Pint auto-commit, a dry run before merging, and ends by pointing at the release flow (release pull request, organization rulesets).
+
+- [#47](https://github.com/witify/skills/pull/47) [`f0129bd`](https://github.com/witify/skills/commit/f0129bdb4862e84fc7293c251818802bd1108c11) Thanks [@tibou-tech](https://github.com/tibou-tech)! - New `sentry-fix` skill (model-invoked, fires on a sentry.io link or a Sentry short ID). It takes a Sentry issue to a reviewed PR: it reads the issue, finds the cause, reproduces the error in a test that fails without the fix, fixes it, then, after your go, files the ClickUp task, commits with `Fixes <SHORT-ID>`, opens one PR per fix, and resolves the issue in Sentry with a comment pointing at the PR. The `Fixes` line is what makes the fix appear as an intervention in the Witify client portal, so the skill enforces it and explains the traps that hide a fix from the client: the short ID after a `-` in a branch name, a squash merge that drops the line, a fix pushed straight to `dev`, or a fix stacked on another unmerged branch.
+
 ## 3.6.0
 
 ### Minor Changes
