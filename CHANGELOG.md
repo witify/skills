@@ -1,5 +1,11 @@
 # witify-skills
 
+## 3.7.1
+
+### Patch Changes
+
+- [#49](https://github.com/witify/skills/pull/49) [`850fe62`](https://github.com/witify/skills/commit/850fe629b4ad3741b1aa2f73a8c8cf658c1cd128) Thanks [@francoislevesque](https://github.com/francoislevesque)! - `migrate-deploy-branches` now takes the default branch out of the check workflows (tests, Larastan, Pint, frontend) when a project joins the release flow, so checks run on `dev` only. The release pull request already brings the default branch the tree `dev` checked, and the runs it triggered waited for an approval, then failed at the merge.
+
 ## 3.7.0
 
 ### Minor Changes
