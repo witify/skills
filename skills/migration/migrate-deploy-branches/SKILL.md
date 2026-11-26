@@ -135,7 +135,7 @@ Verify staging end to end before repointing production.
 
 ## 7. Join the release flow
 
-A project with `dev` and a production branch also uses the shared release workflows and the organization rulesets, so every repo works the same way. Point the human at the [witify/workflows README](https://github.com/witify/workflows#release-pr): add `release-pr.yml` and `release.yml`, make the production branch the repository's default branch, and turn on the custom property `release_flow`. Skip it while `dev` is far ahead of the production branch (dozens of unreleased commits): merge them with a merge commit first, then join, so the first changelog stays readable.
+A project with `dev` and a production branch also uses the shared release workflows and the organization rulesets, so every repo works the same way. Point the human at the [witify/workflows README](https://github.com/witify/workflows#release-pr): add `release-pr.yml` and `release.yml`, make the production branch the repository's default branch, and turn on the custom property `release_flow`. Then take the default branch out of the check workflows (tests, Larastan, Pint, frontend): their `push` and `pull_request` triggers get a `branches` filter without it, or `branches-ignore: [<default branch>]`, so checks run on `dev` only. The release pull request brings the default branch the tree `dev` already checked, and the runs it would trigger wait for an approval nobody gives, then fail at the merge. Keep the checks on a repo with no `dev`, and on one whose default branch requires status checks. Skip all of this while `dev` is far ahead of the production branch (dozens of unreleased commits): merge them with a merge commit first, then join, so the first changelog stays readable.
 
 ## Done when
 
