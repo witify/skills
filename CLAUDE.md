@@ -23,7 +23,7 @@ Each bucket folder has a `README.md` that lists every skill in the bucket with a
 
 Skills in the promoted buckets also have a human-facing docs page at `docs/<bucket>/<skill-name>.md` (the docs tree mirrors those bucket folders under `skills/`). When you add, rename, or change the behaviour of a promoted skill, create or re-sync its docs page following [.agents/writing-docs.md](./.agents/writing-docs.md). Skills in the non-promoted bucket (`in-progress/`) get **no** docs page.
 
-The tracker skills (`to-spec`, `to-tickets`, `ship`, `code-review`, `sentry-fix`) talk to ClickUp by default and to Linear when the user or the project's agent instructions say so, always over MCP, with no setup skill and no local-file fallback: a skill that finds the tracker's tools missing stops and tells the user to connect the server. Keep that rule identical across the five.
+The tracker skills (`to-spec`, `to-tickets`, `ship`, `code-review`, `release-checklist`, `sentry-fix`) talk to ClickUp by default and to Linear when the user or the project's agent instructions say so, always over MCP, with no setup skill and no local-file fallback: a skill that finds the tracker's tools missing stops and tells the user to connect the server. Keep that rule identical across the six.
 
 Every `SKILL.md` is either user-invoked (`disable-model-invocation: true` plus `policy.allow_implicit_invocation: false` in `agents/openai.yaml`, reachable only by the human) or model-invoked (model- or user-reachable). See [.agents/invocation.md](./.agents/invocation.md).
 
